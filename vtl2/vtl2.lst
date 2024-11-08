@@ -1,0 +1,978 @@
+     1                        ;-----------------------------------------------------;
+     2                        ;		  VTL-2 for the 6502 (VTL02B)		  ;
+     3                        ;		Original Altair 680b version by		  ;
+     4                        ;	   Frank McCoy and Gary Shannon 1977		  ;
+     5                        ;	 2012: Adapted to the 6502 by Michael T. Barry	  ;
+     6                        ; Thanks to sbprojects.com for a very nice assembler! ;
+     7                        ;-----------------------------------------------------;
+     8                        ; 2015: Revision B, with several space optimizations
+     9                        ;	(suggested by dclxvi) and enhancements (suggested
+    10                        ;	by mkl0815 and Klaus2m5).
+    11                        
+    12                        ; -- original sorce code --
+    13                        ;   http://6502.org/source/interpreters/vtl02.htm
+    14                        ;
+    15                        ; MEZW65C_RAM version
+    16                        ;
+    17                        ; This program was ported for the mezzanine board MEZW65C_RAM
+    18                        ; by Akihito Honda. 2024.10
+    19                        ; X(Twitter)  @akih_san
+    20                        ;
+    21                        ; Mezzanine board MEZW65C_RAM works on EMUZ80 SBC
+    22                        ;
+    23                        ; EMUZ80
+    24                        ; https://vintagechips.wordpress.com/2022/03/05/emuz80_reference/
+    25                        ; MEZW65C_RAM
+    26                        ; https://github.com/akih-san/MEZW65C_RAM
+    27                        ;
+    28                        ;   Thanks all.
+    29                        ;
+    30                        	pl	0
+    31                        	pw      132
+    32                        	chip    65C02
+    33                        
+    34                        ;
+    35             000001FF   nulstk	 equ $01ff	; system stack resides in page 1
+    36                        ;-----------------------------------------------------;
+    37                        ; Equates for a 48K+ Apple 2 (original, +, e, c, gs)
+    38             0000001B   ESC	 equ 27		; "Cancel current input line" key
+    39             00000008   BS	 equ 8		; "Delete last keypress" key
+    40             00000021   OP_OR	 equ '!'		; Bit-wise OR operator
+    41             00000200   linbuf	 equ $0200	; input line buffer
+    42             00000800   prgm	 equ $0800	; VTL02B program grows from here
+    43             0000D800   himem	 equ $D800	;	... up to the top of user RAM
+    44             0000D800   vtl02b	 equ $D800	; interpreter cold entry point
+    45                        ;			  (warm entry point is startok)
+    46                        ;=====================================================;
+    47                        
+    48             000000C4   quote	 equ quote0
+    49                        ;--------------------------------------
+    50                        ;ZERO page
+    51                        ;--------------------------------------
+    52                        	.page0
+    53                        	ORG	$80
+    54                        
+    55             00000080   at	 equ $		; {@}* internal pointer / mem byte
+    56                        ; VTL02B standard user variable space
+    57                        ;			  {A B C .. X Y Z [ \ ] ^ _}
+    58                        ; VTL02B system variable space
+    59                        	org	$c0
+    60                        
+    61 00:00C0:              space	 ds 2		; { }  New for VTL02B:	the space
+    62                        			;	character is no longer a valid
+    63                        			;	user variable nor a "valid"
+    64                        			;	binary operator.  It is now
+    65                        			;	only significant as a numeric
+    66                        			;	constant terminator, and as a
+    67                        			;	place-holder in strings and
+    68                        			;	program listings. 
+    69 00:00C2:              bang	 ds 2		; {!}  return line number
+    70 00:00C4:              quote0	 ds 2		; {"}  user ml subroutine vector
+    71 00:00C6:              pound	 ds 2		; {#}  current line number
+    72 00:00C8:              dolr	 ds 2		; {$}* temp storage / char i/o
+    73 00:00CA:              remn	 ds 2		; {%}  remainder of last division
+    74 00:00CC:              ampr	 ds 2		; {&}  pointer to start of array
+    75 00:00CE:              tick	 ds 2		; {'}  pseudo-random number
+    76 00:00D0:              lparen	 ds 2		; {(}* old line # / begin sub-exp
+    77 00:00D2:              rparen	 ds 2		; {)}* temp storage / end sub-exp
+    78 00:00D4:              star	 ds 2		; {*}  pointer to end of free mem
+    79                        ;	   $d6		; {+ , - . /}  valid variables
+    80                        ; Interpreter argument stack space
+    81                        	org	$e0
+    82             000000E0   arg	 equ $		; {0 1 2 3 4 5 6 7 8 9 :}*
+    83                        ; Rarely used variables and argument stack overflow
+    84                        ;	   $f6		; {;}* valid user variable
+    85                        	org	$f8
+    86 00:00F8:              lthan	 ds 2		; {<}* user memory byte pointer
+    87 00:00FA:              	 ds 2		; {equ}* valid user variable
+    88 00:00FC:              gthan	 ds 2		; {>}* temp / call ML subroutine
+    89 00:00FE:              ques	 ds 2		; {?}* temp / terminal i/o
+    90                        ;
+    91                        
+    92                        	.code
+    93                        	org	 vtl02b
+    94                        
+    95                        ; BASIC cold start entry point
+    96                        
+    97                        ;--------- MEZW65C_RAM file header --------------------------
+    98 00:D800: 00           	db	0		; program bank:W65C816, 0:W65C02
+    99 00:D801: 20 D8        	dw	COLD_START
+   100 00:D803: 00           	db	0		; data bank:W65C816, 0:W65C02
+   101 00:D804: 37 D8        	dw	start
+   102                        
+   103 00:D806: 00 00        	db	0,0		; reserve
+   104                        
+   105 00:D808: 4D 45 5A 57  mezID:	db	"MEZW65C",0	; Unique ID
+       00:D80C: 36 35 43 00 
+   106                        
+   107                        start_p:	;file load address
+   108 00:D810: 00 D8        	dw	vtl02b		; load address (Low)
+   109 00:D812: 00           	db	0		; PBR : program bank(W65C816)
+   110 00:D813: 00           	db	0		; reserve
+   111                        
+   112                        	; define Common memory address
+   113 00:D814: 00 00        PIC_IF:	dw	0	; reserve
+   114 00:D816: 00 00        	dw	0	; reserve
+   115                        
+   116 00:D818: 00           SW_816:	db	0	; 0 : W65C02
+   117                        			; 1 : W65C816 native mode 
+   118 00:D819: 00           irq_sw	db	0	; reserve
+   119 00:D81A: 00 00        reg_tp	dw	0	; reserve
+   120 00:D81C: 00 00        reg_ts	dw	0	; reserve
+   121 00:D81E: 00           nmi_sw	db	0	; reserve
+   122 00:D81F: 01           bios_sw	db	1	; 1 : program call bios command
+   123                        ;--------- MEZW65C_RAM file header --------------------------
+   124                        COLD_START
+   125                        
+   126                        ;-----------------------------------------------------;
+   127                        ; Initialize program area pointers and start VTL02B
+   128                        ; 17 bytes
+   129 00:D820: A9 00        	lda	 #$FF&prgm
+   130 00:D822: 85 CC        	sta	 ampr		; {&} -> empty program
+   131 00:D824: A9 08        	lda	 #prgm>>8
+   132 00:D826: 85 CD        	sta	 ampr+1
+   133 00:D828: A9 00        	lda	 #$FF&himem
+   134 00:D82A: 85 D4        	sta	 star		; {*} -> top of user RAM
+   135 00:D82C: A9 D8        	lda	 #himem>>8
+   136 00:D82E: 85 D5        	sta	 star+1
+   137                        startok:
+   138 00:D830: A2 FF        	ldx	 #nulstk
+   139 00:D832: 9A           	txs			; reset the system stack pointer
+   140 00:D833: 20 01 DC     	jsr	open_msg
+   141 00:D836: 38           	sec			; request "OK" message
+   142                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   143                        ; Start/restart VTL02B command line with program intact
+   144                        ; 29 bytes
+   145                        start:
+   146 00:D837: D8           	cld
+   147 00:D838: A2 FF        	ldx	 #nulstk
+   148 00:D83A: 9A           	txs			; reset the system stack pointer
+   149 00:D83B: 90 0D        	bcc	 user		; skip "OK" if carry clear
+   150 00:D83D: 20 6D D9     	jsr	 outnl
+   151 00:D840: A9 4F        	lda	 #'O'		; output \nOK\n to terminal
+   152 00:D842: 20 F5 DB     	jsr	 outch
+   153 00:D845: A9 4B        	lda	 #'K'
+   154 00:D847: 20 F5 DB     	jsr	 outch
+   155                        user:
+   156 00:D84A: 20 79 DB     	jsr	 newln		; input a line from the user
+   157 00:D84D: A2 C6        	ldx	 #pound		; cvbin destination = {#}
+   158 00:D84F: 20 49 DB     	jsr	 cvbin		; does line start with a number?
+   159 00:D852: D0 31        	bne	 stmnt		;	yes: handle program line
+   160                        			;	no: execute direct statement
+   161                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   162                        ; The main program execution loop
+   163                        ; 49 bytes
+   164                        eloop:
+   165 00:D854: 08           	php			; (cc: deferred, cs: direct)
+   166 00:D855: 20 77 D9     	jsr	 exec		; execute one VTL02B statement
+   167 00:D858: 28           	plp
+   168 00:D859: A5 C6        	lda	 pound		; (eq) if {#} = 0
+   169 00:D85B: 05 C7        	ora	 pound+1
+   170 00:D85D: 90 05        	bcc	 eloop2		; if direct mode and {#} = 0
+   171 00:D85F: F0 D6        	beq	 start		; then restart cmd prompt
+   172 00:D861: 18           	clc			; if direct mode and {#} <> 0
+   173 00:D862: D0 1B        	bne	 xloop		; then start execution @ {#}
+   174                        eloop2:
+   175 00:D864: 38           	sec			; if program mode and {#} = 0
+   176 00:D865: F0 18        	beq	 xloop		; then execute next line
+   177 00:D867: A5 C7        	lda	 pound+1	; (false branch condition)
+   178 00:D869: C5 D1        	cmp	 lparen+1
+   179 00:D86B: D0 06        	bne	 branch		; else has {#} changed?
+   180 00:D86D: A5 C6        	lda	 pound
+   181 00:D86F: C5 D0        	cmp	 lparen
+   182 00:D871: F0 0C        	beq	 xloop		;	no: execute next line (cs)
+   183                        branch:
+   184 00:D873: A4 D1        	ldy	 lparen+1
+   185 00:D875: A6 D0        	ldx	 lparen		;	yes: execute a VTL02B branch
+   186 00:D877: E8           	inx			;	(cs: forward, cc: backward)
+   187 00:D878: D0 01        	bne	 branch2	;	{!} = {(} + 1 (return ptr)
+   188 00:D87A: C8           	iny
+   189                        branch2:
+   190 00:D87B: 86 C2        	stx	 bang
+   191 00:D87D: 84 C3        	sty	 bang+1
+   192                        xloop:
+   193 00:D87F: 20 3B D9     	jsr	 findln		; find first/next line >= {#}
+   194 00:D882: C8           	iny			; point to left-side of statement
+   195 00:D883: D0 CF        	bne	 eloop		; execute statement at new {#}
+   196                        ;-----------------------------------------------------;
+   197                        ; Delete/insert/replace program line or list program
+   198                        ; 7 bytes
+   199                        stmnt:
+   200 00:D885: 18           	clc
+   201 00:D886: A5 C6        	lda	 pound		; {#} = 0?
+   202 00:D888: 05 C7        	ora	 pound+1	;	no: delete/insert/replace line
+   203 00:D88A: D0 14        	bne	 skp2		;	yes: list program to terminal
+   204                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   205                        ; List program to terminal and restart "OK" prompt
+   206                        ; entry:  Carry must be clear
+   207                        ; uses:	  findln, outch, prnum, prstr, {@ ( )}
+   208                        ; 20 bytes
+   209                        list_:
+   210 00:D88C: 20 3B D9     	jsr	 findln		; find program line >= {#}
+   211 00:D88F: A2 D0        	ldx	 #lparen	; line number for prnum
+   212 00:D891: 20 D3 D9     	jsr	 prnum		; print the line number
+   213 00:D894: A9 20        	lda	 #' '		; print a space instead of the
+   214 00:D896: 20 F5 DB     	jsr	 outch		; line length byte
+   215 00:D899: A9 00        	lda	 #0		; zero for delimiter
+   216 00:D89B: 20 49 D9     	jsr	 prstr		; print the rest of the line
+   217 00:D89E: B0 EC        	bcs	 list_		; (always taken)
+   218                        ;-----------------------------------------------------;
+   219                        ; Delete/insert program line and restart command prompt
+   220                        ; entry:  Carry must be clear
+   221                        ; uses:	  find, start, {@ > # & * (}, linbuf
+   222                        ; 155 bytes
+   223                        skp2:
+   224 00:D8A0: 98           	tya			; save linbuf offset pointer
+   225 00:D8A1: 48           	pha
+   226 00:D8A2: 20 9C DB     	jsr	 find		; point {@} to first line >= {#}
+   227 00:D8A5: B0 38        	bcs	 insrt
+   228 00:D8A7: A5 D0        	lda	 lparen
+   229 00:D8A9: C5 C6        	cmp	 pound		; if line doesn't already exist
+   230 00:D8AB: D0 32        	bne	 insrt		; then skip deletion process
+   231 00:D8AD: A5 D1        	lda	 lparen+1
+   232 00:D8AF: 45 C7        	eor	 pound+1
+   233 00:D8B1: D0 2C        	bne	 insrt
+   234 00:D8B3: AA           	tax			; x = 0
+   235 00:D8B4: B1 80        	lda	 (at),y
+   236 00:D8B6: A8           	tay			; y = length of line to delete
+   237 00:D8B7: 49 FF        	eor	 #-1
+   238 00:D8B9: 65 CC        	adc	 ampr		; {&} = {&} - y
+   239 00:D8BB: 85 CC        	sta	 ampr
+   240 00:D8BD: B0 02        	bcs	 delt
+   241 00:D8BF: C6 CD        	dec	 ampr+1
+   242                        delt:
+   243 00:D8C1: A5 80        	lda	 at
+   244 00:D8C3: 85 FC        	sta	 gthan		; {>} = {@}
+   245 00:D8C5: A5 81        	lda	 at+1
+   246 00:D8C7: 85 FD        	sta	 gthan+1
+   247                        delt2:
+   248 00:D8C9: A5 FC        	lda	 gthan
+   249 00:D8CB: C5 CC        	cmp	 ampr		; delete the line
+   250 00:D8CD: A5 FD        	lda	 gthan+1
+   251 00:D8CF: E5 CD        	sbc	 ampr+1
+   252 00:D8D1: B0 0C        	bcs	 insrt
+   253 00:D8D3: B1 FC        	lda	 (gthan),y
+   254 00:D8D5: 81 FC        	sta	 (gthan,x)
+   255 00:D8D7: E6 FC        	inc	 gthan
+   256 00:D8D9: D0 EE        	bne	 delt2
+   257 00:D8DB: E6 FD        	inc	 gthan+1
+   258 00:D8DD: 90 EA        	bcc	 delt2		; (always taken)
+   259                        insrt:
+   260 00:D8DF: 68           	pla
+   261 00:D8E0: AA           	tax			; x = linbuf offset pointer
+   262 00:D8E1: A5 C6        	lda	 pound
+   263 00:D8E3: 48           	pha			; push the new line number on
+   264 00:D8E4: A5 C7        	lda	 pound+1	;	the system stack
+   265 00:D8E6: 48           	pha
+   266 00:D8E7: A0 02        	ldy	 #2
+   267                        cntln:
+   268 00:D8E9: E8           	inx
+   269 00:D8EA: C8           	iny			; determine new line length in y
+   270 00:D8EB: BD FF 01     	lda	 linbuf-1,x ;	and push statement string on
+   271 00:D8EE: 48           	pha			;	the system stack
+   272 00:D8EF: D0 F8        	bne	 cntln
+   273 00:D8F1: C0 04        	cpy	 #4		; if empty line then skip the
+   274 00:D8F3: 90 43        	bcc	 jstart		;	insertion process
+   275 00:D8F5: AA           	tax			; x = 0
+   276 00:D8F6: 98           	tya
+   277 00:D8F7: 18           	clc
+   278 00:D8F8: 65 CC        	adc	 ampr		; calculate new program end
+   279 00:D8FA: 85 FC        	sta	 gthan		; {>} = {&} + y
+   280 00:D8FC: 8A           	txa
+   281 00:D8FD: 65 CD        	adc	 ampr+1
+   282 00:D8FF: 85 FD        	sta	 gthan+1
+   283 00:D901: A5 FC        	lda	 gthan
+   284 00:D903: C5 D4        	cmp	 star		; if {>} >= {*} then the program
+   285 00:D905: A5 FD        	lda	 gthan+1	;	won't fit in available RAM,
+   286 00:D907: E5 D5        	sbc	 star+1		;	so dump the stack and abort
+   287 00:D909: B0 2D        	bcs	 jstart		;	to the "OK" prompt
+   288                        slide:
+   289 00:D90B: A5 CC        	lda	 ampr
+   290 00:D90D: D0 02        	bne	 slide2
+   291 00:D90F: C6 CD        	dec	 ampr+1
+   292                        slide2:
+   293 00:D911: C6 CC        	dec	 ampr
+   294 00:D913: A5 CC        	lda	 ampr
+   295 00:D915: C5 80        	cmp	 at
+   296 00:D917: A5 CD        	lda	 ampr+1
+   297 00:D919: E5 81        	sbc	 at+1
+   298 00:D91B: 90 06        	bcc	 move		; slide open a gap inside the
+   299 00:D91D: A1 CC        	lda	 (ampr,x)	;	program just big enough to
+   300 00:D91F: 91 CC        	sta	 (ampr),y	;	hold the new line
+   301 00:D921: B0 E8        	bcs	 slide		; (always taken)
+   302                        move:
+   303 00:D923: 98           	tya
+   304 00:D924: AA           	tax			; x = new line length
+   305                        move2:
+   306 00:D925: 68           	pla			; pull the statement string and
+   307 00:D926: 88           	dey			;	the new line number and store
+   308 00:D927: 91 80        	sta	 (at),y		;	them in the program gap
+   309 00:D929: D0 FA        	bne	 move2
+   310 00:D92B: A0 02        	ldy	 #2
+   311 00:D92D: 8A           	txa
+   312 00:D92E: 91 80        	sta	 (at),y		; store length after line number
+   313 00:D930: A5 FC        	lda	 gthan
+   314 00:D932: 85 CC        	sta	 ampr		; {&} = {>}
+   315 00:D934: A5 FD        	lda	 gthan+1
+   316 00:D936: 85 CD        	sta	 ampr+1
+   317                        jstart:
+   318 00:D938: 4C 37 D8     	jmp	 start		; dump stack, restart cmd prompt
+   319                        ;-----------------------------------------------------;
+   320                        ; Point @[y] to the first/next program line >= {#}
+   321                        ; entry:  (cc): start search at beginning of program
+   322                        ;	  (cs): start search at next line
+   323                        ;	  ({@} -> beginning of current line)
+   324                        ; uses:	  find, jstart, prgm, {@ # & (}
+   325                        ; exit:	  if line not found then abort to "OK" prompt
+   326                        ;	  else {@} -> found line, {#} = {(} = actual
+   327                        ;		line number, y = 2, (cc)
+   328                        ; 14 bytes
+   329                        findln:
+   330 00:D93B: 20 9C DB     	jsr	 find		; find first/next line >= {#}
+   331 00:D93E: B0 F8        	bcs	 jstart		; if end then restart "OK" prompt
+   332 00:D940: A5 D0        	lda	 lparen
+   333 00:D942: 85 C6        	sta	 pound		; {#} = {(}
+   334 00:D944: A5 D1        	lda	 lparen+1
+   335 00:D946: 85 C7        	sta	 pound+1
+   336 00:D948: 60           	rts
+   337                        ;-----------------------------------------------------;
+   338                        ; {?="...} handler; called from 'exec'
+   339                        ; List line handler; called from 'list_'
+   340                        ; 2 bytes
+   341                        prstr:
+   342 00:D949: C8           	iny			; skip over the " or length byte
+   343 00:D94A: AA           	tax			; x = delimiter, fall through
+   344                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   345                        ; Print a string at @[y]
+   346                        ; x holds the delimiter char, which is skipped over,
+   347                        ;	not printed (a null byte is always a delimiter)
+   348                        ; If a key was pressed, it pauses for another keypress
+   349                        ;	before returning.  If either of those keys was a
+   350                        ;	ctrl-C, it dumps the stack and restarts the "OK"
+   351                        ;	prompt with the user program intact
+   352                        ; entry:  @[y] -> string, x = delimiter char
+   353                        ; uses:	  inch, inkey, jstart, outch, execrts
+   354                        ; exit:	  (normal) @[y] -> null or byte after delimiter
+   355                        ;	  (ctrl-C) dump the stack & restart "OK" prompt
+   356                        ; 39 bytes
+   357                        prmsg:
+   358 00:D94B: 8A           	txa
+   359 00:D94C: D1 80        	cmp	 (at),y		; found delimiter or null?
+   360 00:D94E: F0 0A        	beq	 prmsg2		; yes: finish up
+   361 00:D950: B1 80        	lda	 (at),y
+   362 00:D952: F0 06        	beq	 prmsg2
+   363 00:D954: 20 F5 DB     	jsr	 outch		; no: print char to terminal
+   364 00:D957: C8           	iny			;	and loop (with safety escape)
+   365 00:D958: 10 F1        	bpl	 prmsg
+   366                        prmsg2:
+   367 00:D95A: AA           	tax			; save closing delimiter
+   368 00:D95B: 20 DB DB     	jsr	 inkey		; any key = pause?
+   369 00:D95E: 90 03        	bcc	 prout		;	no: proceed
+   370 00:D960: 20 E5 DB     	jsr	 inch		;	yes: wait for another key
+   371                        prout:
+   372 00:D963: 8A           	txa			; retrieve closing delimiter
+   373 00:D964: F0 07        	beq	 outnl		; always \n after null delimiter
+   374 00:D966: 20 D1 DB     	jsr	 skpbyte	; skip over the delimiter
+   375 00:D969: C9 3B        	cmp	 #';'		; if trailing char is ';' then
+   376 00:D96B: F0 63        	beq	 execrts	;	suppress the \n
+   377                        outnl:
+   378 00:D96D: A9 0A        	lda	 #$0a		; LF to terminal
+   379 00:D96F: 20 F5 DB     	jsr	outch
+   380 00:D972: A9 0D        	lda	 #$0d		; CR to terminal
+   381                        
+   382                        joutch:
+   383 00:D974: 4C F5 DB     	jmp	 outch
+   384                        ;-----------------------------------------------------;
+   385                        ; Execute a (hopefully) valid VTL02B statement at @[y]
+   386                        ; entry:  @[y] -> left-side of statement
+   387                        ; uses:	  nearly everything
+   388                        ; exit:	  note to machine language subroutine {>=...}
+   389                        ;		users: no registers or variables are
+   390                        ;		required to be preserved except the system
+   391                        ;		stack pointer, the text base pointer {@},
+   392                        ;		and the original line number {(}
+   393                        ; if there is a {"} directly after the assignment
+   394                        ;	operator, the statement will execute as {?="...},
+   395                        ;	regardless of the variable named on the left side
+   396                        ; 90 bytes
+   397                        exec:
+   398 00:D977: 20 D2 DB     	jsr	 getbyte	; fetch left-side variable name
+   399 00:D97A: F0 54        	beq	 execrts	; do nothing if null statement
+   400 00:D97C: C8           	iny	 
+   401 00:D97D: A2 E0        	ldx	 #arg		; initialize argument pointer
+   402 00:D97F: 20 2F DB     	jsr	 convp		; arg[{0}] = address of left-side
+   403 00:D982: D0 06        	bne	 exec1		;	variable 
+   404 00:D984: A5 E0        	lda	 arg
+   405 00:D986: C9 D2        	cmp	 #rparen	; full line comment?
+   406 00:D988: F0 46        	beq	 execrts	;	yes: do nothing with the rest
+   407                        exec1:
+   408 00:D98A: 20 D2 DB     	jsr	 getbyte	; skip over assignment operator
+   409 00:D98D: 20 D1 DB     	jsr	 skpbyte	; is right-side a literal string?
+   410 00:D990: C9 22        	cmp	 #'"'		;	yes: print the string with
+   411 00:D992: F0 B5        	beq	 prstr		;	  trailing ';' check & return
+   412 00:D994: A2 E2        	ldx	 #arg+2		; point eval to arg[{1}]
+   413 00:D996: 20 FE D9     	jsr	 eval		; evaluate right-side in arg[{1}]
+   414 00:D999: A5 E2        	lda	 arg+2
+   415 00:D99B: A6 E1        	ldx	 arg+1		; was left-side an array element?
+   416 00:D99D: D0 1D        	bne	 exec3		;	yes: skip to default actions
+   417 00:D99F: A6 E0        	ldx	 arg
+   418 00:D9A1: E0 80        	cpx	 #at		; if (@=...} statement then poke
+   419 00:D9A3: D0 05        	bne	 exec1a		;	low half of arg[{1}] to ({<})
+   420 00:D9A5: A0 00        	ldy	 #0
+   421 00:D9A7: 91 F8        	sta	 (lthan),y
+   422 00:D9A9: 60           	rts
+   423                        exec1a:
+   424 00:D9AA: E0 C8        	cpx	 #dolr		; if {$=...} statement then print
+   425 00:D9AC: F0 C6        	beq	 joutch		;	arg[{1}] as ascii character
+   426 00:D9AE: E0 FC        	cpx	 #gthan
+   427 00:D9B0: D0 06        	bne	 exec2		; if {>=...} statement then call
+   428 00:D9B2: AA           	tax			;	user machine language routine
+   429 00:D9B3: A5 E3        	lda	 arg+3		;	with arg[{1}] in a, x regs
+   430 00:D9B5: 6C C4 00     	jmp	 (quote)	;	(MSB, LSB)
+   431                        exec2:
+   432 00:D9B8: E0 FE        	cpx	 #ques		; if {?=...} statement then print
+   433 00:D9BA: F0 15        	beq	 prnum0		;	arg[{1}] as unsigned decimal
+   434                        exec3:
+   435 00:D9BC: A0 00        	ldy	 #0
+   436 00:D9BE: 91 E0        	sta	 (arg),y
+   437 00:D9C0: 65 CF        	adc	 tick+1		; store arg[{1}] in the left-side
+   438 00:D9C2: 2A           	rol			;	variable
+   439 00:D9C3: AA           	tax
+   440 00:D9C4: C8           	iny
+   441 00:D9C5: A5 E3        	lda	 arg+3
+   442 00:D9C7: 91 E0        	sta	 (arg),y
+   443 00:D9C9: 65 CE        	adc	 tick		; pseudo-randomize {'}
+   444 00:D9CB: 2A           	rol
+   445 00:D9CC: 85 CF        	sta	 tick+1
+   446 00:D9CE: 86 CE        	stx	 tick
+   447                        execrts:
+   448 00:D9D0: 60           	rts
+   449                        ;-----------------------------------------------------;
+   450                        ; {?=...} handler; called by 'exec'
+   451                        ; 2 bytes
+   452                        prnum0:
+   453 00:D9D1: A2 E2        	ldx	 #arg+2		; x -> arg[{1}], fall through
+   454                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   455                        ; Print an unsigned decimal number (0..65535) in var[x]
+   456                        ; entry:  var[x] = number to print
+   457                        ; uses:	  div, outch, var[x+2], preserves original {%}
+   458                        ; exit:	  var[x] = 0, var[x+2] = 10
+   459                        ; 43 bytes
+   460                        prnum:
+   461 00:D9D3: A5 CA        	lda	 remn
+   462 00:D9D5: 48           	pha			; save {%}
+   463 00:D9D6: A5 CB        	lda	 remn+1
+   464 00:D9D8: 48           	pha
+   465 00:D9D9: A9 0A        	lda	 #10		; divisor = 10
+   466 00:D9DB: 95 02        	sta	 2,x
+   467 00:D9DD: A9 00        	lda	 #0
+   468 00:D9DF: 48           	pha			; null delimiter for print
+   469 00:D9E0: 95 03        	sta	 3,x		; repeat {
+   470                        prnum2:
+   471 00:D9E2: 20 9A DA     	jsr	 div		;	divide var[x] by 10
+   472 00:D9E5: A5 CA        	lda	 remn
+   473 00:D9E7: 09 30        	ora	 #'0'		;	convert remainder to ascii
+   474 00:D9E9: 48           	pha			;	stack digits in ascending
+   475 00:D9EA: B5 00        	lda	 0,x		;	order ('0' for zero)
+   476 00:D9EC: 15 01        	ora	 1,x
+   477 00:D9EE: D0 F2        	bne	 prnum2		; } until var[x] is 0
+   478 00:D9F0: 68           	pla
+   479                        prnum3:
+   480 00:D9F1: 20 F5 DB     	jsr	 outch		; print digits in descending
+   481 00:D9F4: 68           	pla			;	order until delimiter is
+   482 00:D9F5: D0 FA        	bne	 prnum3		;	encountered
+   483 00:D9F7: 68           	pla
+   484 00:D9F8: 85 CB        	sta	 remn+1		; restore {%}
+   485 00:D9FA: 68           	pla
+   486 00:D9FB: 85 CA        	sta	 remn
+   487 00:D9FD: 60           	rts
+   488                        ;-----------------------------------------------------;
+   489                        ; Evaluate a (hopefully) valid VTL02 expression at @[y]
+   490                        ;	and place its calculated value in arg[x]
+   491                        ; A VTL02B expression is defined as a string of one or
+   492                        ;	more terms, separated by operators and terminated
+   493                        ;	with a null or an unmatched right parenthesis
+   494                        ; A term is defined as a variable name, a decimal
+   495                        ;	constant, or a parenthesized sub-expression; terms
+   496                        ;	are evaluated strictly from left to right
+   497                        ; A variable name is defined as a user variable, an
+   498                        ;	array element expression enclosed in {: )}, or a
+   499                        ;	system variable (which may have side-effects)
+   500                        ; entry:  @[y] -> expression text, x -> argument
+   501                        ; uses:	  getval, oper, {@}, argument stack area
+   502                        ; exit:	  arg[x] = result, @[y] -> next text
+   503                        ; 31 bytes
+   504                        eval:
+   505 00:D9FE: A9 00        	lda	 #0
+   506 00:DA00: 95 00        	sta	 0,x		; start evaluation by simulating
+   507 00:DA02: 95 01        	sta	 1,x		;	{0+expression}
+   508 00:DA04: A9 2B        	lda	 #'+'
+   509                        notdn:
+   510 00:DA06: 48           	pha			; stack alleged operator
+   511 00:DA07: E8           	inx			; advance the argument stack
+   512 00:DA08: E8           	inx			;	pointer
+   513 00:DA09: 20 1D DA     	jsr	 getval		; arg[x+2] = value of next term
+   514 00:DA0C: CA           	dex
+   515 00:DA0D: CA           	dex
+   516 00:DA0E: 68           	pla			; retrieve and apply the operator
+   517 00:DA0F: 20 70 DA     	jsr	 oper		;	to arg[x], arg[x+2]
+   518 00:DA12: 20 D2 DB     	jsr	 getbyte	; end of expression?
+   519 00:DA15: F0 05        	beq	 evalrts	;	(null or right parenthesis)
+   520 00:DA17: C8           	iny
+   521 00:DA18: C9 29        	cmp	 #')'		;	no: skip over the operator
+   522 00:DA1A: D0 EA        	bne	 notdn		;	  and continue the evaluation
+   523                        evalrts:
+   524 00:DA1C: 60           	rts			;	yes: return with final result
+   525                        ;-----------------------------------------------------;
+   526                        ; Get numeric value of the term at @[y] into var[x]
+   527                        ; Some examples of valid terms:	 123, $, H, (15-:J)/?)
+   528                        ; 83 bytes
+   529                        getval:
+   530 00:DA1D: 20 49 DB     	jsr	 cvbin		; decimal number at @[y]?
+   531 00:DA20: D0 4D        	bne	 getrts		;	yes: return with it in var[x]
+   532 00:DA22: 20 D2 DB     	jsr	 getbyte
+   533 00:DA25: C8           	iny
+   534 00:DA26: C9 3F        	cmp	 #'?'		; user line input?
+   535 00:DA28: D0 17        	bne	 getval2
+   536 00:DA2A: 98           	tya			;	yes:
+   537 00:DA2B: 48           	pha
+   538 00:DA2C: A5 80        	lda	 at		;	  save @[y]
+   539 00:DA2E: 48           	pha			;	  (current expression ptr)
+   540 00:DA2F: A5 81        	lda	 at+1
+   541 00:DA31: 48           	pha
+   542 00:DA32: 20 7C DB     	jsr	 inln		; input expression from user
+   543 00:DA35: 20 FE D9     	jsr	 eval		; evaluate, var[x] = result
+   544 00:DA38: 68           	pla
+   545 00:DA39: 85 81        	sta	 at+1
+   546 00:DA3B: 68           	pla
+   547 00:DA3C: 85 80        	sta	 at		; restore @[y]
+   548 00:DA3E: 68           	pla
+   549 00:DA3F: A8           	tay
+   550 00:DA40: 60           	rts			; skip over "?" and return
+   551                        getval2:
+   552 00:DA41: C9 24        	cmp	 #'$'		; user char input?
+   553 00:DA43: D0 05        	bne	 getval2a
+   554 00:DA45: 20 E5 DB     	jsr	 inch		;	yes: input one char
+   555 00:DA48: B0 23        	bcs	 getval5	;	  (always taken)
+   556                        getval2a:
+   557 00:DA4A: C9 40        	cmp	 #'@'		; memory access?
+   558 00:DA4C: D0 0A        	bne	 getval3
+   559 00:DA4E: 84 C8        	sty	 dolr		;	yes:
+   560 00:DA50: A0 00        	ldy	 #0
+   561 00:DA52: B1 F8        	lda	 (lthan),y	;	  access memory byte at ({<})
+   562 00:DA54: A4 C8        	ldy	 dolr
+   563 00:DA56: D0 15        	bne	 getval5	;	  (always taken)
+   564                        getval3:
+   565 00:DA58: C9 28        	cmp	 #'('		; sub-expression?
+   566 00:DA5A: F0 A2        	beq	 eval		;	yes: evaluate it recursively
+   567 00:DA5C: 20 2F DB     	jsr	 convp		;	no: first set var[x] to the
+   568 00:DA5F: A1 00        	lda	 (0,x)		;	  named variable's address,
+   569 00:DA61: 48           	pha			;	  then replace that address
+   570 00:DA62: F6 00        	inc	 0,x		;	  with the variable's actual
+   571 00:DA64: D0 02        	bne	 getval4	;	  value before returning
+   572 00:DA66: F6 01        	inc	 1,x
+   573                        getval4:
+   574 00:DA68: A1 00        	lda	 (0,x)
+   575 00:DA6A: 95 01        	sta	 1,x		; store high-byte of term value
+   576 00:DA6C: 68           	pla
+   577                        getval5:
+   578 00:DA6D: 95 00        	sta	 0,x		; store low-byte of term value
+   579                        getrts:
+   580 00:DA6F: 60           	rts
+   581                        ;-----------------------------------------------------;
+   582                        ; Apply the binary operator in a to var[x] and var[x+2]
+   583                        ; Valid VTL02B operators are {+ - * / & | ^ < = >}
+   584                        ; {>} is defined as greater than _or_equal_
+   585                        ; An undefined operator will be interpreted as one of
+   586                        ;	the comparison operators
+   587                        ; 190 bytes
+   588                        oper:
+   589 00:DA70: C9 2A        	cmp	 #'*'		; multiplication operator?
+   590 00:DA72: D0 22        	bne	 oper2		;	no: next case
+   591                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   592                        ; 16-bit unsigned multiply routine
+   593                        ;	overflow is ignored/discarded
+   594                        ;	var[x] *= var[x+2], var[x+2] = 0, {>} is modified
+   595                        ;
+   596                        mul:
+   597 00:DA74: B5 00        	lda	 0,x
+   598 00:DA76: 85 FC        	sta	 gthan
+   599 00:DA78: B5 01        	lda	 1,x		; {>} = var[x]
+   600 00:DA7A: 85 FD        	sta	 gthan+1
+   601 00:DA7C: A9 00        	lda	 #0
+   602 00:DA7E: 95 00        	sta	 0,x		; var[x] = 0
+   603 00:DA80: 95 01        	sta	 1,x
+   604                        mul2:
+   605 00:DA82: 46 FD        	lsr	 gthan+1
+   606 00:DA84: 66 FC        	ror	 gthan		; {>} /= 2
+   607 00:DA86: 90 03        	bcc	 mul3
+   608 00:DA88: 20 C9 DA     	jsr	 plus		; form the product in var[x]
+   609                        mul3:
+   610 00:DA8B: 16 02        	asl	 2,x
+   611 00:DA8D: 36 03        	rol	 3,x		; left-shift var[x+2]
+   612 00:DA8F: B5 02        	lda	 2,x
+   613 00:DA91: 15 03        	ora	 3,x		; loop until var[x+2] = 0
+   614 00:DA93: D0 ED        	bne	 mul2
+   615 00:DA95: 60           	rts
+   616                        oper2:
+   617 00:DA96: C9 2F        	cmp	 #'/'		; division operator?
+   618 00:DA98: D0 2B        	bne	 oper3		;	no: next case
+   619                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   620                        ; 16-bit unsigned division routine
+   621                        ;	var[x] /= var[x+2], {%} = remainder, {>} modified
+   622                        ;	var[x] /= 0 produces {%} = var[x], var[x] = 65535
+   623                        ;
+   624                        div:
+   625 00:DA9A: A9 00        	lda	 #0
+   626 00:DA9C: 85 CA        	sta	 remn		; {%} = 0
+   627 00:DA9E: 85 CB        	sta	 remn+1
+   628 00:DAA0: A9 10        	lda	 #16
+   629 00:DAA2: 85 FC        	sta	 gthan		; {>} = loop counter
+   630                        div1:
+   631 00:DAA4: 16 00        	asl	 0,x		; var[x] is gradually replaced
+   632 00:DAA6: 36 01        	rol	 1,x		;	with the quotient
+   633 00:DAA8: 26 CA        	rol	 remn		; {%} is gradually replaced
+   634 00:DAAA: 26 CB        	rol	 remn+1		;	with the remainder
+   635 00:DAAC: A5 CA        	lda	 remn
+   636 00:DAAE: D5 02        	cmp	 2,x
+   637 00:DAB0: A5 CB        	lda	 remn+1		; partial remainder >= var[x+2]?
+   638 00:DAB2: F5 03        	sbc	 3,x
+   639 00:DAB4: 90 0A        	bcc	 div2
+   640 00:DAB6: 85 CB        	sta	 remn+1		;	yes: update the partial
+   641 00:DAB8: A5 CA        	lda	 remn		;	  remainder and set the
+   642 00:DABA: F5 02        	sbc	 2,x		;	  low bit in the partial
+   643 00:DABC: 85 CA        	sta	 remn		;	  quotient
+   644 00:DABE: F6 00        	inc	 0,x
+   645                        div2:
+   646 00:DAC0: C6 FC        	dec	 gthan
+   647 00:DAC2: D0 E0        	bne	 div1		; loop 16 times
+   648 00:DAC4: 60           	rts
+   649                        oper3:
+   650 00:DAC5: C9 2B        	cmp	 #'+'		; addition operator?
+   651 00:DAC7: D0 0D        	bne	 oper4		;	no: next case
+   652                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   653                        plus:
+   654 00:DAC9: 18           	clc			; var[x] += var[x+2]
+   655 00:DACA: CA           	dex
+   656 00:DACB: 20 CF DA     	jsr	 plus2
+   657 00:DACE: E8           	inx
+   658                        plus2:
+   659 00:DACF: B5 01        	lda	 1,x
+   660 00:DAD1: 75 03        	adc	 3,x
+   661 00:DAD3: 95 01        	sta	 1,x
+   662 00:DAD5: 60           	rts
+   663                        oper4:
+   664 00:DAD6: CA           	dex			; (factored from the following ops)
+   665 00:DAD7: C9 2D        	cmp	 #'-'		; subtraction operator?
+   666 00:DAD9: D0 0C        	bne	 oper5		;	no: next case
+   667                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   668                        minus:
+   669 00:DADB: 38           	sec			; var[x] -= var[x+2]
+   670 00:DADC: 20 E0 DA     	jsr	 minus2
+   671 00:DADF: E8           	inx
+   672                        minus2:
+   673 00:DAE0: B5 01        	lda	 1,x
+   674 00:DAE2: F5 03        	sbc	 3,x
+   675 00:DAE4: 95 01        	sta	 1,x
+   676 00:DAE6: 60           	rts
+   677                        oper5:
+   678 00:DAE7: C9 26        	cmp	 #'&'		; bit-wise and operator?
+   679 00:DAE9: D0 0A        	bne	 oper6		;	no: next case
+   680                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   681 00:DAEB: 20 EF DA     	jsr	 and_2		; var[x] &= var[x+2]
+   682 00:DAEE: E8           	inx
+   683                        and_2:
+   684 00:DAEF: B5 01        	lda	 1,x
+   685 00:DAF1: 35 03        	and	 3,x
+   686 00:DAF3: B0 37        	bcs	 oper8e		; (always taken)
+   687                        oper6:
+   688 00:DAF5: C9 21        	cmp	 #OP_OR		; bit-wise or operator?
+   689 00:DAF7: D0 0A        	bne	 oper7		;	no: next case
+   690                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   691 00:DAF9: 20 FD DA     	jsr	 or_2		; var[x] |= var[x+2]
+   692 00:DAFC: E8           	inx
+   693                        or_2:
+   694 00:DAFD: B5 01        	lda	 1,x
+   695 00:DAFF: 15 03        	ora	 3,x
+   696 00:DB01: B0 29        	bcs	 oper8e		; (always taken)
+   697                        oper7:
+   698 00:DB03: C9 5E        	cmp	 #'^'		; bit-wise xor operator?
+   699 00:DB05: D0 0A        	bne	 oper8		;	no: next case
+   700                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   701 00:DB07: 20 0B DB     	jsr	 xor_2		; var[x] ^= var[x+2]
+   702 00:DB0A: E8           	inx
+   703                        xor_2:
+   704 00:DB0B: B5 01        	lda	 1,x
+   705 00:DB0D: 55 03        	eor	 3,x
+   706 00:DB0F: B0 1B        	bcs	 oper8e		; (always taken)
+   707                        ;-----------------------------------------------------;
+   708                        ; Apply comparison operator in a to var[x] and var[x+2]
+   709                        ;	and place result in var[x] (1: true, 0: false)
+   710                        ;
+   711                        oper8:
+   712 00:DB11: 49 3C        	eor	 #'<'		; 0: '<'  1: '='  2: '>'
+   713 00:DB13: 85 FC        	sta	 gthan		; Other values in a are undefined,
+   714 00:DB15: 20 DB DA     	jsr	 minus		;	but _will_ produce some result
+   715 00:DB18: C6 FC        	dec	 gthan		; var[x] -= var[x+2]
+   716 00:DB1A: D0 05        	bne	 oper8b		; equality test?
+   717 00:DB1C: 15 00        	ora	 0,x		;	yes: 'or' high and low bytes
+   718 00:DB1E: F0 04        	beq	 oper8c		;	  (cs) if 0
+   719 00:DB20: 18           	clc			;	  (cc) if not 0
+   720                        oper8b:
+   721 00:DB21: A5 FC        	lda	 gthan
+   722 00:DB23: 2A           	rol
+   723                        oper8c:
+   724 00:DB24: 69 00        	adc	 #0
+   725 00:DB26: 29 01        	and	 #1		; var[x] = 1 (true), 0 (false)
+   726                        oper8d:
+   727 00:DB28: 95 00        	sta	 0,x		; var[x] -> simple variable
+   728 00:DB2A: A9 00        	lda	 #0
+   729                        oper8e:
+   730 00:DB2C: 95 01        	sta	 1,x
+   731 00:DB2E: 60           	rts
+   732                        ;-----------------------------------------------------;
+   733                        ; Set var[x] to the address of the variable named in a
+   734                        ; entry:  a holds variable name, @[y] -> text holding
+   735                        ;	  array index expression (if a = ':')
+   736                        ; uses:	  plus, eval, oper8d, {@ &}
+   737                        ; exit:	  (eq): var[x] -> variable, @[y] unchanged
+   738                        ;	  (ne): var[x] -> array element,
+   739                        ;		@[y] -> following text
+   740                        ; 26 bytes
+   741                        convp:
+   742 00:DB2F: C9 3A        	cmp	 #':'		; array element?
+   743 00:DB31: D0 11        	bne	 simple		;	no: var[x] -> simple variable
+   744 00:DB33: 20 FE D9     	jsr	 eval		;	yes: evaluate array index at
+   745 00:DB36: 16 00        	asl	 0,x		;	  @[y] and advance y
+   746 00:DB38: 36 01        	rol	 1,x
+   747 00:DB3A: A5 CC        	lda	 ampr		;	  var[x] -> array element
+   748 00:DB3C: 95 02        	sta	 2,x		;		at address 2*index+&
+   749 00:DB3E: A5 CD        	lda	 ampr+1
+   750 00:DB40: 95 03        	sta	 3,x
+   751 00:DB42: D0 85        	bne	 plus		;	  (always taken)
+   752                        ; The following section is designed to translate the
+   753                        ;	named simple variable from its ASCII value to its
+   754                        ;	zero-page address.	In this case, 'A' translates
+   755                        ;	to $82, '!' translates to $c2, etc.	 The method
+   756                        ;	employed must correspond to the zero-page equates
+   757                        ;	above, or strange and not-so-wonderful bugs will
+   758                        ;	befall the weary traveller on his or her porting
+   759                        ;	journey.
+   760                        simple:
+   761 00:DB44: 0A           	asl			; form simple variable address
+   762 00:DB45: 09 80        	ora	 #$80		; mapping function is (a*2)|128
+   763 00:DB47: 30 DF        	bmi	 oper8d		; (always taken)
+   764                        ;-----------------------------------------------------;
+   765                        ; If text at @[y] is a decimal constant, translate it
+   766                        ;	into var[x] (discarding any overflow) and update y
+   767                        ; entry:  @[y] -> text containing possible constant
+   768                        ;	  Leading space characters are skipped, but
+   769                        ;		any spaces encountered after a conversion
+   770                        ;		has begun will end the conversion.
+   771                        ; uses:	  mul, plus, var[x], var[x+2], {@ > ?}
+   772                        ; exit:	  (ne): var[x] = constant, @[y] -> next text
+   773                        ;	  (eq): var[x] = 0, @[y] unchanged
+   774                        ;	  (cs): in all but the truly strangest cases
+   775                        ; 41 bytes
+   776                        cvbin:
+   777 00:DB49: A9 00        	lda	 #0
+   778 00:DB4B: 95 00        	sta	 0,x		; var[x] = 0
+   779 00:DB4D: 95 01        	sta	 1,x
+   780 00:DB4F: 95 03        	sta	 3,x
+   781 00:DB51: 20 D2 DB     	jsr	 getbyte	; skip any leading spaces
+   782 00:DB54: 84 FE        	sty	 ques		; save pointer
+   783                        cvbin2:
+   784 00:DB56: B1 80        	lda	 (at),y		; grab a char
+   785 00:DB58: 49 30        	eor	 #$30		; if char at @[y] is not a
+   786 00:DB5A: C9 0A        	cmp	 #10		;	decimal digit then stop
+   787 00:DB5C: B0 11        	bcs	 cvbin3		;	the conversion
+   788 00:DB5E: 48           	pha			; save decimal digit
+   789 00:DB5F: A9 0A        	lda	 #10
+   790 00:DB61: 95 02        	sta	 2,x
+   791 00:DB63: 20 74 DA     	jsr	 mul		; var[x] *= 10
+   792 00:DB66: 68           	pla			; retrieve decimal digit
+   793 00:DB67: 95 02        	sta	 2,x
+   794 00:DB69: 20 C9 DA     	jsr	 plus		; var[x] += digit
+   795 00:DB6C: C8           	iny			; loop for more digits
+   796 00:DB6D: 10 E7        	bpl	 cvbin2		;	(with safety escape)
+   797                        cvbin3:
+   798 00:DB6F: C4 FE        	cpy	 ques		; (ne) if valid, (eq) if not
+   799 00:DB71: 60           	rts
+   800                        ;-----------------------------------------------------;
+   801                        ; Accept input line from user and store it in linbuf,
+   802                        ;	zero-terminated (allows very primitive edit/cancel)
+   803                        ; entry:  (jsr to inln or newln, not inln6)
+   804                        ; uses:	  linbuf, inch, outcr, {@}
+   805                        ; exit:	  @[y] -> linbuf
+   806                        ; 42 bytes
+   807                        inln6:
+   808 00:DB72: C9 1B        	cmp	 #ESC		; escape?
+   809 00:DB74: F0 03        	beq	 newln		;	yes: discard entire line
+   810 00:DB76: C8           	iny			; line limit exceeded?
+   811 00:DB77: 10 10        	bpl	 inln2		;	no: keep going
+   812                        newln:
+   813 00:DB79: 20 6D D9     	jsr	 outnl		;	yes: discard entire line
+   814                        inln:
+   815 00:DB7C: A0 00        	ldy	 #$FF&linbuf	; entry point: start a fresh line
+   816 00:DB7E: 84 80        	sty	 at		; {@} -> input line buffer
+   817 00:DB80: A0 02        	ldy	 #linbuf>>8
+   818 00:DB82: 84 81        	sty	 at+1
+   819 00:DB84: A0 01        	ldy	 #1
+   820                        inln5:
+   821 00:DB86: 88           	dey
+   822 00:DB87: 30 F0        	bmi	 newln
+   823                        inln2:
+   824 00:DB89: 20 E5 DB     	jsr	 inch		; get (and echo) one key press
+   825 00:DB8C: C9 08        	cmp	 #BS		; backspace?
+   826 00:DB8E: F0 F6        	beq	 inln5		;	yes: delete previous char
+   827 00:DB90: C9 0D        	cmp	 #$0d		; cr?
+   828 00:DB92: D0 02        	bne	 inln3
+   829 00:DB94: A9 00        	lda	 #0		;	yes: replace with null
+   830                        inln3:
+   831 00:DB96: 91 80        	sta	 (at),y		; put key in linbuf
+   832 00:DB98: D0 D8        	bne	 inln6		; continue if not null
+   833 00:DB9A: A8           	tay			; y = 0
+   834 00:DB9B: 60           	rts
+   835                        ;-----------------------------------------------------;
+   836                        ; Find the first/next stored program line >= {#}
+   837                        ; entry:  (cc): start search at program beginning
+   838                        ;	  (cs): start search at next line after {@}
+   839                        ; uses:	  prgm, {@ # & (}
+   840                        ; exit:	  (cs): {@} >= {&}, {(} = garbage, y = 2
+   841                        ;	  (cc): {@} -> found line, {(} = actual line
+   842                        ;		number, y = 2
+   843                        ; 53 bytes
+   844                        find:
+   845 00:DB9C: B0 08        	bcs	 findnxt	; cs: search begins at next line
+   846 00:DB9E: A9 08        	lda	 #prgm>>8		; cc: search begins at first line
+   847 00:DBA0: 85 81        	sta	 at+1
+   848 00:DBA2: A9 00        	lda	 #$FF&prgm		; {@} -> first program line
+   849 00:DBA4: 90 09        	bcc	 find1st	; (always taken)
+   850                        findnxt:
+   851 00:DBA6: 20 C6 DB     	jsr	 checkat	; if {@} >= {&} then the search
+   852 00:DBA9: B0 25        	bcs	 findrts	;	failed, so return with (cs)
+   853 00:DBAB: A5 80        	lda	 at
+   854 00:DBAD: 71 80        	adc	 (at),y		; {@} += length of current line
+   855                        find1st:
+   856 00:DBAF: 85 80        	sta	 at
+   857 00:DBB1: 90 02        	bcc	 getlpar
+   858 00:DBB3: E6 81        	inc	 at+1
+   859                        getlpar:
+   860 00:DBB5: A0 00        	ldy	 #0
+   861 00:DBB7: B1 80        	lda	 (at),y
+   862 00:DBB9: 85 D0        	sta	 lparen		; {(} = current line number
+   863 00:DBBB: C5 C6        	cmp	 pound		;	(invalid if {@} >= {&}, but
+   864 00:DBBD: C8           	iny			;	we'll catch that later...)
+   865 00:DBBE: B1 80        	lda	 (at),y
+   866 00:DBC0: 85 D1        	sta	 lparen+1	; if {(} < {#} then try the next
+   867 00:DBC2: E5 C7        	sbc	 pound+1	;	program line
+   868 00:DBC4: 90 E0        	bcc	 findnxt	; else the search is complete
+   869                        checkat:
+   870 00:DBC6: A0 02        	ldy	 #2
+   871 00:DBC8: A5 80        	lda	 at		; {@} >= {&} (end of program)?
+   872 00:DBCA: C5 CC        	cmp	 ampr
+   873 00:DBCC: A5 81        	lda	 at+1		;	yes: search failed (cs)
+   874 00:DBCE: E5 CD        	sbc	 ampr+1		;	no: clear carry
+   875                        findrts:
+   876 00:DBD0: 60           	rts
+   877                        ;-----------------------------------------------------;
+   878                        ; Fetch a byte at @[y], ignoring space characters
+   879                        ; 10 bytes
+   880                        skpbyte:
+   881 00:DBD1: C8           	iny			; skip over current char
+   882                        getbyte: 
+   883 00:DBD2: B1 80        	lda	 (at),y
+   884 00:DBD4: 49 20        	eor	 #' '
+   885 00:DBD6: F0 F9        	beq	 skpbyte	; skip over any space char(s)
+   886 00:DBD8: 49 20        	eor	 #' '		; set flags for char loaded
+   887 00:DBDA: 60           	rts
+   888                        ;-----------------------------------------------------;
+   889                        ;;;
+   890                        ;;;     Console Driver
+   891                        ;;;
+   892             00000001   CONIN_NO	equ	1
+   893             00000002   CONOUT_NO	equ	2
+   894             00000003   CONST_NO	equ	3
+   895                        
+   896                        ;-----------------------------------------------------;
+   897                        ; Check for user keypress and return with (cc) if none
+   898                        ;	is pending.	 Otherwise, fall through to inch
+   899                        ;	and return with (cs).
+   900                        inkey:
+   901 00:DBDB: 00 03        	BRK	CONST_NO
+   902 00:DBDD: 29 01        	and	#1
+   903 00:DBDF: F0 02        	beq	no_key
+   904 00:DBE1: 38           	sec
+   905 00:DBE2: 60           	rts
+   906                        no_key
+   907 00:DBE3: 18           	clc
+   908 00:DBE4: 60           	rts
+   909                        
+   910                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   911                        ; Read key from stdin into a, echo, (cs)
+   912                        ; Dump stack and abort to "OK" prompt if ctrl-C
+   913                        ; 16 bytes
+   914                        inch:
+   915 00:DBE5: 84 C8        	sty	 dolr		; save y reg
+   916 00:DBE7: 00 01        	BRK	CONIN_NO
+   917 00:DBE9: A4 C8        	ldy	 dolr		; restore y reg
+   918 00:DBEB: 29 7F        	and	 #$7f		; strip apple's hi-bit
+   919 00:DBED: C9 0D        	cmp	#$0d
+   920 00:DBEF: F0 0B        	beq	crlf_out
+   921 00:DBF1: C9 03        	cmp	 #$03		; ctrl-C?
+   922 00:DBF3: F0 04        	beq	 bstart		;	no: echo to terminal
+   923                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   924                        ; Print ascii char in a to stdout, (cs)
+   925                        outch:
+   926 00:DBF5: 00 02        	BRK	CONOUT_NO	; ECHO BACK
+   927                        ccret
+   928 00:DBF7: 38           	sec			; (by contract with callers)
+   929                        strout_end
+   930 00:DBF8: 60           	rts
+   931                        
+   932                        bstart
+   933 00:DBF9: 4C 37 D8     	jmp	 start		;	yes: abort to "OK" prompt
+   934                        
+   935                        crlf_out
+   936 00:DBFC: 20 6D D9     	jsr	outnl
+   937 00:DBFF: 80 F6        	bra	ccret
+   938                        	
+   939                        ; opening message
+   940                        open_msg
+   941 00:DC01: A2 00        	ldx	#0
+   942                        str_loop
+   943 00:DC03: BD 0F DC     	lda	opmsg,x
+   944 00:DC06: F0 F0        	beq	strout_end
+   945 00:DC08: 20 F5 DB     	jsr	outch
+   946 00:DC0B: E8           	inx
+   947 00:DC0C: 80 F5        	bra	str_loop
+   948 00:DC0E: 60           	rts
+   949                        	
+   950 00:DC0F: 0D 0A 56 54  opmsg	db	13,10,"VTL-2 for the 6502 (VTL02B)"
+       00:DC13: 4C 2D 32 20 
+       00:DC17: 66 6F 72 20 
+       00:DC1B: 74 68 65 20 
+       00:DC1F: 36 35 30 32 
+       00:DC23: 20 28 56 54 
+       00:DC27: 4C 30 32 42 
+       00:DC2B: 29 
+   951 00:DC2C: 20 4D 45 5A  	db	" MEZW65C_RAM Edition",13, 10
+       00:DC30: 57 36 35 43 
+       00:DC34: 5F 52 41 4D 
+       00:DC38: 20 45 64 69 
+       00:DC3C: 74 69 6F 6E 
+       00:DC40: 0D 0A 
+   952 00:DC42: 70 72 6F 67  	db	"program area : $0800-$D7FF",13,10,0
+       00:DC46: 72 61 6D 20 
+       00:DC4A: 61 72 65 61 
+       00:DC4E: 20 3A 20 24 
+       00:DC52: 30 38 30 30 
+       00:DC56: 2D 24 44 37 
+       00:DC5A: 46 46 0D 0A 
+       00:DC5E: 00 
+   953                        
+   954                        	end
+
+
+      Lines assembled: 954
+      Errors: 0

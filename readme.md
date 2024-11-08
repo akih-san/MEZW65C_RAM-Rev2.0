@@ -120,7 +120,7 @@ Rev2.0では、プログラムを起動する際に、一時的にUART入力を�
 必要になります。<br>
 <br>
 
-![photo 10](photo/nmi.png)
+![photo 10](photo/NMI.png)
 
 # ７．４種類のインタプリタが動作
 <br>

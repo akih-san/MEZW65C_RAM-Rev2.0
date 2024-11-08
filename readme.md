@@ -76,23 +76,20 @@ Rev2.0は、実行させるプログラムのファイル情報でネイティ�
 手動でリロードすることも出来ます。ほとんどの場合、モニタプログラムでユーザー作成のプログ<br>
 ラムをデバッグする時に、使用することでしょう。<br>
 <br>
+
 # クロス開発環境
-<br>
 ・WDCTools<br>
-<br>
 The Western Design Center, Inc.が提供しているアセンブラ、cコンパイラを含む統合開発環境<br>
 https://wdc65xx.com/WDCTools<br>
 <br>
 ・CC65<br>
-<br>
 フリーで現役の6502用Cコンパイラです。<br>
 https://cc65.github.io/<br>
 <br>
 ・bin2mot.exe、mot2bin.exe<br>
-<br>
 モトローラフォーマットのヘキサファイルとバイナリファイル相互変換ツール<br>
 ソースとバイナリファイルは、ここから入手できます。<br>
-https://sourceforge.net/projects/bin2mot/files/
+https://sourceforge.net/projects/bin2mot/files/<br>
 <br>
 ・xa (xa65) Version 2.4.1 <br>
 6502用の2 パス ポータブル クロス アセンブラです。<br>

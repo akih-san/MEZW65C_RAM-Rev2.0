@@ -2,12 +2,12 @@
 # MEZW65C_RAM ファームウェア Rev2.0
 ![photo 1](photo/Rev2.0_Opening.png)
 
-- [ファームウェアRev2.0コマンド]()<br>
-- [W65C816モニターコマンド]()<br>
-- [W65C02モニターコマンド]()<br>
-- [EhBASIC]()<br>
+- [ファームウェアRev2.0コマンド](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/src)<br>
+- [W65C816モニターコマンド](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/mon16)<br>
+- [W65C02モニターコマンド](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/mon02)<br>
+- [EhBASIC](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/basic/BIOSCALL)<br>
 - [VTL2](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/vtl2)<br>
-- [豊四季タイニーベーシック]()<br>
+- [豊四季タイニーベーシック](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/ttbasic)<br>
 - [GAMEインタープリタ](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/GAME-C)<br>
 <br>
 

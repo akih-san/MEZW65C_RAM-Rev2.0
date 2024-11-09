@@ -29,5 +29,5 @@ GAME-Cは、「たけおか ぼちぼち日記」さんがＣ言語で記述さ�
   エミュレーションモードと、ネイティブモードでそれぞれ動作するバイナリを用意しています。<br>
 <br>
 
-- [GAMEインタプリタ文法]()<br>
+- [GAMEインタプリタ文法](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/GAME-C/GMAE%20syntax.txt)<br>
 

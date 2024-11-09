@@ -1,0 +1,214 @@
+ca65 V2.19 - Git 03d824e
+Main file   : .\gm_stup.s
+Current file: .\gm_stup.s
+
+000000r 1               	.setcpu		"65C02"
+000000r 1               ;;;
+000000r 1               ;;;	GAME Language interpreter ,32bit Takeoka ver.
+000000r 1               ;;;	by Shozo TAKEOKA (http://www.takeoka.org/~take/ )
+000000r 1               ;;;
+000000r 1               ;;;	Modified by Akihito Honda at February 2023.
+000000r 1               ;;;
+000000r 1               ;;;	- This source code was inpremented for MEZW65C_RAM
+000000r 1               ;;;
+000000r 1               
+000000r 1               ;;;
+000000r 1               ;;; File header template (BIOS CALL version)
+000000r 1               ;;;
+000000r 1               
+000000r 1               ;PRG_B	=	$C400
+000000r 1               WORK_B	=	$400
+000000r 1               WORK_END	=	$E8FF
+000000r 1               
+000000r 1               USER_SP	=	$BF
+000000r 1               
+000000r 1               ZERO_B	=	$00
+000000r 1               
+000000r 1               ;-----------------------------------------------------
+000000r 1               ;ZERO page
+000000r 1               ; NOTE
+000000r 1               ;  Since ZERO page is shared with the monitor program,
+000000r 1               ;  you must use a free area.
+000000r 1               ;  See the monitor program.
+000000r 1               ;-----------------------------------------------------
+000000r 1               
+000000r 1               ;	.page0
+000000r 1               ;	ORG	ZERO_B
+000000r 1               
+000000r 1               ;--------------------------------------
+000000r 1               ; Data area
+000000r 1               ;--------------------------------------
+000000r 1               	.export		_c_kbhit
+000000r 1               	.export		_c_getch
+000000r 1               	.export		_c_putch
+000000r 1               	.export		_srand
+000000r 1               	.export		_rand
+000000r 1               	.export		COLD_START
+000000r 1               	.export		_warm_boot
+000000r 1               	.export		_mach_fin
+000000r 1               	.export		MEZW65_FILE_HEADER
+000000r 1               	.import		_main
+000000r 1               	.import		_newline
+000000r 1               	.import		_startup
+000000r 1               	.import		__FILETOP__
+000000r 1               
+000000r 1               .segment	"BSS"
+000000r 1               
+000000r 1  00 00        seed:	.res	2, $00
+000002r 1               
+000002r 1               
+000002r 1               .segment	"RODATA"
+000000r 1               
+000000r 1               MEZW65_FILE_HEADER:
+000000r 1               ;--------- MEZW65C_RAM file header --------------------------
+000000r 1  00           	.byte	0		; program bank:W65C816, 0:W65C02
+000001r 1  rr rr        	.word	_startup
+000003r 1  00           	.byte	0		; data bank:W65C816, 0:W65C02
+000004r 1  rr rr        	.word	_warm_boot
+000006r 1               
+000006r 1  00 00        	.word	0		; reserve
+000008r 1               
+000008r 1  4D 45 5A 57  mezID:	.byte	"MEZW65C",0	; Unique ID
+00000Cr 1  36 35 43 00  
+000010r 1               
+000010r 1               start_p:	;file load address
+000010r 1  rr rr        	.word	__FILETOP__	; load address
+000012r 1  00           	.byte	0		; reserve
+000013r 1  00           	.byte	0		; reserve
+000014r 1               
+000014r 1               	; define Common memory address
+000014r 1  00 00        PIC_IF:	.word	0	; reserve
+000016r 1  00 00        	.word	0	; reserve
+000018r 1               
+000018r 1  00           SW_816:	.byte	0	; 0 : W65C02
+000019r 1               			; 1 : W65C816 native mode
+000019r 1               			; 2 : works in both modes
+000019r 1  00           irq_sw:	.byte	0	; 0 : no use IRQ console I/O
+00001Ar 1               			; 1 : use IRQ timer interrupt driven console I/O
+00001Ar 1  00 00        reg_tp:	.word	0	; monitor reserve (register save pointer)
+00001Cr 1  00 00        reg_ts:	.word	0	; monitor reserve (register table size)
+00001Er 1  00           nmi_sw:	.byte	0	; 0 : No NMI support, 1: NMI support
+00001Fr 1  01           bios_sw:	.byte	1	; 0 : standalone program
+000020r 1               			; 1 : program call bios command
+000020r 1               			; 2 : monitor program (.SYS)
+000020r 1               ;--------- MEZW65C_RAM file header --------------------------
+000020r 1               ;;;     Console Driver
+000020r 1               ;;;
+000020r 1               CONIN_NO	=	1
+000020r 1               CONOUT_NO	=	2
+000020r 1               CONST_NO	=	3
+000020r 1               PRG_END		=	$FF
+000020r 1               
+000020r 1               .segment	"CODE"
+000000r 1               
+000000r 1               .proc	_c_getch: near
+000000r 1               
+000000r 1               .segment	"CODE"
+000000r 1               
+000000r 1  00 01        	BRK	CONIN_NO
+000002r 1  60           	rts
+000003r 1               .endproc
+000003r 1               
+000003r 1               .segment	"CODE"
+000003r 1               
+000003r 1               .proc	_c_kbhit: near
+000003r 1               
+000003r 1               .segment	"CODE"
+000003r 1               
+000003r 1  00 03        	BRK	CONST_NO
+000005r 1  60           	rts
+000006r 1               .endproc
+000006r 1               
+000006r 1               ;input A : char
+000006r 1               .segment	"CODE"
+000006r 1               
+000006r 1               .proc	_c_putch: near
+000006r 1               
+000006r 1               .segment	"CODE"
+000006r 1               
+000006r 1  00 02        	BRK	CONOUT_NO
+000008r 1  60           	rts
+000009r 1               .endproc
+000009r 1               
+000009r 1               .segment	"CODE"
+000009r 1               
+000009r 1               .proc	_rand: near
+000009r 1               
+000009r 1               .segment	"CODE"
+000009r 1               
+000009r 1  AD rr rr     	lda	seed+1
+00000Cr 1  49 96        	eor	#$96
+00000Er 1  AA           	tax
+00000Fr 1  AD rr rr     	lda	seed
+000012r 1  49 30        	eor	#$30
+000014r 1  E5 53        	sbc	$53
+000016r 1  8D rr rr     	sta	seed
+000019r 1  8A           	txa
+00001Ar 1  E9 65        	sbc	#$65
+00001Cr 1  8D rr rr     	sta	seed+1
+00001Fr 1  0E rr rr     	asl	seed+1
+000022r 1  AD rr rr     	lda	seed+1
+000025r 1  2E rr rr     	rol	seed
+000028r 1  69 00        	adc	#0
+00002Ar 1  8D rr rr     	sta	seed+1
+00002Dr 1  60           	rts
+00002Er 1               .endproc
+00002Er 1               
+00002Er 1               ; X:A 16bit
+00002Er 1               ;
+00002Er 1               .segment	"CODE"
+00002Er 1               
+00002Er 1               .proc	_srand: near
+00002Er 1               
+00002Er 1               .segment	"CODE"
+00002Er 1               
+00002Er 1  8D rr rr     	sta	seed
+000031r 1  8E rr rr     	stx	seed+1
+000034r 1  60           	rts
+000035r 1               .endproc
+000035r 1               
+000035r 1               .segment	"CODE"
+000035r 1               
+000035r 1               .proc	_warm_boot: near
+000035r 1               
+000035r 1               .segment	"CODE"
+000035r 1               
+000035r 1  A2 BF        	ldx	#USER_SP
+000037r 1  9A           	txs
+000038r 1               ;	jsr	_newline
+000038r 1  A2 00        	ldx     #$00
+00003Ar 1  A9 01        	lda	#1
+00003Cr 1  20 rr rr     	jsr	_main
+00003Fr 1  80 0A        	bra	_mach_fin
+000041r 1               
+000041r 1               .endproc
+000041r 1               
+000041r 1               .segment	"CODE"
+000041r 1               
+000041r 1               .proc	COLD_START: near
+000041r 1               
+000041r 1               .segment	"CODE"
+000041r 1               
+000041r 1  A2 BF        	ldx	#USER_SP
+000043r 1  9A           	txs
+000044r 1  A2 00        	ldx     #$00
+000046r 1  A9 00        	lda	#0
+000048r 1  20 rr rr     	jsr	_main
+00004Br 1               
+00004Br 1               .endproc
+00004Br 1               
+00004Br 1               ; Terminate GAME-C
+00004Br 1               
+00004Br 1               .segment	"CODE"
+00004Br 1               
+00004Br 1               .proc	_mach_fin: near
+00004Br 1               
+00004Br 1               .segment	"CODE"
+00004Br 1               
+00004Br 1               _mach_fin:
+00004Br 1  00 FF        	BRK	PRG_END
+00004Dr 1               end_end:
+00004Dr 1  80 FE        	bra	end_end
+00004Fr 1               
+00004Fr 1               .endproc
+00004Fr 1               

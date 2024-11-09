@@ -1,0 +1,3993 @@
+     1                        ;;;
+     2                        ;;;	GAME Language interpreter ,Takeoka ver.
+     3                        ;;;	by Shozo TAKEOKA (http://www.takeoka.org/~take/ )
+     4                        ;;;
+     5                        ;;; Ported for MEZW65C-RAM by Akihito Honda. 
+     6                        ;;; 2024.10
+     7                        ;;;
+     8                        ;;; Thanks all.
+     9                        ;;;
+    10                        
+    11                        	pl	0
+    12                        	pw      132
+    13                        	chip    65816
+    14                        
+    15                        	include "w65c816.inc"
+    16                        
+    17                        ;;;
+    18                        ;;; File header template (BIOS CALL version)
+    19                        ;;;	
+    20                        
+    21             0000D100   PRG_B	EQU	$D100
+    22             00000400   WORK_B	EQU	$400
+    23             0000E8FF   WORK_END	EQU	$E8FF
+    24                        
+    25             00000000   USER_PB	equ	0	; program bank = 2
+    26             00000000   USER_DB	equ	0	; data bank = 0 (Direct Page area)
+    27             00000300   USER_DP	equ	$300
+    28             000002FF   USER_SP	equ	USER_DP-1
+    29                        
+    30             00000000   ZERO_B	EQU	$00
+    31                        
+    32                        ;-----------------------------------------------------
+    33                        ;ZERO page
+    34                        ; NOTE
+    35                        ;  Since ZERO page is shared with the monitor program,
+    36                        ;  you must use a free area.
+    37                        ;  See the monitor program.
+    38                        ;-----------------------------------------------------
+    39                        
+    40                        ;	.page0
+    41                        ;	ORG	ZERO_B
+    42                        
+    43                        ;--------------------------------------
+    44                        ; Data area
+    45                        ;--------------------------------------
+    46                        
+    47                        	udata
+    48                        	org	WORK_B
+    49                        
+    50 00:0400:              text_buf	ds	$7800
+    51 00:7C00:              mm		ds	4
+    52 00:7C04:              var		ds	256
+    53 00:7D04:              lno		ds	2
+    54 00:7D06:              stack		ds	200
+    55 00:7DCE:              sp		ds	2
+    56 00:7DD0:              pc		ds	2
+    57 00:7DD2:              lky_buf	ds	160
+    58 00:7E72:              lin		ds	160
+    59                        
+    60 00:7F12:              seed	ds	2
+    61 00:7F14:              val_a	ds	2
+    62 00:7F16:              val_x	ds	2
+    63 00:7F18:              val_y	ds	2
+    64 00:7F1A:              remn	ds	2
+    65 00:7F1C:              div_y	ds	2	; quotient
+    66 00:7F1E:              div_x	ds	2
+    67                        
+    68                        	CODE
+    69                        	ORG	PRG_B
+    70                        ;--------- MEZW65C_RAM file header --------------------------
+    71 00:D100: 00           	db	USER_PB		; program bank:W65C816, 0:W65C02
+    72 00:D101: 5B D1        	dw	COLD_START
+    73 00:D103: 00           	db	USER_DB		; data bank:W65C816, 0:W65C02
+    74 00:D104: 4B D1        	dw	warm_boot
+    75                        
+    76 00:D106: 00 03        	dw	USER_DP		; DP
+    77                        
+    78 00:D108: 4D 45 5A 57  mezID:	db	"MEZW65C",0	; Unique ID
+       00:D10C: 36 35 43 00 
+    79                        
+    80                        start_p:	;file load address
+    81 00:D110: 00 D1        	dw	PRG_B		; load address (Low)
+    82 00:D112: 00           	db	USER_PB		; PBR : program bank(W65C816)
+    83 00:D113: 00           	db	0		; reserve
+    84                        
+    85                        	; define Common memory address
+    86 00:D114: 00 00        PIC_IF:	dw	0	; reserve
+    87 00:D116: 00 00        	dw	0	; reserve
+    88                        
+    89 00:D118: 01           SW_816:	db	1	; 0 : W65C02
+    90                        			; 1 : W65C816 native mode 
+    91                        			; 2 : works in both modes
+    92 00:D119: 00           irq_sw	db	0	; 0 : no use IRQ console I/O
+    93                        			; 1 : use IRQ timer interrupt driven console I/O
+    94 00:D11A: 00 00        reg_tp	dw	0	; monitor reserve (register save pointer)
+    95 00:D11C: 00 00        reg_ts	dw	0	; monitor reserve (register table size)
+    96 00:D11E: 00           nmi_sw	db	0	; 0 : No NMI support, 1: NMI support
+    97 00:D11F: 01           bios_sw	db	1	; 0 : standalone program
+    98                        			; 1 : program call bios command
+    99                        			; 2 : monitor program (.SYS)
+   100                        ;--------- MEZW65C_RAM file header --------------------------
+   101                        
+   102                        ;;;     Console Driver
+   103                        ;;;
+   104             00000001   CONIN_NO	equ	1
+   105             00000002   CONOUT_NO	equ	2
+   106             00000003   CONST_NO	equ	3
+   107             000000FF   PRG_END		equ	$FF
+   108                        
+   109                        c_getch
+   110 00:D120: 00 01        	BRK	CONIN_NO
+   111 00:D122: 60           	rts
+   112                        
+   113                        c_kbhit
+   114 00:D123: 00 03        	BRK	CONST_NO
+   115 00:D125: 60           	rts
+   116                        
+   117                        ; SP              -> 0          |
+   118                        ; PC(Low)           +1          v 
+   119                        ; PC(High)          +2   <- SP  0 --> Pull A ( return PC address ) 
+   120                        ; init val(Low)     +3          1    (set return address low )  (lda 1,s)
+   121                        ; init val(Higj)    +4          2    (set return address high)
+   122                        c_putch
+   123                        	long_a
++  123 00:D126: C2 20                        rep     #M_FLAG
++  123                                        longa   on
+   124 00:D128: A3 03        	lda	3,s	; get init value
+   125 00:D12A: 00 02        	BRK	CONOUT_NO
+   126 00:D12C: 68           	pla		; get return address
+   127 00:D12D: 83 01        	sta	1,s	; set return address
+   128 00:D12F: 60           	rts
+   129                        
+   130                        rand
+   131                        	long_a
++  131 00:D130: C2 20                        rep     #M_FLAG
++  131                                        longa   on
+   132 00:D132: AD 12 7F     	lda	seed
+   133 00:D135: 49 30 96     	eor	#$9630
+   134 00:D138: E9 53 65     	sbc	#$6553
+   135 00:D13B: 2A           	rol	a
+   136 00:D13C: 8D 12 7F     	sta	seed
+   137 00:D13F: 60           	rts
+   138                        
+   139                        ; SP              -> 0          |
+   140                        ; PC(Low)           +1          v 
+   141                        ; PC(High)          +2   <- SP  0 --> Pull A ( return PC address ) 
+   142                        ; init val(Low)     +3          1    (set return address low )  (lda 1,s)
+   143                        ; init val(Higj)    +4          2    (set return address high)
+   144                        srand
+   145                        	long_a
++  145 00:D140: C2 20                        rep     #M_FLAG
++  145                                        longa   on
+   146 00:D142: A3 03        	lda	3,s	; get init value
+   147 00:D144: 8D 12 7F     	sta	seed
+   148 00:D147: 68           	pla		; get return address
+   149 00:D148: 83 01        	sta	1,s	; set return address
+   150 00:D14A: 60           	rts
+   151                        
+   152                        warm_boot
+   153                        	long_ai
++  153 00:D14B: C2 30                        rep     #M_FLAG|X_FLAG
++  153                                        longa   on
++  153                                        longi   on
+   154 00:D14D: A9 FF 02     	lda	#USER_SP
+   155 00:D150: 1B           	tas
+   156 00:D151: F4 01 00     	pea	#1
+   157 00:D154: 20 6D D2     	jsr	main
+   158                        	
+   159                        ; Terminate VTL
+   160                        mach_fin
+   161 00:D157: 00 FF        	BRK	PRG_END
+   162 00:D159: 80 FE        end_end	bra	end_end
+   163                        
+   164                        COLD_START
+   165                        	long_ai
++  165 00:D15B: C2 30                        rep     #M_FLAG|X_FLAG
++  165                                        longa   on
++  165                                        longi   on
+   166 00:D15D: A9 FF 02     	lda	#USER_SP
+   167 00:D160: 1B           	tas
+   168 00:D161: F4 00 00     	pea	#0
+   169 00:D164: 20 6D D2     	jsr	main
+   170                        
+   171                        mul:
+   172                        	longa on
+   173                        	longi on
+   174                        	
+   175 00:D167: 8E 16 7F     	stx	val_x
+   176 00:D16A: 9C 18 7F     	stz	val_y
+   177                        
+   178 00:D16D: A2 10 00     	ldx	#16
+   179 00:D170: 4A           	lsr	a
+   180 00:D171: 8D 14 7F     	sta	val_a
+   181 00:D174: B0 08        	bcs	add_x
+   182                        
+   183                        add_loop
+   184 00:D176: 0E 16 7F     	asl	val_x
+   185 00:D179: 4E 14 7F     	lsr	val_a
+   186 00:D17C: 90 0A        	bcc	skip_add
+   187                        
+   188                        add_x
+   189 00:D17E: AD 18 7F     	lda	val_y
+   190 00:D181: 18           	clc
+   191 00:D182: 6D 16 7F     	adc	val_x
+   192 00:D185: 8D 18 7F     	sta	val_y
+   193                        	
+   194                        skip_add
+   195 00:D188: CA           	dex
+   196 00:D189: D0 EB        	bne	add_loop
+   197                        
+   198                        end_add
+   199 00:D18B: AD 18 7F     	lda	val_y
+   200 00:D18E: 60           	rts
+   201                        
+   202                        ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+   203                        ; 16-bit unsigned division routine
+   204                        ;	div_y /= div_x, {%} = remainder, {>} modified
+   205                        ;	div_y /= 0 produces {%} = div_y, div_y = 65535
+   206                        ;
+   207                        ;	input  A : div_y, X : div_x
+   208                        ;	output A : div_y
+   209                        div:
+   210                        	longa on
+   211                        	longi on
+   212                        
+   213 00:D18F: 8D 1C 7F     	sta	div_y
+   214 00:D192: 8E 1E 7F     	stx	div_x
+   215                        
+   216 00:D195: 5A           	phy
+   217 00:D196: A9 00 00     	lda	#0
+   218 00:D199: 8D 1A 7F     	sta	remn		; {%} = 0
+   219 00:D19C: A0 10 00     	ldy	#16
+   220                        div1:
+   221 00:D19F: 0E 1C 7F     	asl	div_y		; div_y is gradually replaced with the quotient
+   222                        
+   223 00:D1A2: 2E 1A 7F     	rol	remn		; {%} is gradually replaced with the remainder
+   224                        
+   225 00:D1A5: AD 1A 7F     	lda	remn
+   226 00:D1A8: CD 1E 7F     	cmp	div_x		; partial remainder >= div_x?
+   227                        
+   228 00:D1AB: 90 09        	bcc	div2
+   229                        
+   230 00:D1AD: ED 1E 7F     	sbc	div_x
+   231 00:D1B0: 8D 1A 7F     	sta	remn		; yes: update the partial remainder
+   232                        				;	and set the low bit in the partial quotient
+   233                        	
+   234 00:D1B3: EE 1C 7F     	inc	div_y
+   235                        
+   236                        div2:
+   237 00:D1B6: 88           	dey
+   238 00:D1B7: D0 E6        	bne	div1		; loop 16 times
+   239                        
+   240 00:D1B9: AD 1A 7F     	lda	remn
+   241 00:D1BC: 8D 4E 7C     	sta	var+74	; set system valiable %
+   242 00:D1BF: AD 1C 7F     	lda	div_y		; A = quotient
+   243                        
+   244 00:D1C2: 7A           	ply
+   245 00:D1C3: 60           	rts
+   246                        	
+   247                        mod:
+   248                        	longa on
+   249                        	longi on
+   250                        
+   251 00:D1C4: 8D 1C 7F     	sta	div_y
+   252 00:D1C7: 8E 1E 7F     	stx	div_x
+   253                        
+   254 00:D1CA: 5A           	phy
+   255 00:D1CB: A9 00 00     	lda	#0
+   256 00:D1CE: 8D 1A 7F     	sta	remn		; {%} = 0
+   257 00:D1D1: A0 10 00     	ldy	#16
+   258                        mod1:
+   259 00:D1D4: 0E 1C 7F     	asl	div_y		; div_y is gradually replaced with the quotient
+   260                        
+   261 00:D1D7: 2E 1A 7F     	rol	remn		; {%} is gradually replaced with the remainder
+   262                        
+   263 00:D1DA: AD 1A 7F     	lda	remn
+   264 00:D1DD: CD 1E 7F     	cmp	div_x		; partial remainder >= div_x?
+   265                        
+   266 00:D1E0: 90 09        	bcc	mod2
+   267                        
+   268 00:D1E2: ED 1E 7F     	sbc	div_x
+   269 00:D1E5: 8D 1A 7F     	sta	remn		; yes: update the partial remainder
+   270                        				;	and set the low bit in the partial quotient
+   271                        	
+   272 00:D1E8: EE 1C 7F     	inc	div_y
+   273                        
+   274                        mod2:
+   275 00:D1EB: 88           	dey
+   276 00:D1EC: D0 E6        	bne	mod1		; loop 16 times
+   277                        
+   278 00:D1EE: AD 1A 7F     	lda	remn
+   279                        
+   280 00:D1F1: 7A           	ply
+   281 00:D1F2: 60           	rts
+   282                        ;
+   283                        ;switch - case: jump function
+   284                        ;ex)
+   285                        ;pppp
+   286                        ;	db	01
+   287                        ;	db	00
+   288                        ;	db	00
+   289                        ;	db	00
+   290                        ;	db	label1(L)-1
+   291                        ;	db	label1(H)
+   292                        ;	db	label2(L)-1
+   293                        ;	db	label2(H)
+   294                        ;
+   295                        ; input A : switch( A )
+   296                        
+   297                        	longa	on
+   298                        	longi	on
+   299                        swt:
+   300 00:D1F3: FA           	plx
+   301                        ;SP->
+   302                        ;  |	PC(L)-1 : pppp(L) -1
+   303                        ;  v
+   304                        ;SP->	PC(H)   : pppp(H)
+   305                        
+   306 00:D1F4: E8           	inx	; get table address
+   307                        
+   308 00:D1F5: BC 00 00     	ldy	0,x	; Y : get no of tables ($0007)
+   309                        
+   310 00:D1F8: E8           	inx
+   311 00:D1F9: E8           	inx		; compare value address
+   312                        loop_sw:
+   313 00:D1FA: DD 00 00     	cmp	0,x
+   314 00:D1FD: F0 0C        	beq	go_jmp
+   315 00:D1FF: E8           	inx		;+1
+   316 00:D200: E8           	inx		;+2
+   317 00:D201: E8           	inx		;+3
+   318 00:D202: E8           	inx		;+4 : next address of compare value
+   319 00:D203: 88           	dey
+   320 00:D204: D0 F4        	bne	loop_sw
+   321                        	; no much
+   322                        psh_ret:
+   323 00:D206: BD 00 00     	lda	0,x	; escape switch 
+   324 00:D209: 48           	pha		; push jump address
+   325 00:D20A: 60           	rts
+   326                        	
+   327                        go_jmp:
+   328 00:D20B: E8           	inx
+   329 00:D20C: E8           	inx
+   330 00:D20D: 80 F7        	bra	psh_ret
+   331                        
+   332                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   333                        ;
+   334                        ; GAME-C main program
+   335                        ;
+   336                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   337                        ;:ts=8
+   338                        
+   339             00000001   R0	equ	1
+   340             00000005   R1	equ	5
+   341             00000009   R2	equ	9
+   342             0000000D   R3	equ	13
+   343                        
+   344                        c_puts:
+   345                        	longa	on
+   346                        	longi	on
+   347 00:D20F: 3B           	tsc
+   348 00:D210: 38           	sec
+   349 00:D211: E9 04 00     	sbc	#L2
+   350 00:D214: 1B           	tcs
+   351 00:D215: 0B           	phd
+   352 00:D216: 5B           	tcd
+   353             00000003   s_0	set	3
+   354                        L10001:
+   355 00:D217: B2 07        	lda	(<L2+s_0)
+   356 00:D219: 29 FF 00     	and	#$ff
+   357 00:D21C: D0 03        	bne	L4
+   358 00:D21E: 82 12 00     	brl	L10002
+   359                        L4:
+   360 00:D221: A5 07        	lda	<L2+s_0
+   361 00:D223: 85 01        	sta	<R0
+   362 00:D225: E6 07        	inc	<L2+s_0
+   363 00:D227: B2 01        	lda	(<R0)
+   364 00:D229: 29 FF 00     	and	#$ff
+   365 00:D22C: 48           	pha
+   366 00:D22D: 20 26 D1     	jsr	c_putch
+   367 00:D230: 82 E4 FF     	brl	L10001
+   368                        L10002:
+   369                        L5:
+   370 00:D233: A5 05        	lda	<L2+1
+   371 00:D235: 85 07        	sta	<L2+1+2
+   372 00:D237: 2B           	pld
+   373 00:D238: 3B           	tsc
+   374 00:D239: 18           	clc
+   375 00:D23A: 69 06 00     	adc	#L2+2
+   376 00:D23D: 1B           	tcs
+   377 00:D23E: 60           	rts
+   378             00000004   L2	equ	4
+   379             00000005   L3	equ	5
+   380                        
+   381 00:D23F: 41 D2        open_msg:	dw	L1+0
+   382 00:D241: 47 41 4D 45  L1:		db	"GAME-C MEZW65C_RAM Edition",13,10,0
+       00:D245: 2D 43 20 4D 
+       00:D249: 45 5A 57 36 
+       00:D24D: 35 43 5F 52 
+       00:D251: 41 4D 20 45 
+       00:D255: 64 69 74 69 
+       00:D259: 6F 6E 0D 0A 
+       00:D25D: 00 
+   383                        
+   384 00:D25E: 60 D2        rdy_msg:	dw	L6+0
+   385 00:D260: 2A 52 45 41  L6:		db	"*READY",13,10,0
+       00:D264: 44 59 0D 0A 
+       00:D268: 00 
+   386                        
+   387 00:D269: 6B D2        t_lock:	dw	L7+0
+   388 00:D26B: 31 00        L7:		db	'1',0
+   389                        
+   390                        main:
+   391                        	longa	on
+   392                        	longi	on
+   393 00:D26D: 3B           	tsc
+   394 00:D26E: 38           	sec
+   395 00:D26F: E9 0E 00     	sbc	#L9
+   396 00:D272: 1B           	tcs
+   397 00:D273: 0B           	phd
+   398 00:D274: 5B           	tcd
+   399             00000003   st_flg_0	set	3
+   400             00000000   n_1	set	0
+   401             00000002   x_1	set	2
+   402             00000004   cnt_1	set	4
+   403 00:D275: A5 11        	lda	<L9+st_flg_0
+   404 00:D277: 29 FF 00     	and	#$ff
+   405 00:D27A: F0 03        	beq	L11
+   406 00:D27C: 82 1C 00     	brl	L10003
+   407                        L11:
+   408 00:D27F: F4 2E 16     	pea	#<$162e
+   409 00:D282: 20 40 D1     	jsr	srand
+   410 00:D285: A9 00 04     	lda	#<text_buf
+   411 00:D288: 8D 7E 7C     	sta	var+122
+   412 00:D28B: A9 FF 7F     	lda	#$7fff
+   413 00:D28E: 8D 58 7C     	sta	var+84
+   414 00:D291: 20 C1 E7     	jsr	newText1
+   415 00:D294: AD 3F D2     	lda	open_msg
+   416 00:D297: 48           	pha
+   417 00:D298: 20 0F D2     	jsr	c_puts
+   418                        L10003:
+   419 00:D29B: AD 5E D2     	lda	rdy_msg
+   420 00:D29E: 48           	pha
+   421 00:D29F: 20 0F D2     	jsr	c_puts
+   422                        L10004:
+   423 00:D2A2: A9 FF FF     	lda	#$ffff
+   424 00:D2A5: 8D CE 7D     	sta	sp
+   425 00:D2A8: 9C 04 7D     	stz	lno
+   426 00:D2AB: F4 72 7E     	pea	#<lin
+   427 00:D2AE: 20 02 E4     	jsr	c_gets
+   428 00:D2B1: 85 0D        	sta	<L10+cnt_1
+   429 00:D2B3: A9 72 7E     	lda	#<lin
+   430 00:D2B6: 1A           	ina
+   431 00:D2B7: 85 01        	sta	<R0
+   432 00:D2B9: 18           	clc
+   433 00:D2BA: A5 01        	lda	<R0
+   434 00:D2BC: 65 0D        	adc	<L10+cnt_1
+   435 00:D2BE: 85 05        	sta	<R1
+   436 00:D2C0: E2 20        	sep	#$20
+   437                        	longa	off
+   438 00:D2C2: A9 80        	lda	#$80
+   439 00:D2C4: 92 05        	sta	(<R1)
+   440 00:D2C6: C2 20        	rep	#$20
+   441                        	longa	on
+   442 00:D2C8: A9 72 7E     	lda	#<lin
+   443 00:D2CB: 8D D0 7D     	sta	pc
+   444 00:D2CE: 20 2D D7     	jsr	skipBlank
+   445 00:D2D1: 18           	clc
+   446 00:D2D2: 7B           	tdc
+   447 00:D2D3: 69 0B 00     	adc	#<L10+x_1
+   448 00:D2D6: 48           	pha
+   449 00:D2D7: 20 15 E6     	jsr	getNum
+   450 00:D2DA: 85 09        	sta	<L10+n_1
+   451 00:D2DC: A5 0B        	lda	<L10+x_1
+   452 00:D2DE: F0 03        	beq	L12
+   453 00:D2E0: 82 10 00     	brl	L10006
+   454                        L12:
+   455 00:D2E3: 20 BD D7     	jsr	exqt
+   456 00:D2E6: 20 E5 E3     	jsr	newline
+   457 00:D2E9: AD 5E D2     	lda	rdy_msg
+   458 00:D2EC: 48           	pha
+   459 00:D2ED: 20 0F D2     	jsr	c_puts
+   460 00:D2F0: 82 05 00     	brl	L10007
+   461                        L10006:
+   462 00:D2F3: D4 09        	pei	<L10+n_1
+   463 00:D2F5: 20 99 D3     	jsr	edit
+   464                        L10007:
+   465 00:D2F8: 82 A7 FF     	brl	L10004
+   466             0000000E   L9	equ	14
+   467             00000009   L10	equ	9
+   468                        
+   469                        skipLine:
+   470                        	longa	on
+   471                        	longi	on
+   472 00:D2FB: 3B           	tsc
+   473 00:D2FC: 38           	sec
+   474 00:D2FD: E9 04 00     	sbc	#L13
+   475 00:D300: 1B           	tcs
+   476 00:D301: 0B           	phd
+   477 00:D302: 5B           	tcd
+   478             00000003   p_0	set	3
+   479                        L10008:
+   480 00:D303: B2 07        	lda	(<L13+p_0)
+   481 00:D305: 29 FF 00     	and	#$ff
+   482 00:D308: D0 03        	bne	L15
+   483 00:D30A: 82 05 00     	brl	L10009
+   484                        L15:
+   485 00:D30D: E6 07        	inc	<L13+p_0
+   486 00:D30F: 82 F1 FF     	brl	L10008
+   487                        L10009:
+   488 00:D312: A5 07        	lda	<L13+p_0
+   489 00:D314: 1A           	ina
+   490 00:D315: 85 01        	sta	<R0
+   491 00:D317: A5 01        	lda	<R0
+   492                        L16:
+   493 00:D319: A8           	tay
+   494 00:D31A: A5 05        	lda	<L13+1
+   495 00:D31C: 85 07        	sta	<L13+1+2
+   496 00:D31E: 2B           	pld
+   497 00:D31F: 3B           	tsc
+   498 00:D320: 18           	clc
+   499 00:D321: 69 06 00     	adc	#L13+2
+   500 00:D324: 1B           	tcs
+   501 00:D325: 98           	tya
+   502 00:D326: 60           	rts
+   503             00000004   L13	equ	4
+   504             00000005   L14	equ	5
+   505                        
+   506                        searchLine:
+   507                        	longa	on
+   508                        	longi	on
+   509 00:D327: 3B           	tsc
+   510 00:D328: 38           	sec
+   511 00:D329: E9 0C 00     	sbc	#L17
+   512 00:D32C: 1B           	tcs
+   513 00:D32D: 0B           	phd
+   514 00:D32E: 5B           	tcd
+   515             00000003   n_0	set	3
+   516             00000005   f_0	set	5
+   517             00000000   p_1	set	0
+   518             00000002   l_1	set	2
+   519 00:D32F: AD 7E 7C     	lda	var+122
+   520 00:D332: 85 09        	sta	<L18+p_1
+   521                        L10010:
+   522 00:D334: E2 20        	sep	#$20
+   523                        	longa	off
+   524 00:D336: B2 09        	lda	(<L18+p_1)
+   525 00:D338: 29 80        	and	#<$80
+   526 00:D33A: C2 20        	rep	#$20
+   527                        	longa	on
+   528 00:D33C: F0 03        	beq	L19
+   529 00:D33E: 82 4E 00     	brl	L10011
+   530                        L19:
+   531 00:D341: B2 09        	lda	(<L18+p_1)
+   532 00:D343: EB           	xba			; A(low) <-> A(high)
+   533 00:D344: 85 0B        	sta	<L18+l_1
+   534 00:D346: A5 0F        	lda	<L17+n_0
+   535 00:D348: C5 0B        	cmp	<L18+l_1
+   536 00:D34A: F0 03        	beq	L20
+   537 00:D34C: 82 15 00     	brl	L10012
+   538                        L20:
+   539 00:D34F: A9 01 00     	lda	#$1
+   540 00:D352: 92 11        	sta	(<L17+f_0)
+   541 00:D354: A5 09        	lda	<L18+p_1
+   542                        L21:
+   543 00:D356: A8           	tay
+   544 00:D357: A5 0D        	lda	<L17+1
+   545 00:D359: 85 11        	sta	<L17+1+4
+   546 00:D35B: 2B           	pld
+   547 00:D35C: 3B           	tsc
+   548 00:D35D: 18           	clc
+   549 00:D35E: 69 10 00     	adc	#L17+4
+   550 00:D361: 1B           	tcs
+   551 00:D362: 98           	tya
+   552 00:D363: 60           	rts
+   553                        L10012:
+   554 00:D364: 38           	sec
+   555 00:D365: A5 0F        	lda	<L17+n_0
+   556 00:D367: E5 0B        	sbc	<L18+l_1
+   557 00:D369: 70 03        	bvs	L22
+   558 00:D36B: 49 00 80     	eor	#$8000
+   559                        L22:
+   560 00:D36E: 10 03        	bpl	L23
+   561 00:D370: 82 0A 00     	brl	L10013
+   562                        L23:
+   563 00:D373: A9 00 00     	lda	#$0
+   564 00:D376: 92 11        	sta	(<L17+f_0)
+   565 00:D378: A5 09        	lda	<L18+p_1
+   566 00:D37A: 82 D9 FF     	brl	L21
+   567                        L10013:
+   568 00:D37D: 18           	clc
+   569 00:D37E: A9 02 00     	lda	#$2
+   570 00:D381: 65 09        	adc	<L18+p_1
+   571 00:D383: 85 01        	sta	<R0
+   572 00:D385: D4 01        	pei	<R0
+   573 00:D387: 20 FB D2     	jsr	skipLine
+   574 00:D38A: 85 09        	sta	<L18+p_1
+   575 00:D38C: 82 A5 FF     	brl	L10010
+   576                        L10011:
+   577 00:D38F: A9 00 00     	lda	#$0
+   578 00:D392: 92 11        	sta	(<L17+f_0)
+   579 00:D394: A5 09        	lda	<L18+p_1
+   580 00:D396: 82 BD FF     	brl	L21
+   581             0000000C   L17	equ	12
+   582             00000009   L18	equ	9
+   583                        
+   584                        edit:
+   585                        	longa	on
+   586                        	longi	on
+   587 00:D399: 3B           	tsc
+   588 00:D39A: 38           	sec
+   589 00:D39B: E9 08 00     	sbc	#L24
+   590 00:D39E: 1B           	tcs
+   591 00:D39F: 0B           	phd
+   592 00:D3A0: 5B           	tcd
+   593             00000003   n_0	set	3
+   594             00000000   p_1	set	0
+   595             00000002   f_1	set	2
+   596 00:D3A1: A5 0B        	lda	<L24+n_0
+   597 00:D3A3: F0 03        	beq	L26
+   598 00:D3A5: 82 0D 00     	brl	L10014
+   599                        L26:
+   600 00:D3A8: AD 7E 7C     	lda	var+122
+   601 00:D3AB: 48           	pha
+   602 00:D3AC: 20 FD D6     	jsr	dispList
+   603 00:D3AF: F4 00 00     	pea	#<$0
+   604 00:D3B2: 20 0D E3     	jsr	w_boot
+   605                        L10014:
+   606 00:D3B5: 18           	clc
+   607 00:D3B6: 7B           	tdc
+   608 00:D3B7: 69 07 00     	adc	#<L25+f_1
+   609 00:D3BA: 48           	pha
+   610 00:D3BB: D4 0B        	pei	<L24+n_0
+   611 00:D3BD: 20 27 D3     	jsr	searchLine
+   612 00:D3C0: 85 05        	sta	<L25+p_1
+   613 00:D3C2: AD D0 7D     	lda	pc
+   614 00:D3C5: 85 01        	sta	<R0
+   615 00:D3C7: E2 20        	sep	#$20
+   616                        	longa	off
+   617 00:D3C9: B2 01        	lda	(<R0)
+   618 00:D3CB: C9 2F        	cmp	#<$2f
+   619 00:D3CD: C2 20        	rep	#$20
+   620                        	longa	on
+   621 00:D3CF: F0 03        	beq	L27
+   622 00:D3D1: 82 0E 00     	brl	L10015
+   623                        L27:
+   624 00:D3D4: D4 05        	pei	<L25+p_1
+   625 00:D3D6: 20 FD D6     	jsr	dispList
+   626 00:D3D9: F4 00 00     	pea	#<$0
+   627 00:D3DC: 20 0D E3     	jsr	w_boot
+   628 00:D3DF: 82 50 00     	brl	L10016
+   629                        L10015:
+   630 00:D3E2: AD 50 7C     	lda	var+76
+   631 00:D3E5: 85 01        	sta	<R0
+   632 00:D3E7: E2 20        	sep	#$20
+   633                        	longa	off
+   634 00:D3E9: B2 01        	lda	(<R0)
+   635 00:D3EB: C9 FF        	cmp	#<$ff
+   636 00:D3ED: C2 20        	rep	#$20
+   637                        	longa	on
+   638 00:D3EF: D0 03        	bne	L28
+   639 00:D3F1: 82 07 00     	brl	L10017
+   640                        L28:
+   641 00:D3F4: AD 69 D2     	lda	t_lock
+   642 00:D3F7: 48           	pha
+   643 00:D3F8: 20 35 E3     	jsr	er_boot
+   644                        L10017:
+   645 00:D3FB: A5 07        	lda	<L25+f_1
+   646 00:D3FD: D0 03        	bne	L29
+   647 00:D3FF: 82 05 00     	brl	L10018
+   648                        L29:
+   649 00:D402: D4 05        	pei	<L25+p_1
+   650 00:D404: 20 94 D4     	jsr	deleteLine
+   651                        L10018:
+   652 00:D407: AD D0 7D     	lda	pc
+   653 00:D40A: 85 01        	sta	<R0
+   654 00:D40C: B2 01        	lda	(<R0)
+   655 00:D40E: 29 FF 00     	and	#$ff
+   656 00:D411: F0 03        	beq	L30
+   657 00:D413: 82 11 00     	brl	L10019
+   658                        L30:
+   659 00:D416: A9 00 00     	lda	#$0
+   660                        L31:
+   661 00:D419: A8           	tay
+   662 00:D41A: A5 09        	lda	<L24+1
+   663 00:D41C: 85 0B        	sta	<L24+1+2
+   664 00:D41E: 2B           	pld
+   665 00:D41F: 3B           	tsc
+   666 00:D420: 18           	clc
+   667 00:D421: 69 0A 00     	adc	#L24+2
+   668 00:D424: 1B           	tcs
+   669 00:D425: 98           	tya
+   670 00:D426: 60           	rts
+   671                        L10019:
+   672 00:D427: AD D0 7D     	lda	pc
+   673 00:D42A: 48           	pha
+   674 00:D42B: D4 05        	pei	<L25+p_1
+   675 00:D42D: D4 0B        	pei	<L24+n_0
+   676 00:D42F: 20 38 D4     	jsr	addLine
+   677                        L10016:
+   678 00:D432: A9 00 00     	lda	#$0
+   679 00:D435: 82 E1 FF     	brl	L31
+   680             00000008   L24	equ	8
+   681             00000005   L25	equ	5
+   682                        
+   683                        addLine:
+   684                        	longa	on
+   685                        	longi	on
+   686 00:D438: 3B           	tsc
+   687 00:D439: 38           	sec
+   688 00:D43A: E9 06 00     	sbc	#L32
+   689 00:D43D: 1B           	tcs
+   690 00:D43E: 0B           	phd
+   691 00:D43F: 5B           	tcd
+   692             00000003   n_0	set	3
+   693             00000005   p_0	set	5
+   694             00000007   new_0	set	7
+   695             00000000   l_1	set	0
+   696 00:D440: D4 0D        	pei	<L32+new_0
+   697 00:D442: 20 E6 E5     	jsr	strlen
+   698 00:D445: 85 01        	sta	<R0
+   699 00:D447: 18           	clc
+   700 00:D448: A9 03 00     	lda	#$3
+   701 00:D44B: 65 01        	adc	<R0
+   702 00:D44D: 85 05        	sta	<L33+l_1
+   703 00:D44F: 38           	sec
+   704 00:D450: AD 50 7C     	lda	var+76
+   705 00:D453: E5 0B        	sbc	<L32+p_0
+   706 00:D455: 85 01        	sta	<R0
+   707 00:D457: A5 01        	lda	<R0
+   708 00:D459: 1A           	ina
+   709 00:D45A: 48           	pha
+   710 00:D45B: D4 0B        	pei	<L32+p_0
+   711 00:D45D: 18           	clc
+   712 00:D45E: A5 0B        	lda	<L32+p_0
+   713 00:D460: 65 05        	adc	<L33+l_1
+   714 00:D462: 85 01        	sta	<R0
+   715 00:D464: D4 01        	pei	<R0
+   716 00:D466: 20 E6 E4     	jsr	memmove
+   717 00:D469: A5 09        	lda	<L32+n_0
+   718 00:D46B: EB           	xba			; A(low) <-> A(high)
+   719 00:D46C: 92 0B        	sta	(<L32+p_0)
+   720 00:D46E: D4 0D        	pei	<L32+new_0
+   721 00:D470: 18           	clc
+   722 00:D471: A9 02 00     	lda	#$2
+   723 00:D474: 65 0B        	adc	<L32+p_0
+   724 00:D476: 85 01        	sta	<R0
+   725 00:D478: D4 01        	pei	<R0
+   726 00:D47A: 20 5C E5     	jsr	strcpy
+   727 00:D47D: 18           	clc
+   728 00:D47E: AD 50 7C     	lda	var+76
+   729 00:D481: 65 05        	adc	<L33+l_1
+   730 00:D483: 8D 50 7C     	sta	var+76
+   731                        L34:
+   732 00:D486: A8           	tay
+   733 00:D487: A5 07        	lda	<L32+1
+   734 00:D489: 85 0D        	sta	<L32+1+6
+   735 00:D48B: 2B           	pld
+   736 00:D48C: 3B           	tsc
+   737 00:D48D: 18           	clc
+   738 00:D48E: 69 0C 00     	adc	#L32+6
+   739 00:D491: 1B           	tcs
+   740 00:D492: 98           	tya
+   741 00:D493: 60           	rts
+   742             00000006   L32	equ	6
+   743             00000005   L33	equ	5
+   744                        
+   745                        deleteLine:
+   746                        	longa	on
+   747                        	longi	on
+   748 00:D494: 3B           	tsc
+   749 00:D495: 38           	sec
+   750 00:D496: E9 0A 00     	sbc	#L35
+   751 00:D499: 1B           	tcs
+   752 00:D49A: 0B           	phd
+   753 00:D49B: 5B           	tcd
+   754             00000003   p_0	set	3
+   755             00000000   l_1	set	0
+   756 00:D49C: 18           	clc
+   757 00:D49D: A9 02 00     	lda	#$2
+   758 00:D4A0: 65 0D        	adc	<L35+p_0
+   759 00:D4A2: 85 01        	sta	<R0
+   760 00:D4A4: D4 01        	pei	<R0
+   761 00:D4A6: 20 E6 E5     	jsr	strlen
+   762 00:D4A9: 85 05        	sta	<R1
+   763 00:D4AB: 18           	clc
+   764 00:D4AC: A9 03 00     	lda	#$3
+   765 00:D4AF: 65 05        	adc	<R1
+   766 00:D4B1: 85 09        	sta	<L36+l_1
+   767 00:D4B3: 38           	sec
+   768 00:D4B4: AD 50 7C     	lda	var+76
+   769 00:D4B7: E5 0D        	sbc	<L35+p_0
+   770 00:D4B9: 85 01        	sta	<R0
+   771 00:D4BB: 38           	sec
+   772 00:D4BC: A5 01        	lda	<R0
+   773 00:D4BE: E5 09        	sbc	<L36+l_1
+   774 00:D4C0: 85 05        	sta	<R1
+   775 00:D4C2: A5 05        	lda	<R1
+   776 00:D4C4: 1A           	ina
+   777 00:D4C5: 48           	pha
+   778 00:D4C6: 18           	clc
+   779 00:D4C7: A5 0D        	lda	<L35+p_0
+   780 00:D4C9: 65 09        	adc	<L36+l_1
+   781 00:D4CB: 85 01        	sta	<R0
+   782 00:D4CD: D4 01        	pei	<R0
+   783 00:D4CF: D4 0D        	pei	<L35+p_0
+   784 00:D4D1: 20 E6 E4     	jsr	memmove
+   785 00:D4D4: 38           	sec
+   786 00:D4D5: AD 50 7C     	lda	var+76
+   787 00:D4D8: E5 09        	sbc	<L36+l_1
+   788 00:D4DA: 8D 50 7C     	sta	var+76
+   789                        L37:
+   790 00:D4DD: A8           	tay
+   791 00:D4DE: A5 0B        	lda	<L35+1
+   792 00:D4E0: 85 0D        	sta	<L35+1+2
+   793 00:D4E2: 2B           	pld
+   794 00:D4E3: 3B           	tsc
+   795 00:D4E4: 18           	clc
+   796 00:D4E5: 69 0C 00     	adc	#L35+2
+   797 00:D4E8: 1B           	tcs
+   798 00:D4E9: 98           	tya
+   799 00:D4EA: 60           	rts
+   800             0000000A   L35	equ	10
+   801             00000009   L36	equ	9
+   802                        
+   803                        g_decStr:
+   804                        	longa	on
+   805                        	longi	on
+   806 00:D4EB: 3B           	tsc
+   807 00:D4EC: 38           	sec
+   808 00:D4ED: E9 04 00     	sbc	#L38
+   809 00:D4F0: 1B           	tcs
+   810 00:D4F1: 0B           	phd
+   811 00:D4F2: 5B           	tcd
+   812             00000003   buf_0	set	3
+   813             00000005   num_0	set	5
+   814             00000000   cnt_1	set	0
+   815             00000002   b_1	set	2
+   816 00:D4F3: 64 01        	stz	<L39+cnt_1
+   817                        L10022:
+   818 00:D4F5: A5 09        	lda	<L38+num_0
+   819 00:D4F7: A2 0A 00     	ldx	#<$a
+   820                        ;	jsr	~umd
+   821 00:D4FA: 20 C4 D1     	jsr	mod
+   822                        	
+   823 00:D4FD: 09 30 00     	ora	#<$30
+   824 00:D500: E2 20        	sep	#$20
+   825                        	longa	off
+   826 00:D502: 92 07        	sta	(<L38+buf_0)
+   827 00:D504: C2 20        	rep	#$20
+   828                        	longa	on
+   829 00:D506: E6 07        	inc	<L38+buf_0
+   830 00:D508: A5 09        	lda	<L38+num_0
+   831 00:D50A: A2 0A 00     	ldx	#<$a
+   832                        ;	jsr	~udv
+   833 00:D50D: 20 C4 D1     	jsr	mod
+   834 00:D510: AD 1C 7F     	lda	div_y
+   835 00:D513: 85 09        	sta	<L38+num_0
+   836 00:D515: E6 01        	inc	<L39+cnt_1
+   837                        L10020:
+   838 00:D517: A9 00 00     	lda	#$0
+   839 00:D51A: C5 09        	cmp	<L38+num_0
+   840 00:D51C: B0 03        	bcs	L40
+   841 00:D51E: 82 D4 FF     	brl	L10022
+   842                        L40:
+   843                        L10021:
+   844 00:D521: E2 20        	sep	#$20
+   845                        	longa	off
+   846 00:D523: A9 00        	lda	#$0
+   847 00:D525: 92 07        	sta	(<L38+buf_0)
+   848 00:D527: C2 20        	rep	#$20
+   849                        	longa	on
+   850 00:D529: A5 01        	lda	<L39+cnt_1
+   851                        L41:
+   852 00:D52B: A8           	tay
+   853 00:D52C: A5 05        	lda	<L38+1
+   854 00:D52E: 85 09        	sta	<L38+1+4
+   855 00:D530: 2B           	pld
+   856 00:D531: 3B           	tsc
+   857 00:D532: 18           	clc
+   858 00:D533: 69 08 00     	adc	#L38+4
+   859 00:D536: 1B           	tcs
+   860 00:D537: 98           	tya
+   861 00:D538: 60           	rts
+   862             00000004   L38	equ	4
+   863             00000001   L39	equ	1
+   864                        
+   865                        mk_dStr:
+   866                        	longa	on
+   867                        	longi	on
+   868 00:D539: 3B           	tsc
+   869 00:D53A: 38           	sec
+   870 00:D53B: E9 1C 00     	sbc	#L42
+   871 00:D53E: 1B           	tcs
+   872 00:D53F: 0B           	phd
+   873 00:D540: 5B           	tcd
+   874             00000003   d_buf_0	set	3
+   875             00000005   num_0	set	5
+   876             00000007   digit_0	set	7
+   877             00000000   s_buf_1	set	0
+   878             00000008   i_1	set	8
+   879             0000000A   j_1	set	10
+   880             0000000C   cnt_1	set	12
+   881             0000000E   sign_1	set	14
+   882 00:D541: 64 1B        	stz	<L43+sign_1
+   883 00:D543: A5 21        	lda	<L42+num_0
+   884 00:D545: 29 00 80     	and	#<$8000
+   885 00:D548: D0 03        	bne	L44
+   886 00:D54A: 82 11 00     	brl	L10023
+   887                        L44:
+   888 00:D54D: A9 01 00     	lda	#$1
+   889 00:D550: 85 1B        	sta	<L43+sign_1
+   890 00:D552: A5 21        	lda	<L42+num_0
+   891 00:D554: 49 FF FF     	eor	#<$ffffffff
+   892 00:D557: 85 01        	sta	<R0
+   893 00:D559: A5 01        	lda	<R0
+   894 00:D55B: 1A           	ina
+   895 00:D55C: 85 21        	sta	<L42+num_0
+   896                        L10023:
+   897 00:D55E: D4 21        	pei	<L42+num_0
+   898 00:D560: 18           	clc
+   899 00:D561: 7B           	tdc
+   900 00:D562: 69 0D 00     	adc	#<L43+s_buf_1
+   901 00:D565: 48           	pha
+   902 00:D566: 20 EB D4     	jsr	g_decStr
+   903 00:D569: 85 19        	sta	<L43+cnt_1
+   904 00:D56B: A5 19        	lda	<L43+cnt_1
+   905 00:D56D: 85 17        	sta	<L43+j_1
+   906 00:D56F: A5 1B        	lda	<L43+sign_1
+   907 00:D571: D0 03        	bne	L45
+   908 00:D573: 82 02 00     	brl	L10024
+   909                        L45:
+   910 00:D576: E6 19        	inc	<L43+cnt_1
+   911                        L10024:
+   912 00:D578: 64 15        	stz	<L43+i_1
+   913                        L10025:
+   914 00:D57A: 38           	sec
+   915 00:D57B: A5 19        	lda	<L43+cnt_1
+   916 00:D57D: E5 23        	sbc	<L42+digit_0
+   917 00:D57F: 70 03        	bvs	L46
+   918 00:D581: 49 00 80     	eor	#$8000
+   919                        L46:
+   920 00:D584: 10 03        	bpl	L47
+   921 00:D586: 82 16 00     	brl	L10026
+   922                        L47:
+   923 00:D589: 18           	clc
+   924 00:D58A: A5 1F        	lda	<L42+d_buf_0
+   925 00:D58C: 65 15        	adc	<L43+i_1
+   926 00:D58E: 85 01        	sta	<R0
+   927 00:D590: E2 20        	sep	#$20
+   928                        	longa	off
+   929 00:D592: A9 20        	lda	#$20
+   930 00:D594: 92 01        	sta	(<R0)
+   931 00:D596: C2 20        	rep	#$20
+   932                        	longa	on
+   933 00:D598: E6 15        	inc	<L43+i_1
+   934 00:D59A: C6 23        	dec	<L42+digit_0
+   935 00:D59C: 82 DB FF     	brl	L10025
+   936                        L10026:
+   937 00:D59F: A5 1B        	lda	<L43+sign_1
+   938 00:D5A1: D0 03        	bne	L48
+   939 00:D5A3: 82 11 00     	brl	L10027
+   940                        L48:
+   941 00:D5A6: 18           	clc
+   942 00:D5A7: A5 1F        	lda	<L42+d_buf_0
+   943 00:D5A9: 65 15        	adc	<L43+i_1
+   944 00:D5AB: 85 01        	sta	<R0
+   945 00:D5AD: E2 20        	sep	#$20
+   946                        	longa	off
+   947 00:D5AF: A9 2D        	lda	#$2d
+   948 00:D5B1: 92 01        	sta	(<R0)
+   949 00:D5B3: C2 20        	rep	#$20
+   950                        	longa	on
+   951 00:D5B5: E6 15        	inc	<L43+i_1
+   952                        L10027:
+   953                        L10028:
+   954 00:D5B7: A5 17        	lda	<L43+j_1
+   955 00:D5B9: D0 03        	bne	L49
+   956 00:D5BB: 82 2C 00     	brl	L10029
+   957                        L49:
+   958 00:D5BE: 18           	clc
+   959 00:D5BF: A5 1F        	lda	<L42+d_buf_0
+   960 00:D5C1: 65 15        	adc	<L43+i_1
+   961 00:D5C3: 85 01        	sta	<R0
+   962 00:D5C5: 18           	clc
+   963 00:D5C6: 7B           	tdc
+   964 00:D5C7: 69 0D 00     	adc	#<L43+s_buf_1
+   965 00:D5CA: 85 05        	sta	<R1
+   966 00:D5CC: 18           	clc
+   967 00:D5CD: A9 FF FF     	lda	#$ffff
+   968 00:D5D0: 65 05        	adc	<R1
+   969 00:D5D2: 85 09        	sta	<R2
+   970 00:D5D4: 18           	clc
+   971 00:D5D5: A5 09        	lda	<R2
+   972 00:D5D7: 65 17        	adc	<L43+j_1
+   973 00:D5D9: 85 05        	sta	<R1
+   974 00:D5DB: E2 20        	sep	#$20
+   975                        	longa	off
+   976 00:D5DD: B2 05        	lda	(<R1)
+   977 00:D5DF: 92 01        	sta	(<R0)
+   978 00:D5E1: C2 20        	rep	#$20
+   979                        	longa	on
+   980 00:D5E3: E6 15        	inc	<L43+i_1
+   981 00:D5E5: C6 17        	dec	<L43+j_1
+   982 00:D5E7: 82 CD FF     	brl	L10028
+   983                        L10029:
+   984 00:D5EA: 18           	clc
+   985 00:D5EB: A5 1F        	lda	<L42+d_buf_0
+   986 00:D5ED: 65 15        	adc	<L43+i_1
+   987 00:D5EF: 85 01        	sta	<R0
+   988 00:D5F1: E2 20        	sep	#$20
+   989                        	longa	off
+   990 00:D5F3: A9 00        	lda	#$0
+   991 00:D5F5: 92 01        	sta	(<R0)
+   992 00:D5F7: C2 20        	rep	#$20
+   993                        	longa	on
+   994                        L50:
+   995 00:D5F9: A5 1D        	lda	<L42+1
+   996 00:D5FB: 85 23        	sta	<L42+1+6
+   997 00:D5FD: 2B           	pld
+   998 00:D5FE: 3B           	tsc
+   999 00:D5FF: 18           	clc
+  1000 00:D600: 69 22 00     	adc	#L42+6
+  1001 00:D603: 1B           	tcs
+  1002 00:D604: 60           	rts
+  1003             0000001C   L42	equ	28
+  1004             0000000D   L43	equ	13
+  1005                        
+  1006                        g_hexStr:
+  1007                        	longa	on
+  1008                        	longi	on
+  1009 00:D605: 3B           	tsc
+  1010 00:D606: 38           	sec
+  1011 00:D607: E9 09 00     	sbc	#L51
+  1012 00:D60A: 1B           	tcs
+  1013 00:D60B: 0B           	phd
+  1014 00:D60C: 5B           	tcd
+  1015             00000003   buf_0	set	3
+  1016             00000005   num_0	set	5
+  1017             00000007   cnt_0	set	7
+  1018             00000000   i_1	set	0
+  1019             00000002   n_1	set	2
+  1020             00000003   msk_1	set	3
+  1021 00:D60D: A5 10        	lda	<L51+cnt_0
+  1022 00:D60F: C9 04 00     	cmp	#<$4
+  1023 00:D612: F0 03        	beq	L53
+  1024 00:D614: 82 08 00     	brl	L10030
+  1025                        L53:
+  1026 00:D617: A9 00 F0     	lda	#$f000
+  1027 00:D61A: 85 08        	sta	<L52+msk_1
+  1028 00:D61C: 82 05 00     	brl	L10031
+  1029                        L10030:
+  1030 00:D61F: A9 F0 00     	lda	#$f0
+  1031 00:D622: 85 08        	sta	<L52+msk_1
+  1032                        L10031:
+  1033 00:D624: A5 10        	lda	<L51+cnt_0
+  1034 00:D626: 0A           	asl	A
+  1035 00:D627: 0A           	asl	A
+  1036 00:D628: 85 01        	sta	<R0
+  1037 00:D62A: 18           	clc
+  1038 00:D62B: A9 FC FF     	lda	#$fffc
+  1039 00:D62E: 65 01        	adc	<R0
+  1040 00:D630: 85 05        	sta	<L52+i_1
+  1041                        L10034:
+  1042 00:D632: A5 08        	lda	<L52+msk_1
+  1043 00:D634: 25 0E        	and	<L51+num_0
+  1044 00:D636: A6 05        	ldx	<L52+i_1
+  1045                        ;	jsr	lsr
+  1046                        ; input A, X
+  1047                        ;
+  1048                        ; A = A << X
+  1049                        
+  1050                        shift_left:
+  1051 00:D638: 4A           	lsr	A
+  1052 00:D639: CA           	dex
+  1053 00:D63A: D0 FC        	bne	shift_left
+  1054                        
+  1055 00:D63C: 85 01        	sta	<R0
+  1056 00:D63E: E2 20        	sep	#$20
+  1057                        	longa	off
+  1058 00:D640: A5 01        	lda	<R0
+  1059 00:D642: 85 07        	sta	<L52+n_1
+  1060 00:D644: C2 20        	rep	#$20
+  1061                        	longa	on
+  1062 00:D646: A5 08        	lda	<L52+msk_1
+  1063 00:D648: 4A           	lsr	A
+  1064 00:D649: 4A           	lsr	A
+  1065 00:D64A: 4A           	lsr	A
+  1066 00:D64B: 4A           	lsr	A
+  1067 00:D64C: 85 08        	sta	<L52+msk_1
+  1068 00:D64E: E2 20        	sep	#$20
+  1069                        	longa	off
+  1070 00:D650: A9 09        	lda	#$9
+  1071 00:D652: C5 07        	cmp	<L52+n_1
+  1072 00:D654: C2 20        	rep	#$20
+  1073                        	longa	on
+  1074 00:D656: 90 03        	bcc	L54
+  1075 00:D658: 82 0E 00     	brl	L10035
+  1076                        L54:
+  1077 00:D65B: E2 20        	sep	#$20
+  1078                        	longa	off
+  1079 00:D65D: 18           	clc
+  1080 00:D65E: A9 37        	lda	#$37
+  1081 00:D660: 65 07        	adc	<L52+n_1
+  1082 00:D662: 85 07        	sta	<L52+n_1
+  1083 00:D664: C2 20        	rep	#$20
+  1084                        	longa	on
+  1085 00:D666: 82 0B 00     	brl	L10036
+  1086                        L10035:
+  1087 00:D669: E2 20        	sep	#$20
+  1088                        	longa	off
+  1089 00:D66B: 18           	clc
+  1090 00:D66C: A9 30        	lda	#$30
+  1091 00:D66E: 65 07        	adc	<L52+n_1
+  1092 00:D670: 85 07        	sta	<L52+n_1
+  1093 00:D672: C2 20        	rep	#$20
+  1094                        	longa	on
+  1095                        L10036:
+  1096 00:D674: E2 20        	sep	#$20
+  1097                        	longa	off
+  1098 00:D676: A5 07        	lda	<L52+n_1
+  1099 00:D678: 92 0C        	sta	(<L51+buf_0)
+  1100 00:D67A: C2 20        	rep	#$20
+  1101                        	longa	on
+  1102 00:D67C: E6 0C        	inc	<L51+buf_0
+  1103 00:D67E: 18           	clc
+  1104 00:D67F: A9 FC FF     	lda	#$fffc
+  1105 00:D682: 65 05        	adc	<L52+i_1
+  1106 00:D684: 85 05        	sta	<L52+i_1
+  1107                        L10032:
+  1108 00:D686: A5 05        	lda	<L52+i_1
+  1109 00:D688: 30 03        	bmi	L55
+  1110 00:D68A: 82 A5 FF     	brl	L10034
+  1111                        L55:
+  1112                        L10033:
+  1113 00:D68D: E2 20        	sep	#$20
+  1114                        	longa	off
+  1115 00:D68F: A9 00        	lda	#$0
+  1116 00:D691: 92 0C        	sta	(<L51+buf_0)
+  1117 00:D693: C2 20        	rep	#$20
+  1118                        	longa	on
+  1119                        L56:
+  1120 00:D695: A5 0A        	lda	<L51+1
+  1121 00:D697: 85 10        	sta	<L51+1+6
+  1122 00:D699: 2B           	pld
+  1123 00:D69A: 3B           	tsc
+  1124 00:D69B: 18           	clc
+  1125 00:D69C: 69 0F 00     	adc	#L51+6
+  1126 00:D69F: 1B           	tcs
+  1127 00:D6A0: 60           	rts
+  1128             00000009   L51	equ	9
+  1129             00000005   L52	equ	5
+  1130                        
+  1131                        dispLine:
+  1132                        	longa	on
+  1133                        	longi	on
+  1134 00:D6A1: 3B           	tsc
+  1135 00:D6A2: 38           	sec
+  1136 00:D6A3: E9 12 00     	sbc	#L57
+  1137 00:D6A6: 1B           	tcs
+  1138 00:D6A7: 0B           	phd
+  1139 00:D6A8: 5B           	tcd
+  1140             00000003   p_0	set	3
+  1141             00000000   l_1	set	0
+  1142             00000002   s_1	set	2
+  1143 00:D6A9: B2 15        	lda	(<L57+p_0)
+  1144 00:D6AB: EB           	xba			; A(low) <-> A(high)
+  1145 00:D6AC: 85 09        	sta	<L58+l_1
+  1146 00:D6AE: E6 15        	inc	<L57+p_0
+  1147 00:D6B0: E6 15        	inc	<L57+p_0
+  1148 00:D6B2: F4 05 00     	pea	#<$5
+  1149 00:D6B5: D4 09        	pei	<L58+l_1
+  1150 00:D6B7: 18           	clc
+  1151 00:D6B8: 7B           	tdc
+  1152 00:D6B9: 69 0B 00     	adc	#<L58+s_1
+  1153 00:D6BC: 48           	pha
+  1154 00:D6BD: 20 39 D5     	jsr	mk_dStr
+  1155 00:D6C0: 18           	clc
+  1156 00:D6C1: 7B           	tdc
+  1157 00:D6C2: 69 0B 00     	adc	#<L58+s_1
+  1158 00:D6C5: 48           	pha
+  1159 00:D6C6: 20 0F D2     	jsr	c_puts
+  1160                        L10037:
+  1161 00:D6C9: B2 15        	lda	(<L57+p_0)
+  1162 00:D6CB: 29 FF 00     	and	#$ff
+  1163 00:D6CE: D0 03        	bne	L59
+  1164 00:D6D0: 82 12 00     	brl	L10038
+  1165                        L59:
+  1166 00:D6D3: A5 15        	lda	<L57+p_0
+  1167 00:D6D5: 85 01        	sta	<R0
+  1168 00:D6D7: E6 15        	inc	<L57+p_0
+  1169 00:D6D9: B2 01        	lda	(<R0)
+  1170 00:D6DB: 29 FF 00     	and	#$ff
+  1171 00:D6DE: 48           	pha
+  1172 00:D6DF: 20 26 D1     	jsr	c_putch
+  1173 00:D6E2: 82 E4 FF     	brl	L10037
+  1174                        L10038:
+  1175 00:D6E5: 20 E5 E3     	jsr	newline
+  1176 00:D6E8: A5 15        	lda	<L57+p_0
+  1177 00:D6EA: 1A           	ina
+  1178 00:D6EB: 85 01        	sta	<R0
+  1179 00:D6ED: A5 01        	lda	<R0
+  1180                        L60:
+  1181 00:D6EF: A8           	tay
+  1182 00:D6F0: A5 13        	lda	<L57+1
+  1183 00:D6F2: 85 15        	sta	<L57+1+2
+  1184 00:D6F4: 2B           	pld
+  1185 00:D6F5: 3B           	tsc
+  1186 00:D6F6: 18           	clc
+  1187 00:D6F7: 69 14 00     	adc	#L57+2
+  1188 00:D6FA: 1B           	tcs
+  1189 00:D6FB: 98           	tya
+  1190 00:D6FC: 60           	rts
+  1191             00000012   L57	equ	18
+  1192             00000009   L58	equ	9
+  1193                        
+  1194                        dispList:
+  1195                        	longa	on
+  1196                        	longi	on
+  1197 00:D6FD: 3B           	tsc
+  1198 00:D6FE: 38           	sec
+  1199 00:D6FF: E9 00 00     	sbc	#L61
+  1200 00:D702: 1B           	tcs
+  1201 00:D703: 0B           	phd
+  1202 00:D704: 5B           	tcd
+  1203             00000003   p_0	set	3
+  1204                        L10039:
+  1205 00:D705: E2 20        	sep	#$20
+  1206                        	longa	off
+  1207 00:D707: B2 03        	lda	(<L61+p_0)
+  1208 00:D709: 29 80        	and	#<$80
+  1209 00:D70B: C2 20        	rep	#$20
+  1210                        	longa	on
+  1211 00:D70D: F0 03        	beq	L63
+  1212 00:D70F: 82 0D 00     	brl	L10040
+  1213                        L63:
+  1214 00:D712: 20 34 D8     	jsr	breakCheck
+  1215 00:D715: D4 03        	pei	<L61+p_0
+  1216 00:D717: 20 A1 D6     	jsr	dispLine
+  1217 00:D71A: 85 03        	sta	<L61+p_0
+  1218 00:D71C: 82 E6 FF     	brl	L10039
+  1219                        L10040:
+  1220                        L64:
+  1221 00:D71F: A8           	tay
+  1222 00:D720: A5 01        	lda	<L61+1
+  1223 00:D722: 85 03        	sta	<L61+1+2
+  1224 00:D724: 2B           	pld
+  1225 00:D725: 3B           	tsc
+  1226 00:D726: 18           	clc
+  1227 00:D727: 69 02 00     	adc	#L61+2
+  1228 00:D72A: 1B           	tcs
+  1229 00:D72B: 98           	tya
+  1230 00:D72C: 60           	rts
+  1231             00000000   L61	equ	0
+  1232             00000001   L62	equ	1
+  1233                        
+  1234                        skipBlank:
+  1235                        	longa	on
+  1236                        	longi	on
+  1237 00:D72D: 3B           	tsc
+  1238 00:D72E: 38           	sec
+  1239 00:D72F: E9 04 00     	sbc	#L65
+  1240 00:D732: 1B           	tcs
+  1241 00:D733: 0B           	phd
+  1242 00:D734: 5B           	tcd
+  1243                        L10041:
+  1244 00:D735: AD D0 7D     	lda	pc
+  1245 00:D738: 85 01        	sta	<R0
+  1246 00:D73A: E2 20        	sep	#$20
+  1247                        	longa	off
+  1248 00:D73C: B2 01        	lda	(<R0)
+  1249 00:D73E: C9 20        	cmp	#<$20
+  1250 00:D740: C2 20        	rep	#$20
+  1251                        	longa	on
+  1252 00:D742: D0 03        	bne	L67
+  1253 00:D744: 82 0A 00     	brl	L10043
+  1254                        L67:
+  1255                        L68:
+  1256 00:D747: A8           	tay
+  1257 00:D748: 2B           	pld
+  1258 00:D749: 3B           	tsc
+  1259 00:D74A: 18           	clc
+  1260 00:D74B: 69 04 00     	adc	#L65
+  1261 00:D74E: 1B           	tcs
+  1262 00:D74F: 98           	tya
+  1263 00:D750: 60           	rts
+  1264                        L10043:
+  1265 00:D751: EE D0 7D     	inc	pc
+  1266 00:D754: 82 DE FF     	brl	L10041
+  1267             00000004   L65	equ	4
+  1268             00000005   L66	equ	5
+  1269                        
+  1270                        skipAlpha:
+  1271                        	longa	on
+  1272                        	longi	on
+  1273 00:D757: 3B           	tsc
+  1274 00:D758: 38           	sec
+  1275 00:D759: E9 06 00     	sbc	#L69
+  1276 00:D75C: 1B           	tcs
+  1277 00:D75D: 0B           	phd
+  1278 00:D75E: 5B           	tcd
+  1279             00000000   x_1	set	0
+  1280                        L10044:
+  1281 00:D75F: AD D0 7D     	lda	pc
+  1282 00:D762: 85 01        	sta	<R0
+  1283 00:D764: B2 01        	lda	(<R0)
+  1284 00:D766: 29 FF 00     	and	#$ff
+  1285 00:D769: 85 05        	sta	<L70+x_1
+  1286 00:D76B: 38           	sec
+  1287 00:D76C: A5 05        	lda	<L70+x_1
+  1288 00:D76E: E9 41 00     	sbc	#<$41
+  1289 00:D771: 70 03        	bvs	L72
+  1290 00:D773: 49 00 80     	eor	#$8000
+  1291                        L72:
+  1292 00:D776: 30 03        	bmi	L73
+  1293 00:D778: 82 30 00     	brl	L71
+  1294                        L73:
+  1295 00:D77B: 38           	sec
+  1296 00:D77C: A9 7A 00     	lda	#$7a
+  1297 00:D77F: E5 05        	sbc	<L70+x_1
+  1298 00:D781: 70 03        	bvs	L74
+  1299 00:D783: 49 00 80     	eor	#$8000
+  1300                        L74:
+  1301 00:D786: 30 03        	bmi	L75
+  1302 00:D788: 82 20 00     	brl	L71
+  1303                        L75:
+  1304 00:D78B: 38           	sec
+  1305 00:D78C: A9 5A 00     	lda	#$5a
+  1306 00:D78F: E5 05        	sbc	<L70+x_1
+  1307 00:D791: 70 03        	bvs	L76
+  1308 00:D793: 49 00 80     	eor	#$8000
+  1309                        L76:
+  1310 00:D796: 10 03        	bpl	L77
+  1311 00:D798: 82 1C 00     	brl	L10046
+  1312                        L77:
+  1313 00:D79B: 38           	sec
+  1314 00:D79C: A5 05        	lda	<L70+x_1
+  1315 00:D79E: E9 61 00     	sbc	#<$61
+  1316 00:D7A1: 70 03        	bvs	L78
+  1317 00:D7A3: 49 00 80     	eor	#$8000
+  1318                        L78:
+  1319 00:D7A6: 10 03        	bpl	L79
+  1320 00:D7A8: 82 0C 00     	brl	L10046
+  1321                        L79:
+  1322                        L71:
+  1323 00:D7AB: A5 05        	lda	<L70+x_1
+  1324                        L80:
+  1325 00:D7AD: A8           	tay
+  1326 00:D7AE: 2B           	pld
+  1327 00:D7AF: 3B           	tsc
+  1328 00:D7B0: 18           	clc
+  1329 00:D7B1: 69 06 00     	adc	#L69
+  1330 00:D7B4: 1B           	tcs
+  1331 00:D7B5: 98           	tya
+  1332 00:D7B6: 60           	rts
+  1333                        L10046:
+  1334 00:D7B7: EE D0 7D     	inc	pc
+  1335 00:D7BA: 82 A2 FF     	brl	L10044
+  1336             00000006   L69	equ	6
+  1337             00000005   L70	equ	5
+  1338                        
+  1339                        exqt:
+  1340                        	longa	on
+  1341                        	longi	on
+  1342 00:D7BD: 3B           	tsc
+  1343 00:D7BE: 38           	sec
+  1344 00:D7BF: E9 00 00     	sbc	#L81
+  1345 00:D7C2: 1B           	tcs
+  1346 00:D7C3: 0B           	phd
+  1347 00:D7C4: 5B           	tcd
+  1348                        L10047:
+  1349 00:D7C5: 20 2D D7     	jsr	skipBlank
+  1350 00:D7C8: 20 7F D8     	jsr	do_cmd
+  1351 00:D7CB: 82 F7 FF     	brl	L10047
+  1352             00000000   L81	equ	0
+  1353             00000001   L82	equ	1
+  1354                        
+  1355                        topOfLine:
+  1356                        	longa	on
+  1357                        	longi	on
+  1358 00:D7CE: 3B           	tsc
+  1359 00:D7CF: 38           	sec
+  1360 00:D7D0: E9 0C 00     	sbc	#L83
+  1361 00:D7D3: 1B           	tcs
+  1362 00:D7D4: 0B           	phd
+  1363 00:D7D5: 5B           	tcd
+  1364             00000000   x_1	set	0
+  1365             00000002   c_1	set	2
+  1366                        L10049:
+  1367 00:D7D6: AD D0 7D     	lda	pc
+  1368 00:D7D9: 85 01        	sta	<R0
+  1369 00:D7DB: B2 01        	lda	(<R0)
+  1370 00:D7DD: 29 FF 00     	and	#$ff
+  1371 00:D7E0: 85 09        	sta	<L84+x_1
+  1372                        ;	lda	<L84+x_1
+  1373 00:D7E2: 29 80 00     	and	#<$80
+  1374 00:D7E5: D0 03        	bne	L85
+  1375 00:D7E7: 82 06 00     	brl	L10050
+  1376                        L85:
+  1377 00:D7EA: F4 00 00     	pea	#<$0
+  1378 00:D7ED: 20 0D E3     	jsr	w_boot
+  1379                        L10050:
+  1380 00:D7F0: AD D0 7D     	lda	pc
+  1381 00:D7F3: 85 01        	sta	<R0
+  1382 00:D7F5: B2 01        	lda	(<R0)
+  1383 00:D7F7: EB           	xba			; A(low) <-> A(high)
+  1384 00:D7F8: 8D 04 7D     	sta	lno
+  1385 00:D7FB: EE D0 7D     	inc	pc
+  1386 00:D7FE: EE D0 7D     	inc	pc
+  1387 00:D801: AD D0 7D     	lda	pc
+  1388 00:D804: 85 01        	sta	<R0
+  1389 00:D806: E2 20        	sep	#$20
+  1390                        	longa	off
+  1391 00:D808: B2 01        	lda	(<R0)
+  1392 00:D80A: C9 20        	cmp	#<$20
+  1393 00:D80C: C2 20        	rep	#$20
+  1394                        	longa	on
+  1395 00:D80E: D0 03        	bne	L86
+  1396 00:D810: 82 0D 00     	brl	L10051
+  1397                        L86:
+  1398 00:D813: AD D0 7D     	lda	pc
+  1399 00:D816: 48           	pha
+  1400 00:D817: 20 FB D2     	jsr	skipLine
+  1401 00:D81A: 8D D0 7D     	sta	pc
+  1402 00:D81D: 82 B6 FF     	brl	L10049
+  1403                        L10051:
+  1404                        L87:
+  1405 00:D820: A8           	tay
+  1406 00:D821: 2B           	pld
+  1407 00:D822: 3B           	tsc
+  1408 00:D823: 18           	clc
+  1409 00:D824: 69 0C 00     	adc	#L83
+  1410 00:D827: 1B           	tcs
+  1411 00:D828: 98           	tya
+  1412 00:D829: 60           	rts
+  1413             0000000C   L83	equ	12
+  1414             00000009   L84	equ	9
+  1415                        
+  1416                        bk_msg:
+  1417 00:D82A: 2C D8        	dw	L8+0
+  1418                        
+  1419                        L8:
+  1420 00:D82C: 0D 0A 53 74  	db	$0D,$0A,$53,$74,$6F,$70,$21,$00
+       00:D830: 6F 70 21 00 
+  1421                        
+  1422                        breakCheck:
+  1423                        	longa	on
+  1424                        	longi	on
+  1425 00:D834: 3B           	tsc
+  1426 00:D835: 38           	sec
+  1427 00:D836: E9 06 00     	sbc	#L89
+  1428 00:D839: 1B           	tcs
+  1429 00:D83A: 0B           	phd
+  1430 00:D83B: 5B           	tcd
+  1431             00000000   c_1	set	0
+  1432 00:D83C: 20 23 D1     	jsr	c_kbhit
+  1433 00:D83F: 29 FF 00     	and	#$ff
+  1434 00:D842: D0 03        	bne	L91
+  1435 00:D844: 82 2E 00     	brl	L10052
+  1436                        L91:
+  1437 00:D847: 20 20 D1     	jsr	c_getch
+  1438 00:D84A: E2 20        	sep	#$20
+  1439                        	longa	off
+  1440 00:D84C: 85 01        	sta	<R0
+  1441 00:D84E: C2 20        	rep	#$20
+  1442                        	longa	on
+  1443 00:D850: A5 01        	lda	<R0
+  1444 00:D852: 29 FF 00     	and	#$ff
+  1445 00:D855: 85 05        	sta	<L90+c_1
+  1446 00:D857: A5 05        	lda	<L90+c_1
+  1447 00:D859: C9 03 00     	cmp	#<$3
+  1448 00:D85C: F0 03        	beq	L92
+  1449 00:D85E: 82 07 00     	brl	L10053
+  1450                        L92:
+  1451 00:D861: AD 2A D8     	lda	bk_msg
+  1452 00:D864: 48           	pha
+  1453 00:D865: 20 0D E3     	jsr	w_boot
+  1454                        L10053:
+  1455 00:D868: A5 05        	lda	<L90+c_1
+  1456 00:D86A: C9 13 00     	cmp	#<$13
+  1457 00:D86D: F0 03        	beq	L93
+  1458 00:D86F: 82 03 00     	brl	L10054
+  1459                        L93:
+  1460 00:D872: 20 20 D1     	jsr	c_getch
+  1461                        L10054:
+  1462                        L10052:
+  1463                        L94:
+  1464 00:D875: A8           	tay
+  1465 00:D876: 2B           	pld
+  1466 00:D877: 3B           	tsc
+  1467 00:D878: 18           	clc
+  1468 00:D879: 69 06 00     	adc	#L89
+  1469 00:D87C: 1B           	tcs
+  1470 00:D87D: 98           	tya
+  1471 00:D87E: 60           	rts
+  1472             00000006   L89	equ	6
+  1473             00000005   L90	equ	5
+  1474                        
+  1475                        do_cmd:
+  1476                        	longa	on
+  1477                        	longi	on
+  1478 00:D87F: 3B           	tsc
+  1479 00:D880: 38           	sec
+  1480 00:D881: E9 1A 00     	sbc	#L95
+  1481 00:D884: 1B           	tcs
+  1482 00:D885: 0B           	phd
+  1483 00:D886: 5B           	tcd
+  1484             00000000   c_1	set	0
+  1485             00000002   c1_1	set	2
+  1486             00000004   c2_1	set	4
+  1487             00000006   e_1	set	6
+  1488             00000008   vmode_1	set	8
+  1489             0000000A   off_1	set	10
+  1490             0000000C   tp_1	set	12
+  1491 00:D887: 20 34 D8     	jsr	breakCheck
+  1492 00:D88A: AD D0 7D     	lda	pc
+  1493 00:D88D: 85 01        	sta	<R0
+  1494 00:D88F: B2 01        	lda	(<R0)
+  1495 00:D891: 29 FF 00     	and	#$ff
+  1496 00:D894: 85 0D        	sta	<L96+c_1
+  1497 00:D896: EE D0 7D     	inc	pc
+  1498 00:D899: AD D0 7D     	lda	pc
+  1499 00:D89C: 85 01        	sta	<R0
+  1500 00:D89E: B2 01        	lda	(<R0)
+  1501 00:D8A0: 29 FF 00     	and	#$ff
+  1502 00:D8A3: 85 0F        	sta	<L96+c1_1
+  1503 00:D8A5: A5 0D        	lda	<L96+c_1
+  1504 00:D8A7: 82 77 00     	brl	L10055
+  1505                        L10057:
+  1506 00:D8AA: 20 CE D7     	jsr	topOfLine
+  1507 00:D8AD: A9 01 00     	lda	#$1
+  1508                        L97:
+  1509 00:D8B0: A8           	tay
+  1510 00:D8B1: 2B           	pld
+  1511 00:D8B2: 3B           	tsc
+  1512 00:D8B3: 18           	clc
+  1513 00:D8B4: 69 1A 00     	adc	#L95
+  1514 00:D8B7: 1B           	tcs
+  1515 00:D8B8: 98           	tya
+  1516 00:D8B9: 60           	rts
+  1517                        L10058:
+  1518 00:D8BA: 20 12 DD     	jsr	pop
+  1519 00:D8BD: 85 19        	sta	<L96+tp_1
+  1520 00:D8BF: A5 19        	lda	<L96+tp_1
+  1521 00:D8C1: 8D D0 7D     	sta	pc
+  1522 00:D8C4: A9 00 00     	lda	#$0
+  1523 00:D8C7: 82 E6 FF     	brl	L97
+  1524                        L10059:
+  1525 00:D8CA: 20 D2 DC     	jsr	do_pr
+  1526 00:D8CD: A9 00 00     	lda	#$0
+  1527 00:D8D0: 82 DD FF     	brl	L97
+  1528                        L10060:
+  1529 00:D8D3: 20 E5 E3     	jsr	newline
+  1530 00:D8D6: A9 00 00     	lda	#$0
+  1531 00:D8D9: 82 D4 FF     	brl	L97
+  1532                        L10061:
+  1533 00:D8DC: A5 0F        	lda	<L96+c1_1
+  1534 00:D8DE: C9 3D 00     	cmp	#<$3d
+  1535 00:D8E1: F0 03        	beq	L98
+  1536 00:D8E3: 82 21 00     	brl	L10062
+  1537                        L98:
+  1538 00:D8E6: AD D0 7D     	lda	pc
+  1539 00:D8E9: 85 01        	sta	<R0
+  1540 00:D8EB: A0 01 00     	ldy	#$1
+  1541 00:D8EE: B1 01        	lda	(<R0),Y
+  1542 00:D8F0: 29 FF 00     	and	#$ff
+  1543 00:D8F3: 85 11        	sta	<L96+c2_1
+  1544 00:D8F5: 20 91 DD     	jsr	operand
+  1545 00:D8F8: 85 13        	sta	<L96+e_1
+  1546 00:D8FA: D4 11        	pei	<L96+c2_1
+  1547 00:D8FC: D4 13        	pei	<L96+e_1
+  1548 00:D8FE: 20 E7 DA     	jsr	do_until
+  1549 00:D901: A9 00 00     	lda	#$0
+  1550 00:D904: 82 A9 FF     	brl	L97
+  1551                        L10062:
+  1552 00:D907: 20 4F DB     	jsr	do_do
+  1553 00:D90A: A9 00 00     	lda	#$0
+  1554 00:D90D: 82 A0 FF     	brl	L97
+  1555                        L10063:
+  1556 00:D910: D4 0F        	pei	<L96+c1_1
+  1557 00:D912: 20 38 DC     	jsr	do_prNum
+  1558 00:D915: A9 00 00     	lda	#$0
+  1559 00:D918: 82 95 FF     	brl	L97
+  1560                        L10064:
+  1561 00:D91B: 20 57 D1     	jsr	mach_fin
+  1562 00:D91E: 82 23 00     	brl	L10056
+  1563                        L10055:
+  1564 00:D921: 20 F3 D1     	jsr	swt
+  1565 00:D924: 07 00        	dw	7
+  1566 00:D926: 00 00        	dw	0
+  1567 00:D928: A9 D8        	dw	L10057-1
+  1568 00:D92A: 22 00        	dw	34
+  1569 00:D92C: C9 D8        	dw	L10059-1
+  1570 00:D92E: 2F 00        	dw	47
+  1571 00:D930: D2 D8        	dw	L10060-1
+  1572 00:D932: 3F 00        	dw	63
+  1573 00:D934: 0F D9        	dw	L10063-1
+  1574 00:D936: 40 00        	dw	64
+  1575 00:D938: DB D8        	dw	L10061-1
+  1576 00:D93A: 5C 00        	dw	92
+  1577 00:D93C: 1A D9        	dw	L10064-1
+  1578 00:D93E: 5D 00        	dw	93
+  1579 00:D940: B9 D8        	dw	L10058-1
+  1580 00:D942: 43 D9        	dw	L10056-1
+  1581                        L10056:
+  1582 00:D944: A5 0F        	lda	<L96+c1_1
+  1583 00:D946: C9 3D 00     	cmp	#<$3d
+  1584 00:D949: F0 03        	beq	L99
+  1585 00:D94B: 82 9D 00     	brl	L10065
+  1586                        L99:
+  1587 00:D94E: A5 0D        	lda	<L96+c_1
+  1588 00:D950: 82 75 00     	brl	L10066
+  1589                        L10068:
+  1590 00:D953: 20 91 DD     	jsr	operand
+  1591 00:D956: 85 13        	sta	<L96+e_1
+  1592 00:D958: D4 13        	pei	<L96+e_1
+  1593 00:D95A: 20 98 DB     	jsr	do_goto
+  1594 00:D95D: A9 00 00     	lda	#$0
+  1595 00:D960: 82 4D FF     	brl	L97
+  1596                        L10069:
+  1597 00:D963: 20 91 DD     	jsr	operand
+  1598 00:D966: 85 13        	sta	<L96+e_1
+  1599 00:D968: D4 13        	pei	<L96+e_1
+  1600 00:D96A: 20 D1 DB     	jsr	do_gosub
+  1601 00:D96D: A9 00 00     	lda	#$0
+  1602 00:D970: 82 3D FF     	brl	L97
+  1603                        L10070:
+  1604 00:D973: 20 91 DD     	jsr	operand
+  1605 00:D976: 85 13        	sta	<L96+e_1
+  1606 00:D978: D4 13        	pei	<L96+e_1
+  1607 00:D97A: 20 26 D1     	jsr	c_putch
+  1608 00:D97D: A9 00 00     	lda	#$0
+  1609 00:D980: 82 2D FF     	brl	L97
+  1610                        L10071:
+  1611 00:D983: 20 91 DD     	jsr	operand
+  1612 00:D986: 85 13        	sta	<L96+e_1
+  1613 00:D988: D4 13        	pei	<L96+e_1
+  1614 00:D98A: 20 03 DC     	jsr	do_prSpc
+  1615 00:D98D: A9 00 00     	lda	#$0
+  1616 00:D990: 82 1D FF     	brl	L97
+  1617                        L10072:
+  1618 00:D993: 20 91 DD     	jsr	operand
+  1619 00:D996: 85 13        	sta	<L96+e_1
+  1620 00:D998: D4 13        	pei	<L96+e_1
+  1621 00:D99A: 20 6E DB     	jsr	do_if
+  1622 00:D99D: A9 00 00     	lda	#$0
+  1623 00:D9A0: 82 0D FF     	brl	L97
+  1624                        L10073:
+  1625 00:D9A3: 20 91 DD     	jsr	operand
+  1626 00:D9A6: 85 13        	sta	<L96+e_1
+  1627 00:D9A8: D4 13        	pei	<L96+e_1
+  1628 00:D9AA: 20 40 D1     	jsr	srand
+  1629 00:D9AD: A9 00 00     	lda	#$0
+  1630 00:D9B0: 82 FD FE     	brl	L97
+  1631                        L10074:
+  1632 00:D9B3: 20 91 DD     	jsr	operand
+  1633 00:D9B6: 85 13        	sta	<L96+e_1
+  1634 00:D9B8: A5 13        	lda	<L96+e_1
+  1635 00:D9BA: F0 03        	beq	L100
+  1636 00:D9BC: 82 03 00     	brl	L10075
+  1637                        L100:
+  1638 00:D9BF: 20 93 E7     	jsr	newText
+  1639                        L10075:
+  1640 00:D9C2: A9 00 00     	lda	#$0
+  1641 00:D9C5: 82 E8 FE     	brl	L97
+  1642                        L10066:
+  1643 00:D9C8: 20 F3 D1     	jsr	swt
+  1644 00:D9CB: 07 00        	dw	7
+  1645 00:D9CD: 21 00        	dw	33
+  1646 00:D9CF: 62 D9        	dw	L10069-1
+  1647 00:D9D1: 23 00        	dw	35
+  1648 00:D9D3: 52 D9        	dw	L10068-1
+  1649 00:D9D5: 24 00        	dw	36
+  1650 00:D9D7: 72 D9        	dw	L10070-1
+  1651 00:D9D9: 26 00        	dw	38
+  1652 00:D9DB: B2 D9        	dw	L10074-1
+  1653 00:D9DD: 27 00        	dw	39
+  1654 00:D9DF: A2 D9        	dw	L10073-1
+  1655 00:D9E1: 2E 00        	dw	46
+  1656 00:D9E3: 82 D9        	dw	L10071-1
+  1657 00:D9E5: 3B 00        	dw	59
+  1658 00:D9E7: 92 D9        	dw	L10072-1
+  1659 00:D9E9: EA D9        	dw	L10067-1
+  1660                        L10067:
+  1661                        L10065:
+  1662 00:D9EB: 20 57 D7     	jsr	skipAlpha
+  1663 00:D9EE: 85 15        	sta	<L96+vmode_1
+  1664 00:D9F0: A5 15        	lda	<L96+vmode_1
+  1665 00:D9F2: C9 3A 00     	cmp	#<$3a
+  1666 00:D9F5: D0 03        	bne	L102
+  1667 00:D9F7: 82 0A 00     	brl	L101
+  1668                        L102:
+  1669 00:D9FA: A5 15        	lda	<L96+vmode_1
+  1670 00:D9FC: C9 28 00     	cmp	#<$28
+  1671 00:D9FF: F0 03        	beq	L103
+  1672 00:DA01: 82 8D 00     	brl	L10076
+  1673                        L103:
+  1674                        L101:
+  1675 00:DA04: EE D0 7D     	inc	pc
+  1676 00:DA07: AD D0 7D     	lda	pc
+  1677 00:DA0A: 85 01        	sta	<R0
+  1678 00:DA0C: EE D0 7D     	inc	pc
+  1679 00:DA0F: B2 01        	lda	(<R0)
+  1680 00:DA11: 29 FF 00     	and	#$ff
+  1681 00:DA14: 48           	pha
+  1682 00:DA15: 20 EA DD     	jsr	expr
+  1683 00:DA18: 85 17        	sta	<L96+off_1
+  1684 00:DA1A: 18           	clc
+  1685 00:DA1B: A9 FF FF     	lda	#$ffff
+  1686 00:DA1E: 6D D0 7D     	adc	pc
+  1687 00:DA21: 85 01        	sta	<R0
+  1688 00:DA23: E2 20        	sep	#$20
+  1689                        	longa	off
+  1690 00:DA25: B2 01        	lda	(<R0)
+  1691 00:DA27: C9 29        	cmp	#<$29
+  1692 00:DA29: C2 20        	rep	#$20
+  1693                        	longa	on
+  1694 00:DA2B: D0 03        	bne	L104
+  1695 00:DA2D: 82 06 00     	brl	L10077
+  1696                        L104:
+  1697 00:DA30: F4 E5 DA     	pea	#<L88
+  1698 00:DA33: 20 35 E3     	jsr	er_boot
+  1699                        L10077:
+  1700 00:DA36: 20 91 DD     	jsr	operand
+  1701 00:DA39: 85 13        	sta	<L96+e_1
+  1702 00:DA3B: A5 15        	lda	<L96+vmode_1
+  1703 00:DA3D: C9 3A 00     	cmp	#<$3a
+  1704 00:DA40: F0 03        	beq	L105
+  1705 00:DA42: 82 1F 00     	brl	L10078
+  1706                        L105:
+  1707 00:DA45: A5 0D        	lda	<L96+c_1
+  1708 00:DA47: 0A           	asl	A
+  1709 00:DA48: 85 01        	sta	<R0
+  1710 00:DA4A: 18           	clc
+  1711 00:DA4B: A9 04 7C     	lda	#<var
+  1712 00:DA4E: 65 01        	adc	<R0
+  1713 00:DA50: 85 05        	sta	<R1
+  1714 00:DA52: 18           	clc
+  1715 00:DA53: B2 05        	lda	(<R1)
+  1716 00:DA55: 65 17        	adc	<L96+off_1
+  1717 00:DA57: 85 01        	sta	<R0
+  1718 00:DA59: E2 20        	sep	#$20
+  1719                        	longa	off
+  1720 00:DA5B: A5 13        	lda	<L96+e_1
+  1721 00:DA5D: 92 01        	sta	(<R0)
+  1722 00:DA5F: C2 20        	rep	#$20
+  1723                        	longa	on
+  1724 00:DA61: 82 27 00     	brl	L10079
+  1725                        L10078:
+  1726 00:DA64: A5 15        	lda	<L96+vmode_1
+  1727 00:DA66: C9 28 00     	cmp	#<$28
+  1728 00:DA69: F0 03        	beq	L106
+  1729 00:DA6B: 82 1D 00     	brl	L10080
+  1730                        L106:
+  1731 00:DA6E: A5 0D        	lda	<L96+c_1
+  1732 00:DA70: 0A           	asl	A
+  1733 00:DA71: 85 01        	sta	<R0
+  1734 00:DA73: 18           	clc
+  1735 00:DA74: A9 04 7C     	lda	#<var
+  1736 00:DA77: 65 01        	adc	<R0
+  1737 00:DA79: 85 05        	sta	<R1
+  1738 00:DA7B: A5 17        	lda	<L96+off_1
+  1739 00:DA7D: 0A           	asl	A
+  1740 00:DA7E: 85 01        	sta	<R0
+  1741 00:DA80: 18           	clc
+  1742 00:DA81: B2 05        	lda	(<R1)
+  1743 00:DA83: 65 01        	adc	<R0
+  1744 00:DA85: 85 09        	sta	<R2
+  1745 00:DA87: A5 13        	lda	<L96+e_1
+  1746 00:DA89: 92 09        	sta	(<R2)
+  1747                        L10080:
+  1748                        L10079:
+  1749 00:DA8B: A9 00 00     	lda	#$0
+  1750 00:DA8E: 82 1F FE     	brl	L97
+  1751                        L10076:
+  1752 00:DA91: 20 91 DD     	jsr	operand
+  1753 00:DA94: 85 13        	sta	<L96+e_1
+  1754 00:DA96: A5 0D        	lda	<L96+c_1
+  1755 00:DA98: 0A           	asl	A
+  1756 00:DA99: 85 01        	sta	<R0
+  1757 00:DA9B: 18           	clc
+  1758 00:DA9C: A9 04 7C     	lda	#<var
+  1759 00:DA9F: 65 01        	adc	<R0
+  1760 00:DAA1: 85 05        	sta	<R1
+  1761 00:DAA3: A5 13        	lda	<L96+e_1
+  1762 00:DAA5: 92 05        	sta	(<R1)
+  1763 00:DAA7: 18           	clc
+  1764 00:DAA8: A9 FF FF     	lda	#$ffff
+  1765 00:DAAB: 6D D0 7D     	adc	pc
+  1766 00:DAAE: 85 01        	sta	<R0
+  1767 00:DAB0: E2 20        	sep	#$20
+  1768                        	longa	off
+  1769 00:DAB2: B2 01        	lda	(<R0)
+  1770 00:DAB4: C9 2C        	cmp	#<$2c
+  1771 00:DAB6: C2 20        	rep	#$20
+  1772                        	longa	on
+  1773 00:DAB8: F0 03        	beq	L107
+  1774 00:DABA: 82 22 00     	brl	L10081
+  1775                        L107:
+  1776 00:DABD: AD D0 7D     	lda	pc
+  1777 00:DAC0: 85 01        	sta	<R0
+  1778 00:DAC2: B2 01        	lda	(<R0)
+  1779 00:DAC4: 29 FF 00     	and	#$ff
+  1780 00:DAC7: 85 0D        	sta	<L96+c_1
+  1781 00:DAC9: EE D0 7D     	inc	pc
+  1782 00:DACC: D4 0D        	pei	<L96+c_1
+  1783 00:DACE: 20 EA DD     	jsr	expr
+  1784 00:DAD1: 85 13        	sta	<L96+e_1
+  1785 00:DAD3: AD D0 7D     	lda	pc
+  1786 00:DAD6: 48           	pha
+  1787 00:DAD7: 20 4B DD     	jsr	push
+  1788 00:DADA: D4 13        	pei	<L96+e_1
+  1789 00:DADC: 20 4B DD     	jsr	push
+  1790                        L10081:
+  1791 00:DADF: A9 00 00     	lda	#$0
+  1792 00:DAE2: 82 CB FD     	brl	L97
+  1793             0000001A   L95	equ	26
+  1794             0000000D   L96	equ	13
+  1795                        
+  1796                        L88:
+  1797 00:DAE5: 32 00        	db	$32,$00
+  1798                        
+  1799                        do_until:
+  1800                        	longa	on
+  1801                        	longi	on
+  1802 00:DAE7: 3B           	tsc
+  1803 00:DAE8: 38           	sec
+  1804 00:DAE9: E9 0C 00     	sbc	#L109
+  1805 00:DAEC: 1B           	tcs
+  1806 00:DAED: 0B           	phd
+  1807 00:DAEE: 5B           	tcd
+  1808             00000003   e_0	set	3
+  1809             00000005   val_0	set	5
+  1810 00:DAEF: A5 11        	lda	<L109+val_0
+  1811 00:DAF1: 0A           	asl	A
+  1812 00:DAF2: 85 01        	sta	<R0
+  1813 00:DAF4: 18           	clc
+  1814 00:DAF5: A9 04 7C     	lda	#<var
+  1815 00:DAF8: 65 01        	adc	<R0
+  1816 00:DAFA: 85 05        	sta	<R1
+  1817 00:DAFC: A5 0F        	lda	<L109+e_0
+  1818 00:DAFE: 92 05        	sta	(<R1)
+  1819 00:DB00: AD CE 7D     	lda	sp
+  1820 00:DB03: 0A           	asl	A
+  1821 00:DB04: 85 01        	sta	<R0
+  1822 00:DB06: 18           	clc
+  1823 00:DB07: A9 06 7D     	lda	#<stack
+  1824 00:DB0A: 65 01        	adc	<R0
+  1825 00:DB0C: 85 05        	sta	<R1
+  1826 00:DB0E: 38           	sec
+  1827 00:DB0F: B2 05        	lda	(<R1)
+  1828 00:DB11: E5 0F        	sbc	<L109+e_0
+  1829 00:DB13: 70 03        	bvs	L111
+  1830 00:DB15: 49 00 80     	eor	#$8000
+  1831                        L111:
+  1832 00:DB18: 10 03        	bpl	L112
+  1833 00:DB1A: 82 14 00     	brl	L10082
+  1834                        L112:
+  1835 00:DB1D: CE CE 7D     	dec	sp
+  1836 00:DB20: CE CE 7D     	dec	sp
+  1837                        L113:
+  1838 00:DB23: A8           	tay
+  1839 00:DB24: A5 0D        	lda	<L109+1
+  1840 00:DB26: 85 11        	sta	<L109+1+4
+  1841 00:DB28: 2B           	pld
+  1842 00:DB29: 3B           	tsc
+  1843 00:DB2A: 18           	clc
+  1844 00:DB2B: 69 10 00     	adc	#L109+4
+  1845 00:DB2E: 1B           	tcs
+  1846 00:DB2F: 98           	tya
+  1847 00:DB30: 60           	rts
+  1848                        L10082:
+  1849 00:DB31: AD CE 7D     	lda	sp
+  1850 00:DB34: 0A           	asl	A
+  1851 00:DB35: 85 01        	sta	<R0
+  1852 00:DB37: 18           	clc
+  1853 00:DB38: A9 FE FF     	lda	#$fffe
+  1854 00:DB3B: 69 06 7D     	adc	#<stack
+  1855 00:DB3E: 85 05        	sta	<R1
+  1856 00:DB40: 18           	clc
+  1857 00:DB41: A5 05        	lda	<R1
+  1858 00:DB43: 65 01        	adc	<R0
+  1859 00:DB45: 85 09        	sta	<R2
+  1860 00:DB47: B2 09        	lda	(<R2)
+  1861 00:DB49: 8D D0 7D     	sta	pc
+  1862 00:DB4C: 82 D4 FF     	brl	L113
+  1863             0000000C   L109	equ	12
+  1864             0000000D   L110	equ	13
+  1865                        
+  1866                        do_do:
+  1867                        	longa	on
+  1868                        	longi	on
+  1869 00:DB4F: 3B           	tsc
+  1870 00:DB50: 38           	sec
+  1871 00:DB51: E9 00 00     	sbc	#L114
+  1872 00:DB54: 1B           	tcs
+  1873 00:DB55: 0B           	phd
+  1874 00:DB56: 5B           	tcd
+  1875 00:DB57: AD D0 7D     	lda	pc
+  1876 00:DB5A: 48           	pha
+  1877 00:DB5B: 20 4B DD     	jsr	push
+  1878 00:DB5E: F4 00 00     	pea	#<$0
+  1879 00:DB61: 20 4B DD     	jsr	push
+  1880                        L116:
+  1881 00:DB64: A8           	tay
+  1882 00:DB65: 2B           	pld
+  1883 00:DB66: 3B           	tsc
+  1884 00:DB67: 18           	clc
+  1885 00:DB68: 69 00 00     	adc	#L114
+  1886 00:DB6B: 1B           	tcs
+  1887 00:DB6C: 98           	tya
+  1888 00:DB6D: 60           	rts
+  1889             00000000   L114	equ	0
+  1890             00000001   L115	equ	1
+  1891                        
+  1892                        do_if:
+  1893                        	longa	on
+  1894                        	longi	on
+  1895 00:DB6E: 3B           	tsc
+  1896 00:DB6F: 38           	sec
+  1897 00:DB70: E9 00 00     	sbc	#L117
+  1898 00:DB73: 1B           	tcs
+  1899 00:DB74: 0B           	phd
+  1900 00:DB75: 5B           	tcd
+  1901             00000003   e_0	set	3
+  1902 00:DB76: A5 03        	lda	<L117+e_0
+  1903 00:DB78: F0 03        	beq	L119
+  1904 00:DB7A: 82 0D 00     	brl	L10083
+  1905                        L119:
+  1906 00:DB7D: AD D0 7D     	lda	pc
+  1907 00:DB80: 48           	pha
+  1908 00:DB81: 20 FB D2     	jsr	skipLine
+  1909 00:DB84: 8D D0 7D     	sta	pc
+  1910 00:DB87: 20 CE D7     	jsr	topOfLine
+  1911                        L10083:
+  1912                        L120:
+  1913 00:DB8A: A8           	tay
+  1914 00:DB8B: A5 01        	lda	<L117+1
+  1915 00:DB8D: 85 03        	sta	<L117+1+2
+  1916 00:DB8F: 2B           	pld
+  1917 00:DB90: 3B           	tsc
+  1918 00:DB91: 18           	clc
+  1919 00:DB92: 69 02 00     	adc	#L117+2
+  1920 00:DB95: 1B           	tcs
+  1921 00:DB96: 98           	tya
+  1922 00:DB97: 60           	rts
+  1923             00000000   L117	equ	0
+  1924             00000001   L118	equ	1
+  1925                        
+  1926                        do_goto:
+  1927                        	longa	on
+  1928                        	longi	on
+  1929 00:DB98: 3B           	tsc
+  1930 00:DB99: 38           	sec
+  1931 00:DB9A: E9 04 00     	sbc	#L121
+  1932 00:DB9D: 1B           	tcs
+  1933 00:DB9E: 0B           	phd
+  1934 00:DB9F: 5B           	tcd
+  1935             00000003   n_0	set	3
+  1936             00000000   f_1	set	0
+  1937             00000002   p_1	set	2
+  1938 00:DBA0: A5 07        	lda	<L121+n_0
+  1939 00:DBA2: C9 FF FF     	cmp	#<$ffffffff
+  1940 00:DBA5: F0 03        	beq	L123
+  1941 00:DBA7: 82 06 00     	brl	L10084
+  1942                        L123:
+  1943 00:DBAA: F4 00 00     	pea	#<$0
+  1944 00:DBAD: 20 0D E3     	jsr	w_boot
+  1945                        L10084:
+  1946 00:DBB0: 18           	clc
+  1947 00:DBB1: 7B           	tdc
+  1948 00:DBB2: 69 01 00     	adc	#<L122+f_1
+  1949 00:DBB5: 48           	pha
+  1950 00:DBB6: D4 07        	pei	<L121+n_0
+  1951 00:DBB8: 20 27 D3     	jsr	searchLine
+  1952 00:DBBB: 85 03        	sta	<L122+p_1
+  1953                        ;	lda	<L122+p_1
+  1954 00:DBBD: 8D D0 7D     	sta	pc
+  1955 00:DBC0: 20 CE D7     	jsr	topOfLine
+  1956                        L124:
+  1957 00:DBC3: A8           	tay
+  1958 00:DBC4: A5 05        	lda	<L121+1
+  1959 00:DBC6: 85 07        	sta	<L121+1+2
+  1960 00:DBC8: 2B           	pld
+  1961 00:DBC9: 3B           	tsc
+  1962 00:DBCA: 18           	clc
+  1963 00:DBCB: 69 06 00     	adc	#L121+2
+  1964 00:DBCE: 1B           	tcs
+  1965 00:DBCF: 98           	tya
+  1966 00:DBD0: 60           	rts
+  1967             00000004   L121	equ	4
+  1968             00000001   L122	equ	1
+  1969                        
+  1970                        do_gosub:
+  1971                        	longa	on
+  1972                        	longi	on
+  1973 00:DBD1: 3B           	tsc
+  1974 00:DBD2: 38           	sec
+  1975 00:DBD3: E9 04 00     	sbc	#L125
+  1976 00:DBD6: 1B           	tcs
+  1977 00:DBD7: 0B           	phd
+  1978 00:DBD8: 5B           	tcd
+  1979             00000003   n_0	set	3
+  1980             00000000   f_1	set	0
+  1981             00000002   p_1	set	2
+  1982 00:DBD9: 18           	clc
+  1983 00:DBDA: 7B           	tdc
+  1984 00:DBDB: 69 01 00     	adc	#<L126+f_1
+  1985 00:DBDE: 48           	pha
+  1986 00:DBDF: D4 07        	pei	<L125+n_0
+  1987 00:DBE1: 20 27 D3     	jsr	searchLine
+  1988 00:DBE4: 85 03        	sta	<L126+p_1
+  1989 00:DBE6: AD D0 7D     	lda	pc
+  1990 00:DBE9: 48           	pha
+  1991 00:DBEA: 20 4B DD     	jsr	push
+  1992 00:DBED: A5 03        	lda	<L126+p_1
+  1993 00:DBEF: 8D D0 7D     	sta	pc
+  1994 00:DBF2: 20 CE D7     	jsr	topOfLine
+  1995                        L127:
+  1996 00:DBF5: A8           	tay
+  1997 00:DBF6: A5 05        	lda	<L125+1
+  1998 00:DBF8: 85 07        	sta	<L125+1+2
+  1999 00:DBFA: 2B           	pld
+  2000 00:DBFB: 3B           	tsc
+  2001 00:DBFC: 18           	clc
+  2002 00:DBFD: 69 06 00     	adc	#L125+2
+  2003 00:DC00: 1B           	tcs
+  2004 00:DC01: 98           	tya
+  2005 00:DC02: 60           	rts
+  2006             00000004   L125	equ	4
+  2007             00000001   L126	equ	1
+  2008                        
+  2009                        do_prSpc:
+  2010                        	longa	on
+  2011                        	longi	on
+  2012 00:DC03: 3B           	tsc
+  2013 00:DC04: 38           	sec
+  2014 00:DC05: E9 02 00     	sbc	#L128
+  2015 00:DC08: 1B           	tcs
+  2016 00:DC09: 0B           	phd
+  2017 00:DC0A: 5B           	tcd
+  2018             00000003   e_0	set	3
+  2019             00000000   i_1	set	0
+  2020 00:DC0B: 64 01        	stz	<L129+i_1
+  2021 00:DC0D: 82 02 00     	brl	L10086
+  2022                        L10085:
+  2023 00:DC10: E6 01        	inc	<L129+i_1
+  2024                        L10086:
+  2025 00:DC12: 38           	sec
+  2026 00:DC13: A5 01        	lda	<L129+i_1
+  2027 00:DC15: E5 05        	sbc	<L128+e_0
+  2028 00:DC17: 70 03        	bvs	L130
+  2029 00:DC19: 49 00 80     	eor	#$8000
+  2030                        L130:
+  2031 00:DC1C: 10 03        	bpl	L131
+  2032 00:DC1E: 82 09 00     	brl	L10087
+  2033                        L131:
+  2034 00:DC21: F4 20 00     	pea	#<$20
+  2035 00:DC24: 20 26 D1     	jsr	c_putch
+  2036 00:DC27: 82 E6 FF     	brl	L10085
+  2037                        L10087:
+  2038                        L132:
+  2039 00:DC2A: A8           	tay
+  2040 00:DC2B: A5 03        	lda	<L128+1
+  2041 00:DC2D: 85 05        	sta	<L128+1+2
+  2042 00:DC2F: 2B           	pld
+  2043 00:DC30: 3B           	tsc
+  2044 00:DC31: 18           	clc
+  2045 00:DC32: 69 04 00     	adc	#L128+2
+  2046 00:DC35: 1B           	tcs
+  2047 00:DC36: 98           	tya
+  2048 00:DC37: 60           	rts
+  2049             00000002   L128	equ	2
+  2050             00000001   L129	equ	1
+  2051                        
+  2052                        do_prNum:
+  2053                        	longa	on
+  2054                        	longi	on
+  2055 00:DC38: 3B           	tsc
+  2056 00:DC39: 38           	sec
+  2057 00:DC3A: E9 04 00     	sbc	#L133
+  2058 00:DC3D: 1B           	tcs
+  2059 00:DC3E: 0B           	phd
+  2060 00:DC3F: 5B           	tcd
+  2061             00000003   c1_0	set	3
+  2062             00000000   e_1	set	0
+  2063             00000002   digit_1	set	2
+  2064 00:DC40: A5 07        	lda	<L133+c1_0
+  2065 00:DC42: C9 28 00     	cmp	#<$28
+  2066 00:DC45: F0 03        	beq	L135
+  2067 00:DC47: 82 2D 00     	brl	L10088
+  2068                        L135:
+  2069 00:DC4A: EE D0 7D     	inc	pc
+  2070 00:DC4D: D4 07        	pei	<L133+c1_0
+  2071 00:DC4F: 20 29 E0     	jsr	term
+  2072 00:DC52: 85 03        	sta	<L134+digit_1
+  2073 00:DC54: 20 91 DD     	jsr	operand
+  2074 00:DC57: 85 01        	sta	<L134+e_1
+  2075 00:DC59: D4 03        	pei	<L134+digit_1
+  2076 00:DC5B: D4 01        	pei	<L134+e_1
+  2077 00:DC5D: F4 D2 7D     	pea	#<lky_buf
+  2078 00:DC60: 20 39 D5     	jsr	mk_dStr
+  2079 00:DC63: F4 D2 7D     	pea	#<lky_buf
+  2080 00:DC66: 20 0F D2     	jsr	c_puts
+  2081                        L136:
+  2082 00:DC69: A8           	tay
+  2083 00:DC6A: A5 05        	lda	<L133+1
+  2084 00:DC6C: 85 07        	sta	<L133+1+2
+  2085 00:DC6E: 2B           	pld
+  2086 00:DC6F: 3B           	tsc
+  2087 00:DC70: 18           	clc
+  2088 00:DC71: 69 06 00     	adc	#L133+2
+  2089 00:DC74: 1B           	tcs
+  2090 00:DC75: 98           	tya
+  2091 00:DC76: 60           	rts
+  2092                        L10088:
+  2093 00:DC77: 20 91 DD     	jsr	operand
+  2094 00:DC7A: 85 01        	sta	<L134+e_1
+  2095 00:DC7C: A5 07        	lda	<L133+c1_0
+  2096 00:DC7E: 82 33 00     	brl	L10089
+  2097                        L10091:
+  2098 00:DC81: F4 04 00     	pea	#<$4
+  2099 00:DC84: D4 01        	pei	<L134+e_1
+  2100 00:DC86: F4 D2 7D     	pea	#<lky_buf
+  2101 00:DC89: 20 05 D6     	jsr	g_hexStr
+  2102 00:DC8C: 82 38 00     	brl	L10090
+  2103                        L10092:
+  2104 00:DC8F: F4 02 00     	pea	#<$2
+  2105 00:DC92: D4 01        	pei	<L134+e_1
+  2106 00:DC94: F4 D2 7D     	pea	#<lky_buf
+  2107 00:DC97: 20 05 D6     	jsr	g_hexStr
+  2108 00:DC9A: 82 2A 00     	brl	L10090
+  2109                        L10093:
+  2110 00:DC9D: F4 01 00     	pea	#<$1
+  2111 00:DCA0: D4 01        	pei	<L134+e_1
+  2112 00:DCA2: F4 D2 7D     	pea	#<lky_buf
+  2113 00:DCA5: 20 39 D5     	jsr	mk_dStr
+  2114 00:DCA8: 82 1C 00     	brl	L10090
+  2115                        L10094:
+  2116 00:DCAB: F4 D0 DC     	pea	#<L108
+  2117 00:DCAE: 20 35 E3     	jsr	er_boot
+  2118 00:DCB1: 82 13 00     	brl	L10090
+  2119                        L10089:
+  2120 00:DCB4: 20 F3 D1     	jsr	swt
+  2121 00:DCB7: 03 00        	dw	3
+  2122 00:DCB9: 24 00        	dw	36
+  2123 00:DCBB: 8E DC        	dw	L10092-1
+  2124 00:DCBD: 3D 00        	dw	61
+  2125 00:DCBF: 9C DC        	dw	L10093-1
+  2126 00:DCC1: 3F 00        	dw	63
+  2127 00:DCC3: 80 DC        	dw	L10091-1
+  2128 00:DCC5: AA DC        	dw	L10094-1
+  2129                        L10090:
+  2130 00:DCC7: F4 D2 7D     	pea	#<lky_buf
+  2131 00:DCCA: 20 0F D2     	jsr	c_puts
+  2132 00:DCCD: 82 99 FF     	brl	L136
+  2133             00000004   L133	equ	4
+  2134             00000001   L134	equ	1
+  2135                        
+  2136                        L108:
+  2137 00:DCD0: 33 00        	db	$33,$00
+  2138                        
+  2139                        do_pr:
+  2140                        	longa	on
+  2141                        	longi	on
+  2142 00:DCD2: 3B           	tsc
+  2143 00:DCD3: 38           	sec
+  2144 00:DCD4: E9 06 00     	sbc	#L138
+  2145 00:DCD7: 1B           	tcs
+  2146 00:DCD8: 0B           	phd
+  2147 00:DCD9: 5B           	tcd
+  2148             00000000   x_1	set	0
+  2149                        L10095:
+  2150 00:DCDA: AD D0 7D     	lda	pc
+  2151 00:DCDD: 85 01        	sta	<R0
+  2152 00:DCDF: EE D0 7D     	inc	pc
+  2153 00:DCE2: B2 01        	lda	(<R0)
+  2154 00:DCE4: 29 FF 00     	and	#$ff
+  2155 00:DCE7: 85 05        	sta	<L139+x_1
+  2156 00:DCE9: A5 05        	lda	<L139+x_1
+  2157 00:DCEB: C9 22 00     	cmp	#<$22
+  2158 00:DCEE: D0 03        	bne	L140
+  2159 00:DCF0: 82 15 00     	brl	L10096
+  2160                        L140:
+  2161 00:DCF3: A5 05        	lda	<L139+x_1
+  2162 00:DCF5: F0 03        	beq	L141
+  2163 00:DCF7: 82 06 00     	brl	L10097
+  2164                        L141:
+  2165 00:DCFA: CE D0 7D     	dec	pc
+  2166 00:DCFD: 82 08 00     	brl	L10096
+  2167                        L10097:
+  2168 00:DD00: D4 05        	pei	<L139+x_1
+  2169 00:DD02: 20 26 D1     	jsr	c_putch
+  2170 00:DD05: 82 D2 FF     	brl	L10095
+  2171                        L10096:
+  2172                        L142:
+  2173 00:DD08: A8           	tay
+  2174 00:DD09: 2B           	pld
+  2175 00:DD0A: 3B           	tsc
+  2176 00:DD0B: 18           	clc
+  2177 00:DD0C: 69 06 00     	adc	#L138
+  2178 00:DD0F: 1B           	tcs
+  2179 00:DD10: 98           	tya
+  2180 00:DD11: 60           	rts
+  2181             00000006   L138	equ	6
+  2182             00000005   L139	equ	5
+  2183                        
+  2184                        pop:
+  2185                        	longa	on
+  2186                        	longi	on
+  2187 00:DD12: 3B           	tsc
+  2188 00:DD13: 38           	sec
+  2189 00:DD14: E9 08 00     	sbc	#L143
+  2190 00:DD17: 1B           	tcs
+  2191 00:DD18: 0B           	phd
+  2192 00:DD19: 5B           	tcd
+  2193 00:DD1A: AD CE 7D     	lda	sp
+  2194 00:DD1D: 30 03        	bmi	L145
+  2195 00:DD1F: 82 06 00     	brl	L10098
+  2196                        L145:
+  2197 00:DD22: F4 49 DD     	pea	#<L137
+  2198 00:DD25: 20 35 E3     	jsr	er_boot
+  2199                        L10098:
+  2200 00:DD28: AD CE 7D     	lda	sp
+  2201 00:DD2B: 85 05        	sta	<R1
+  2202 00:DD2D: CE CE 7D     	dec	sp
+  2203 00:DD30: A5 05        	lda	<R1
+  2204 00:DD32: 0A           	asl	A
+  2205 00:DD33: 85 01        	sta	<R0
+  2206 00:DD35: 18           	clc
+  2207 00:DD36: A9 06 7D     	lda	#<stack
+  2208 00:DD39: 65 01        	adc	<R0
+  2209 00:DD3B: 85 05        	sta	<R1
+  2210 00:DD3D: B2 05        	lda	(<R1)
+  2211                        L146:
+  2212 00:DD3F: A8           	tay
+  2213 00:DD40: 2B           	pld
+  2214 00:DD41: 3B           	tsc
+  2215 00:DD42: 18           	clc
+  2216 00:DD43: 69 08 00     	adc	#L143
+  2217 00:DD46: 1B           	tcs
+  2218 00:DD47: 98           	tya
+  2219 00:DD48: 60           	rts
+  2220             00000008   L143	equ	8
+  2221             00000009   L144	equ	9
+  2222                        
+  2223                        L137:
+  2224 00:DD49: 34 00        	db	$34,$00
+  2225                        
+  2226                        push:
+  2227                        	longa	on
+  2228                        	longi	on
+  2229 00:DD4B: 3B           	tsc
+  2230 00:DD4C: 38           	sec
+  2231 00:DD4D: E9 08 00     	sbc	#L148
+  2232 00:DD50: 1B           	tcs
+  2233 00:DD51: 0B           	phd
+  2234 00:DD52: 5B           	tcd
+  2235             00000003   x_0	set	3
+  2236 00:DD53: 38           	sec
+  2237 00:DD54: AD CE 7D     	lda	sp
+  2238 00:DD57: E9 63 00     	sbc	#<$63
+  2239 00:DD5A: 70 03        	bvs	L150
+  2240 00:DD5C: 49 00 80     	eor	#$8000
+  2241                        L150:
+  2242 00:DD5F: 30 03        	bmi	L151
+  2243 00:DD61: 82 06 00     	brl	L10099
+  2244                        L151:
+  2245 00:DD64: F4 8F DD     	pea	#<L147
+  2246 00:DD67: 20 35 E3     	jsr	er_boot
+  2247                        L10099:
+  2248 00:DD6A: EE CE 7D     	inc	sp
+  2249 00:DD6D: AD CE 7D     	lda	sp
+  2250 00:DD70: 0A           	asl	A
+  2251 00:DD71: 85 01        	sta	<R0
+  2252 00:DD73: 18           	clc
+  2253 00:DD74: A9 06 7D     	lda	#<stack
+  2254 00:DD77: 65 01        	adc	<R0
+  2255 00:DD79: 85 05        	sta	<R1
+  2256 00:DD7B: A5 0B        	lda	<L148+x_0
+  2257 00:DD7D: 92 05        	sta	(<R1)
+  2258 00:DD7F: A5 0B        	lda	<L148+x_0
+  2259                        L152:
+  2260 00:DD81: A8           	tay
+  2261 00:DD82: A5 09        	lda	<L148+1
+  2262 00:DD84: 85 0B        	sta	<L148+1+2
+  2263 00:DD86: 2B           	pld
+  2264 00:DD87: 3B           	tsc
+  2265 00:DD88: 18           	clc
+  2266 00:DD89: 69 0A 00     	adc	#L148+2
+  2267 00:DD8C: 1B           	tcs
+  2268 00:DD8D: 98           	tya
+  2269 00:DD8E: 60           	rts
+  2270             00000008   L148	equ	8
+  2271             00000009   L149	equ	9
+  2272                        
+  2273                        L147:
+  2274 00:DD8F: 35 00        	db	$35,$00
+  2275                        
+  2276                        operand:
+  2277                        	longa	on
+  2278                        	longi	on
+  2279 00:DD91: 3B           	tsc
+  2280 00:DD92: 38           	sec
+  2281 00:DD93: E9 08 00     	sbc	#L154
+  2282 00:DD96: 1B           	tcs
+  2283 00:DD97: 0B           	phd
+  2284 00:DD98: 5B           	tcd
+  2285             00000000   x_1	set	0
+  2286             00000002   e_1	set	2
+  2287                        L10100:
+  2288 00:DD99: AD D0 7D     	lda	pc
+  2289 00:DD9C: 85 01        	sta	<R0
+  2290 00:DD9E: B2 01        	lda	(<R0)
+  2291 00:DDA0: 29 FF 00     	and	#$ff
+  2292 00:DDA3: 85 05        	sta	<L155+x_1
+  2293 00:DDA5: EE D0 7D     	inc	pc
+  2294 00:DDA8: A5 05        	lda	<L155+x_1
+  2295 00:DDAA: C9 3D 00     	cmp	#<$3d
+  2296 00:DDAD: D0 03        	bne	L156
+  2297 00:DDAF: 82 13 00     	brl	L10101
+  2298                        L156:
+  2299 00:DDB2: A5 05        	lda	<L155+x_1
+  2300 00:DDB4: 29 DF 00     	and	#<$df
+  2301 00:DDB7: F0 03        	beq	L157
+  2302 00:DDB9: 82 06 00     	brl	L10102
+  2303                        L157:
+  2304 00:DDBC: F4 E7 DD     	pea	#<L153
+  2305 00:DDBF: 20 B4 E2     	jsr	errMsg
+  2306                        L10102:
+  2307 00:DDC2: 82 D4 FF     	brl	L10100
+  2308                        L10101:
+  2309 00:DDC5: AD D0 7D     	lda	pc
+  2310 00:DDC8: 85 01        	sta	<R0
+  2311 00:DDCA: B2 01        	lda	(<R0)
+  2312 00:DDCC: 29 FF 00     	and	#$ff
+  2313 00:DDCF: 85 05        	sta	<L155+x_1
+  2314 00:DDD1: EE D0 7D     	inc	pc
+  2315 00:DDD4: D4 05        	pei	<L155+x_1
+  2316 00:DDD6: 20 EA DD     	jsr	expr
+  2317 00:DDD9: 85 07        	sta	<L155+e_1
+  2318 00:DDDB: A5 07        	lda	<L155+e_1
+  2319                        L158:
+  2320 00:DDDD: A8           	tay
+  2321 00:DDDE: 2B           	pld
+  2322 00:DDDF: 3B           	tsc
+  2323 00:DDE0: 18           	clc
+  2324 00:DDE1: 69 08 00     	adc	#L154
+  2325 00:DDE4: 1B           	tcs
+  2326 00:DDE5: 98           	tya
+  2327 00:DDE6: 60           	rts
+  2328             00000008   L154	equ	8
+  2329             00000005   L155	equ	5
+  2330                        
+  2331                        L153:
+  2332 00:DDE7: 20 3F 00     	db	$20,$3F,$00
+  2333                        
+  2334                        expr:
+  2335                        	longa	on
+  2336                        	longi	on
+  2337 00:DDEA: 3B           	tsc
+  2338 00:DDEB: 38           	sec
+  2339 00:DDEC: E9 0C 00     	sbc	#L160
+  2340 00:DDEF: 1B           	tcs
+  2341 00:DDF0: 0B           	phd
+  2342 00:DDF1: 5B           	tcd
+  2343             00000003   c_0	set	3
+  2344             00000000   o_1	set	0
+  2345             00000002   o1_1	set	2
+  2346             00000004   op2_1	set	4
+  2347             00000006   e_1	set	6
+  2348 00:DDF2: D4 0F        	pei	<L160+c_0
+  2349 00:DDF4: 20 29 E0     	jsr	term
+  2350 00:DDF7: 85 0B        	sta	<L161+e_1
+  2351                        L10103:
+  2352 00:DDF9: AD D0 7D     	lda	pc
+  2353 00:DDFC: 85 01        	sta	<R0
+  2354 00:DDFE: B2 01        	lda	(<R0)
+  2355 00:DE00: 29 FF 00     	and	#$ff
+  2356 00:DE03: 85 05        	sta	<L161+o_1
+  2357 00:DE05: EE D0 7D     	inc	pc
+  2358 00:DE08: A5 05        	lda	<L161+o_1
+  2359 00:DE0A: 82 E6 01     	brl	L10105
+  2360                        L10107:
+  2361 00:DE0D: CE D0 7D     	dec	pc
+  2362                        L10108:
+  2363                        L10109:
+  2364                        L10110:
+  2365 00:DE10: A5 0B        	lda	<L161+e_1
+  2366                        L162:
+  2367 00:DE12: A8           	tay
+  2368 00:DE13: A5 0D        	lda	<L160+1
+  2369 00:DE15: 85 0F        	sta	<L160+1+2
+  2370 00:DE17: 2B           	pld
+  2371 00:DE18: 3B           	tsc
+  2372 00:DE19: 18           	clc
+  2373 00:DE1A: 69 0E 00     	adc	#L160+2
+  2374 00:DE1D: 1B           	tcs
+  2375 00:DE1E: 98           	tya
+  2376 00:DE1F: 60           	rts
+  2377                        L10111:
+  2378 00:DE20: AD D0 7D     	lda	pc
+  2379 00:DE23: 85 01        	sta	<R0
+  2380 00:DE25: B2 01        	lda	(<R0)
+  2381 00:DE27: 29 FF 00     	and	#$ff
+  2382 00:DE2A: 85 07        	sta	<L161+o1_1
+  2383 00:DE2C: EE D0 7D     	inc	pc
+  2384 00:DE2F: A5 07        	lda	<L161+o1_1
+  2385 00:DE31: 82 75 00     	brl	L10112
+  2386                        L10114:
+  2387 00:DE34: AD D0 7D     	lda	pc
+  2388 00:DE37: 85 01        	sta	<R0
+  2389 00:DE39: EE D0 7D     	inc	pc
+  2390 00:DE3C: B2 01        	lda	(<R0)
+  2391 00:DE3E: 29 FF 00     	and	#$ff
+  2392 00:DE41: 48           	pha
+  2393 00:DE42: 20 29 E0     	jsr	term
+  2394 00:DE45: 85 09        	sta	<L161+op2_1
+  2395 00:DE47: 64 01        	stz	<R0
+  2396 00:DE49: A5 0B        	lda	<L161+e_1
+  2397 00:DE4B: C5 09        	cmp	<L161+op2_1
+  2398 00:DE4D: D0 03        	bne	L164
+  2399 00:DE4F: 82 02 00     	brl	L163
+  2400                        L164:
+  2401 00:DE52: E6 01        	inc	<R0
+  2402                        L163:
+  2403 00:DE54: A5 01        	lda	<R0
+  2404 00:DE56: 85 0B        	sta	<L161+e_1
+  2405 00:DE58: 82 9E FF     	brl	L10103
+  2406                        L10115:
+  2407 00:DE5B: AD D0 7D     	lda	pc
+  2408 00:DE5E: 85 01        	sta	<R0
+  2409 00:DE60: EE D0 7D     	inc	pc
+  2410 00:DE63: B2 01        	lda	(<R0)
+  2411 00:DE65: 29 FF 00     	and	#$ff
+  2412 00:DE68: 48           	pha
+  2413 00:DE69: 20 29 E0     	jsr	term
+  2414 00:DE6C: 85 09        	sta	<L161+op2_1
+  2415 00:DE6E: 64 01        	stz	<R0
+  2416 00:DE70: 38           	sec
+  2417 00:DE71: A5 09        	lda	<L161+op2_1
+  2418 00:DE73: E5 0B        	sbc	<L161+e_1
+  2419 00:DE75: 70 03        	bvs	L166
+  2420 00:DE77: 49 00 80     	eor	#$8000
+  2421                        L166:
+  2422 00:DE7A: 30 03        	bmi	L167
+  2423 00:DE7C: 82 02 00     	brl	L165
+  2424                        L167:
+  2425 00:DE7F: E6 01        	inc	<R0
+  2426                        L165:
+  2427 00:DE81: A5 01        	lda	<R0
+  2428 00:DE83: 85 0B        	sta	<L161+e_1
+  2429 00:DE85: 82 71 FF     	brl	L10103
+  2430                        L10116:
+  2431 00:DE88: D4 07        	pei	<L161+o1_1
+  2432 00:DE8A: 20 29 E0     	jsr	term
+  2433 00:DE8D: 85 09        	sta	<L161+op2_1
+  2434 00:DE8F: 64 01        	stz	<R0
+  2435 00:DE91: 38           	sec
+  2436 00:DE92: A5 0B        	lda	<L161+e_1
+  2437 00:DE94: E5 09        	sbc	<L161+op2_1
+  2438 00:DE96: 70 03        	bvs	L169
+  2439 00:DE98: 49 00 80     	eor	#$8000
+  2440                        L169:
+  2441 00:DE9B: 10 03        	bpl	L170
+  2442 00:DE9D: 82 02 00     	brl	L168
+  2443                        L170:
+  2444 00:DEA0: E6 01        	inc	<R0
+  2445                        L168:
+  2446 00:DEA2: A5 01        	lda	<R0
+  2447 00:DEA4: 85 0B        	sta	<L161+e_1
+  2448 00:DEA6: 82 50 FF     	brl	L10103
+  2449                        L10112:
+  2450 00:DEA9: 20 F3 D1     	jsr	swt
+  2451 00:DEAC: 02 00        	dw	2
+  2452 00:DEAE: 3D 00        	dw	61
+  2453 00:DEB0: 5A DE        	dw	L10115-1
+  2454 00:DEB2: 3E 00        	dw	62
+  2455 00:DEB4: 33 DE        	dw	L10114-1
+  2456 00:DEB6: 87 DE        	dw	L10116-1
+  2457                        L10113:
+  2458                        L10117:
+  2459 00:DEB8: AD D0 7D     	lda	pc
+  2460 00:DEBB: 85 01        	sta	<R0
+  2461 00:DEBD: B2 01        	lda	(<R0)
+  2462 00:DEBF: 29 FF 00     	and	#$ff
+  2463 00:DEC2: 85 07        	sta	<L161+o1_1
+  2464 00:DEC4: EE D0 7D     	inc	pc
+  2465 00:DEC7: A5 07        	lda	<L161+o1_1
+  2466 00:DEC9: 82 4E 00     	brl	L10118
+  2467                        L10120:
+  2468 00:DECC: AD D0 7D     	lda	pc
+  2469 00:DECF: 85 01        	sta	<R0
+  2470 00:DED1: EE D0 7D     	inc	pc
+  2471 00:DED4: B2 01        	lda	(<R0)
+  2472 00:DED6: 29 FF 00     	and	#$ff
+  2473 00:DED9: 48           	pha
+  2474 00:DEDA: 20 29 E0     	jsr	term
+  2475 00:DEDD: 85 09        	sta	<L161+op2_1
+  2476 00:DEDF: 64 01        	stz	<R0
+  2477 00:DEE1: 38           	sec
+  2478 00:DEE2: A5 0B        	lda	<L161+e_1
+  2479 00:DEE4: E5 09        	sbc	<L161+op2_1
+  2480 00:DEE6: 70 03        	bvs	L172
+  2481 00:DEE8: 49 00 80     	eor	#$8000
+  2482                        L172:
+  2483 00:DEEB: 30 03        	bmi	L173
+  2484 00:DEED: 82 02 00     	brl	L171
+  2485                        L173:
+  2486 00:DEF0: E6 01        	inc	<R0
+  2487                        L171:
+  2488 00:DEF2: A5 01        	lda	<R0
+  2489 00:DEF4: 85 0B        	sta	<L161+e_1
+  2490 00:DEF6: 82 00 FF     	brl	L10103
+  2491                        L10121:
+  2492 00:DEF9: D4 07        	pei	<L161+o1_1
+  2493 00:DEFB: 20 29 E0     	jsr	term
+  2494 00:DEFE: 85 09        	sta	<L161+op2_1
+  2495 00:DF00: 64 01        	stz	<R0
+  2496 00:DF02: 38           	sec
+  2497 00:DF03: A5 09        	lda	<L161+op2_1
+  2498 00:DF05: E5 0B        	sbc	<L161+e_1
+  2499 00:DF07: 70 03        	bvs	L175
+  2500 00:DF09: 49 00 80     	eor	#$8000
+  2501                        L175:
+  2502 00:DF0C: 10 03        	bpl	L176
+  2503 00:DF0E: 82 02 00     	brl	L174
+  2504                        L176:
+  2505 00:DF11: E6 01        	inc	<R0
+  2506                        L174:
+  2507 00:DF13: A5 01        	lda	<R0
+  2508 00:DF15: 85 0B        	sta	<L161+e_1
+  2509 00:DF17: 82 DF FE     	brl	L10103
+  2510                        L10118:
+  2511 00:DF1A: 20 F3 D1     	jsr	swt
+  2512 00:DF1D: 01 00        	dw	1
+  2513 00:DF1F: 3D 00        	dw	61
+  2514 00:DF21: CB DE        	dw	L10120-1
+  2515 00:DF23: F8 DE        	dw	L10121-1
+  2516                        L10119:
+  2517                        L10122:
+  2518 00:DF25: AD D0 7D     	lda	pc
+  2519 00:DF28: 85 01        	sta	<R0
+  2520 00:DF2A: EE D0 7D     	inc	pc
+  2521 00:DF2D: B2 01        	lda	(<R0)
+  2522 00:DF2F: 29 FF 00     	and	#$ff
+  2523 00:DF32: 48           	pha
+  2524 00:DF33: 20 29 E0     	jsr	term
+  2525 00:DF36: 85 09        	sta	<L161+op2_1
+  2526 00:DF38: 18           	clc
+  2527 00:DF39: A5 0B        	lda	<L161+e_1
+  2528 00:DF3B: 65 09        	adc	<L161+op2_1
+  2529 00:DF3D: 85 0B        	sta	<L161+e_1
+  2530 00:DF3F: 82 E4 00     	brl	L10106
+  2531                        L10123:
+  2532 00:DF42: AD D0 7D     	lda	pc
+  2533 00:DF45: 85 01        	sta	<R0
+  2534 00:DF47: EE D0 7D     	inc	pc
+  2535 00:DF4A: B2 01        	lda	(<R0)
+  2536 00:DF4C: 29 FF 00     	and	#$ff
+  2537 00:DF4F: 48           	pha
+  2538 00:DF50: 20 29 E0     	jsr	term
+  2539 00:DF53: 85 09        	sta	<L161+op2_1
+  2540 00:DF55: 38           	sec
+  2541 00:DF56: A5 0B        	lda	<L161+e_1
+  2542 00:DF58: E5 09        	sbc	<L161+op2_1
+  2543 00:DF5A: 85 0B        	sta	<L161+e_1
+  2544 00:DF5C: 82 C7 00     	brl	L10106
+  2545                        L10124:
+  2546 00:DF5F: AD D0 7D     	lda	pc
+  2547 00:DF62: 85 01        	sta	<R0
+  2548 00:DF64: EE D0 7D     	inc	pc
+  2549 00:DF67: B2 01        	lda	(<R0)
+  2550 00:DF69: 29 FF 00     	and	#$ff
+  2551 00:DF6C: 48           	pha
+  2552 00:DF6D: 20 29 E0     	jsr	term
+  2553 00:DF70: 85 09        	sta	<L161+op2_1
+  2554 00:DF72: A5 0B        	lda	<L161+e_1
+  2555 00:DF74: A6 09        	ldx	<L161+op2_1
+  2556 00:DF76: 20 67 D1     	jsr	mul
+  2557 00:DF79: 85 0B        	sta	<L161+e_1
+  2558 00:DF7B: 82 A8 00     	brl	L10106
+  2559                        L10125:
+  2560 00:DF7E: AD D0 7D     	lda	pc
+  2561 00:DF81: 85 01        	sta	<R0
+  2562 00:DF83: EE D0 7D     	inc	pc
+  2563 00:DF86: B2 01        	lda	(<R0)
+  2564 00:DF88: 29 FF 00     	and	#$ff
+  2565 00:DF8B: 48           	pha
+  2566 00:DF8C: 20 29 E0     	jsr	term
+  2567 00:DF8F: 85 09        	sta	<L161+op2_1
+  2568 00:DF91: A5 0B        	lda	<L161+e_1
+  2569 00:DF93: A6 09        	ldx	<L161+op2_1
+  2570                        
+  2571                        ;	jsr	mod
+  2572                        ;	sta	var+74
+  2573                        
+  2574 00:DF95: A5 0B        	lda	<L161+e_1
+  2575 00:DF97: A6 09        	ldx	<L161+op2_1
+  2576 00:DF99: 20 8F D1     	jsr	div
+  2577 00:DF9C: 85 0B        	sta	<L161+e_1
+  2578 00:DF9E: 82 85 00     	brl	L10106
+  2579                        L10126:
+  2580 00:DFA1: AD D0 7D     	lda	pc
+  2581 00:DFA4: 85 01        	sta	<R0
+  2582 00:DFA6: EE D0 7D     	inc	pc
+  2583 00:DFA9: B2 01        	lda	(<R0)
+  2584 00:DFAB: 29 FF 00     	and	#$ff
+  2585 00:DFAE: 48           	pha
+  2586 00:DFAF: 20 29 E0     	jsr	term
+  2587 00:DFB2: 85 09        	sta	<L161+op2_1
+  2588 00:DFB4: 64 01        	stz	<R0
+  2589 00:DFB6: A5 0B        	lda	<L161+e_1
+  2590 00:DFB8: C5 09        	cmp	<L161+op2_1
+  2591 00:DFBA: F0 03        	beq	L178
+  2592 00:DFBC: 82 02 00     	brl	L177
+  2593                        L178:
+  2594 00:DFBF: E6 01        	inc	<R0
+  2595                        L177:
+  2596 00:DFC1: A5 01        	lda	<R0
+  2597 00:DFC3: 85 0B        	sta	<L161+e_1
+  2598 00:DFC5: 82 5E 00     	brl	L10106
+  2599                        L10127:
+  2600 00:DFC8: E2 20        	sep	#$20
+  2601                        	longa	off
+  2602 00:DFCA: A9 20        	lda	#$20
+  2603 00:DFCC: 8D 00 7C     	sta	mm
+  2604 00:DFCF: C2 20        	rep	#$20
+  2605                        	longa	on
+  2606 00:DFD1: E2 20        	sep	#$20
+  2607                        	longa	off
+  2608 00:DFD3: A5 05        	lda	<L161+o_1
+  2609 00:DFD5: 8D 01 7C     	sta	mm+1
+  2610 00:DFD8: C2 20        	rep	#$20
+  2611                        	longa	on
+  2612 00:DFDA: E2 20        	sep	#$20
+  2613                        	longa	off
+  2614 00:DFDC: A9 3F        	lda	#$3f
+  2615 00:DFDE: 8D 02 7C     	sta	mm+2
+  2616 00:DFE1: C2 20        	rep	#$20
+  2617                        	longa	on
+  2618 00:DFE3: E2 20        	sep	#$20
+  2619                        	longa	off
+  2620 00:DFE5: 9C 03 7C     	stz	mm+3
+  2621 00:DFE8: C2 20        	rep	#$20
+  2622                        	longa	on
+  2623 00:DFEA: F4 00 7C     	pea	#<mm
+  2624 00:DFED: 20 B4 E2     	jsr	errMsg
+  2625 00:DFF0: 82 33 00     	brl	L10106
+  2626                        L10105:
+  2627 00:DFF3: 20 F3 D1     	jsr	swt
+  2628 00:DFF6: 0B 00        	dw	11
+  2629 00:DFF8: 00 00        	dw	0
+  2630 00:DFFA: 0C DE        	dw	L10107-1
+  2631 00:DFFC: 20 00        	dw	32
+  2632 00:DFFE: 0F DE        	dw	L10108-1
+  2633 00:E000: 29 00        	dw	41
+  2634 00:E002: 0F DE        	dw	L10109-1
+  2635 00:E004: 2A 00        	dw	42
+  2636 00:E006: 5E DF        	dw	L10124-1
+  2637 00:E008: 2B 00        	dw	43
+  2638 00:E00A: 24 DF        	dw	L10122-1
+  2639 00:E00C: 2C 00        	dw	44
+  2640 00:E00E: 0F DE        	dw	L10110-1
+  2641 00:E010: 2D 00        	dw	45
+  2642 00:E012: 41 DF        	dw	L10123-1
+  2643 00:E014: 2F 00        	dw	47
+  2644 00:E016: 7D DF        	dw	L10125-1
+  2645 00:E018: 3C 00        	dw	60
+  2646 00:E01A: 1F DE        	dw	L10111-1
+  2647 00:E01C: 3D 00        	dw	61
+  2648 00:E01E: A0 DF        	dw	L10126-1
+  2649 00:E020: 3E 00        	dw	62
+  2650 00:E022: B7 DE        	dw	L10117-1
+  2651 00:E024: C7 DF        	dw	L10127-1
+  2652                        L10106:
+  2653 00:E026: 82 D0 FD     	brl	L10103
+  2654             0000000C   L160	equ	12
+  2655             00000005   L161	equ	5
+  2656                        
+  2657                        term:
+  2658                        	longa	on
+  2659                        	longi	on
+  2660 00:E029: 3B           	tsc
+  2661 00:E02A: 38           	sec
+  2662 00:E02B: E9 14 00     	sbc	#L179
+  2663 00:E02E: 1B           	tcs
+  2664 00:E02F: 0B           	phd
+  2665 00:E030: 5B           	tcd
+  2666             00000003   c_0	set	3
+  2667             00000000   e_1	set	0
+  2668             00000002   f_1	set	2
+  2669             00000004   vmode_1	set	4
+  2670             00000006   ppp_1	set	6
+  2671 00:E031: 64 0F        	stz	<L180+f_1
+  2672 00:E033: A5 17        	lda	<L179+c_0
+  2673 00:E035: 82 67 01     	brl	L10128
+  2674                        L10130:
+  2675 00:E038: 18           	clc
+  2676 00:E039: 7B           	tdc
+  2677 00:E03A: 69 0F 00     	adc	#<L180+f_1
+  2678 00:E03D: 48           	pha
+  2679 00:E03E: 20 92 E6     	jsr	getHex
+  2680 00:E041: 85 0D        	sta	<L180+e_1
+  2681 00:E043: A5 0F        	lda	<L180+f_1
+  2682 00:E045: F0 03        	beq	L181
+  2683 00:E047: 82 1C 00     	brl	L10131
+  2684                        L181:
+  2685 00:E04A: 20 20 D1     	jsr	c_getch
+  2686 00:E04D: E2 20        	sep	#$20
+  2687                        	longa	off
+  2688 00:E04F: 85 01        	sta	<R0
+  2689 00:E051: C2 20        	rep	#$20
+  2690                        	longa	on
+  2691 00:E053: A5 01        	lda	<R0
+  2692 00:E055: 29 FF 00     	and	#$ff
+  2693                        L182:
+  2694 00:E058: A8           	tay
+  2695 00:E059: A5 15        	lda	<L179+1
+  2696 00:E05B: 85 17        	sta	<L179+1+2
+  2697 00:E05D: 2B           	pld
+  2698 00:E05E: 3B           	tsc
+  2699 00:E05F: 18           	clc
+  2700 00:E060: 69 16 00     	adc	#L179+2
+  2701 00:E063: 1B           	tcs
+  2702 00:E064: 98           	tya
+  2703 00:E065: 60           	rts
+  2704                        L10131:
+  2705 00:E066: A5 0D        	lda	<L180+e_1
+  2706 00:E068: 82 ED FF     	brl	L182
+  2707                        L10132:
+  2708 00:E06B: AD D0 7D     	lda	pc
+  2709 00:E06E: 85 01        	sta	<R0
+  2710 00:E070: EE D0 7D     	inc	pc
+  2711 00:E073: B2 01        	lda	(<R0)
+  2712 00:E075: 29 FF 00     	and	#$ff
+  2713 00:E078: 48           	pha
+  2714 00:E079: 20 EA DD     	jsr	expr
+  2715 00:E07C: 85 0D        	sta	<L180+e_1
+  2716 00:E07E: 18           	clc
+  2717 00:E07F: A9 FF FF     	lda	#$ffff
+  2718 00:E082: 6D D0 7D     	adc	pc
+  2719 00:E085: 85 01        	sta	<R0
+  2720 00:E087: E2 20        	sep	#$20
+  2721                        	longa	off
+  2722 00:E089: B2 01        	lda	(<R0)
+  2723 00:E08B: C9 29        	cmp	#<$29
+  2724 00:E08D: C2 20        	rep	#$20
+  2725                        	longa	on
+  2726 00:E08F: D0 03        	bne	L183
+  2727 00:E091: 82 06 00     	brl	L10133
+  2728                        L183:
+  2729 00:E094: F4 A8 E2     	pea	#<L159
+  2730 00:E097: 20 B4 E2     	jsr	errMsg
+  2731                        L10133:
+  2732 00:E09A: A5 0D        	lda	<L180+e_1
+  2733 00:E09C: 82 B9 FF     	brl	L182
+  2734                        L10134:
+  2735 00:E09F: AD D0 7D     	lda	pc
+  2736 00:E0A2: 85 01        	sta	<R0
+  2737 00:E0A4: EE D0 7D     	inc	pc
+  2738 00:E0A7: B2 01        	lda	(<R0)
+  2739 00:E0A9: 29 FF 00     	and	#$ff
+  2740 00:E0AC: 48           	pha
+  2741 00:E0AD: 20 29 E0     	jsr	term
+  2742 00:E0B0: 85 0D        	sta	<L180+e_1
+  2743 00:E0B2: A5 0D        	lda	<L180+e_1
+  2744 00:E0B4: 30 03        	bmi	L185
+  2745 00:E0B6: 82 08 00     	brl	L184
+  2746                        L185:
+  2747 00:E0B9: 38           	sec
+  2748 00:E0BA: A9 00 00     	lda	#$0
+  2749 00:E0BD: E5 0D        	sbc	<L180+e_1
+  2750 00:E0BF: 80 02        	bra	L186
+  2751                        L184:
+  2752 00:E0C1: A5 0D        	lda	<L180+e_1
+  2753                        L186:
+  2754 00:E0C3: 82 92 FF     	brl	L182
+  2755                        L10135:
+  2756 00:E0C6: AD D0 7D     	lda	pc
+  2757 00:E0C9: 85 01        	sta	<R0
+  2758 00:E0CB: EE D0 7D     	inc	pc
+  2759 00:E0CE: B2 01        	lda	(<R0)
+  2760 00:E0D0: 29 FF 00     	and	#$ff
+  2761 00:E0D3: 48           	pha
+  2762 00:E0D4: 20 29 E0     	jsr	term
+  2763 00:E0D7: 85 01        	sta	<R0
+  2764 00:E0D9: 38           	sec
+  2765 00:E0DA: A9 00 00     	lda	#$0
+  2766 00:E0DD: E5 01        	sbc	<R0
+  2767 00:E0DF: 82 76 FF     	brl	L182
+  2768                        L10136:
+  2769 00:E0E2: 64 01        	stz	<R0
+  2770 00:E0E4: AD D0 7D     	lda	pc
+  2771 00:E0E7: 85 05        	sta	<R1
+  2772 00:E0E9: EE D0 7D     	inc	pc
+  2773 00:E0EC: B2 05        	lda	(<R1)
+  2774 00:E0EE: 29 FF 00     	and	#$ff
+  2775 00:E0F1: 48           	pha
+  2776 00:E0F2: 20 29 E0     	jsr	term
+  2777 00:E0F5: AA           	tax
+  2778 00:E0F6: F0 03        	beq	L188
+  2779 00:E0F8: 82 02 00     	brl	L187
+  2780                        L188:
+  2781 00:E0FB: E6 01        	inc	<R0
+  2782                        L187:
+  2783 00:E0FD: A5 01        	lda	<R0
+  2784 00:E0FF: 82 56 FF     	brl	L182
+  2785                        L10137:
+  2786 00:E102: AD D0 7D     	lda	pc
+  2787 00:E105: 85 01        	sta	<R0
+  2788 00:E107: EE D0 7D     	inc	pc
+  2789 00:E10A: B2 01        	lda	(<R0)
+  2790 00:E10C: 29 FF 00     	and	#$ff
+  2791 00:E10F: 48           	pha
+  2792 00:E110: 20 29 E0     	jsr	term
+  2793 00:E113: 85 01        	sta	<R0
+  2794 00:E115: 20 30 D1     	jsr	rand
+  2795 00:E118: 85 05        	sta	<R1
+  2796 00:E11A: A5 05        	lda	<R1
+  2797 00:E11C: A6 01        	ldx	<R0
+  2798 00:E11E: 20 C4 D1     	jsr	mod
+  2799 00:E121: 85 01        	sta	<R0
+  2800 00:E123: A5 01        	lda	<R0
+  2801 00:E125: 1A           	ina
+  2802 00:E126: 82 2F FF     	brl	L182
+  2803                        L10138:
+  2804 00:E129: AD D0 7D     	lda	pc
+  2805 00:E12C: 85 01        	sta	<R0
+  2806 00:E12E: EE D0 7D     	inc	pc
+  2807 00:E131: B2 01        	lda	(<R0)
+  2808 00:E133: 29 FF 00     	and	#$ff
+  2809 00:E136: 48           	pha
+  2810 00:E137: 20 29 E0     	jsr	term
+  2811 00:E13A: 85 0D        	sta	<L180+e_1
+  2812 00:E13C: AD 4E 7C     	lda	var+74
+  2813 00:E13F: 82 16 FF     	brl	L182
+  2814                        L10139:
+  2815 00:E142: F4 D2 7D     	pea	#<lky_buf
+  2816 00:E145: 20 02 E4     	jsr	c_gets
+  2817 00:E148: AD D0 7D     	lda	pc
+  2818 00:E14B: 85 13        	sta	<L180+ppp_1
+  2819 00:E14D: A9 D2 7D     	lda	#<lky_buf
+  2820 00:E150: 8D D0 7D     	sta	pc
+  2821 00:E153: AD D0 7D     	lda	pc
+  2822 00:E156: 85 01        	sta	<R0
+  2823 00:E158: EE D0 7D     	inc	pc
+  2824 00:E15B: B2 01        	lda	(<R0)
+  2825 00:E15D: 29 FF 00     	and	#$ff
+  2826 00:E160: 48           	pha
+  2827 00:E161: 20 EA DD     	jsr	expr
+  2828 00:E164: 85 0D        	sta	<L180+e_1
+  2829 00:E166: A5 13        	lda	<L180+ppp_1
+  2830 00:E168: 8D D0 7D     	sta	pc
+  2831 00:E16B: A5 0D        	lda	<L180+e_1
+  2832 00:E16D: 82 E8 FE     	brl	L182
+  2833                        L10140:
+  2834 00:E170: AD D0 7D     	lda	pc
+  2835 00:E173: 85 01        	sta	<R0
+  2836 00:E175: B2 01        	lda	(<R0)
+  2837 00:E177: 29 FF 00     	and	#$ff
+  2838 00:E17A: 85 0D        	sta	<L180+e_1
+  2839 00:E17C: EE D0 7D     	inc	pc
+  2840 00:E17F: AD D0 7D     	lda	pc
+  2841 00:E182: 85 01        	sta	<R0
+  2842 00:E184: EE D0 7D     	inc	pc
+  2843 00:E187: E2 20        	sep	#$20
+  2844                        	longa	off
+  2845 00:E189: B2 01        	lda	(<R0)
+  2846 00:E18B: C9 22        	cmp	#<$22
+  2847 00:E18D: C2 20        	rep	#$20
+  2848                        	longa	on
+  2849 00:E18F: D0 03        	bne	L189
+  2850 00:E191: 82 06 00     	brl	L10141
+  2851                        L189:
+  2852 00:E194: F4 AC E2     	pea	#<L159+4
+  2853 00:E197: 20 B4 E2     	jsr	errMsg
+  2854                        L10141:
+  2855 00:E19A: A5 0D        	lda	<L180+e_1
+  2856 00:E19C: 82 B9 FE     	brl	L182
+  2857                        L10128:
+  2858 00:E19F: 20 F3 D1     	jsr	swt
+  2859 00:E1A2: 09 00        	dw	9
+  2860 00:E1A4: 22 00        	dw	34
+  2861 00:E1A6: 6F E1        	dw	L10140-1
+  2862 00:E1A8: 23 00        	dw	35
+  2863 00:E1AA: E1 E0        	dw	L10136-1
+  2864 00:E1AC: 24 00        	dw	36
+  2865 00:E1AE: 37 E0        	dw	L10130-1
+  2866 00:E1B0: 25 00        	dw	37
+  2867 00:E1B2: 28 E1        	dw	L10138-1
+  2868 00:E1B4: 27 00        	dw	39
+  2869 00:E1B6: 01 E1        	dw	L10137-1
+  2870 00:E1B8: 28 00        	dw	40
+  2871 00:E1BA: 6A E0        	dw	L10132-1
+  2872 00:E1BC: 2B 00        	dw	43
+  2873 00:E1BE: 9E E0        	dw	L10134-1
+  2874 00:E1C0: 2D 00        	dw	45
+  2875 00:E1C2: C5 E0        	dw	L10135-1
+  2876 00:E1C4: 3F 00        	dw	63
+  2877 00:E1C6: 41 E1        	dw	L10139-1
+  2878 00:E1C8: C9 E1        	dw	L10129-1
+  2879                        L10129:
+  2880 00:E1CA: 38           	sec
+  2881 00:E1CB: A5 17        	lda	<L179+c_0
+  2882 00:E1CD: E9 30 00     	sbc	#<$30
+  2883 00:E1D0: 70 03        	bvs	L190
+  2884 00:E1D2: 49 00 80     	eor	#$8000
+  2885                        L190:
+  2886 00:E1D5: 30 03        	bmi	L191
+  2887 00:E1D7: 82 23 00     	brl	L10142
+  2888                        L191:
+  2889 00:E1DA: 38           	sec
+  2890 00:E1DB: A9 39 00     	lda	#$39
+  2891 00:E1DE: E5 17        	sbc	<L179+c_0
+  2892 00:E1E0: 70 03        	bvs	L192
+  2893 00:E1E2: 49 00 80     	eor	#$8000
+  2894                        L192:
+  2895 00:E1E5: 30 03        	bmi	L193
+  2896 00:E1E7: 82 13 00     	brl	L10142
+  2897                        L193:
+  2898 00:E1EA: CE D0 7D     	dec	pc
+  2899 00:E1ED: 18           	clc
+  2900 00:E1EE: 7B           	tdc
+  2901 00:E1EF: 69 0F 00     	adc	#<L180+f_1
+  2902 00:E1F2: 48           	pha
+  2903 00:E1F3: 20 15 E6     	jsr	getNum
+  2904 00:E1F6: 85 0D        	sta	<L180+e_1
+  2905 00:E1F8: A5 0D        	lda	<L180+e_1
+  2906 00:E1FA: 82 5B FE     	brl	L182
+  2907                        L10142:
+  2908 00:E1FD: 20 57 D7     	jsr	skipAlpha
+  2909 00:E200: 85 11        	sta	<L180+vmode_1
+  2910 00:E202: A5 11        	lda	<L180+vmode_1
+  2911 00:E204: C9 3A 00     	cmp	#<$3a
+  2912 00:E207: D0 03        	bne	L195
+  2913 00:E209: 82 0A 00     	brl	L194
+  2914                        L195:
+  2915 00:E20C: A5 11        	lda	<L180+vmode_1
+  2916 00:E20E: C9 28 00     	cmp	#<$28
+  2917 00:E211: F0 03        	beq	L196
+  2918 00:E213: 82 80 00     	brl	L10143
+  2919                        L196:
+  2920                        L194:
+  2921 00:E216: EE D0 7D     	inc	pc
+  2922 00:E219: AD D0 7D     	lda	pc
+  2923 00:E21C: 85 01        	sta	<R0
+  2924 00:E21E: EE D0 7D     	inc	pc
+  2925 00:E221: B2 01        	lda	(<R0)
+  2926 00:E223: 29 FF 00     	and	#$ff
+  2927 00:E226: 48           	pha
+  2928 00:E227: 20 EA DD     	jsr	expr
+  2929 00:E22A: 85 0D        	sta	<L180+e_1
+  2930 00:E22C: 18           	clc
+  2931 00:E22D: A9 FF FF     	lda	#$ffff
+  2932 00:E230: 6D D0 7D     	adc	pc
+  2933 00:E233: 85 01        	sta	<R0
+  2934 00:E235: E2 20        	sep	#$20
+  2935                        	longa	off
+  2936 00:E237: B2 01        	lda	(<R0)
+  2937 00:E239: C9 29        	cmp	#<$29
+  2938 00:E23B: C2 20        	rep	#$20
+  2939                        	longa	on
+  2940 00:E23D: D0 03        	bne	L197
+  2941 00:E23F: 82 06 00     	brl	L10144
+  2942                        L197:
+  2943 00:E242: F4 B0 E2     	pea	#<L159+8
+  2944 00:E245: 20 B4 E2     	jsr	errMsg
+  2945                        L10144:
+  2946 00:E248: A5 11        	lda	<L180+vmode_1
+  2947 00:E24A: 82 3A 00     	brl	L10145
+  2948                        L10147:
+  2949 00:E24D: A5 17        	lda	<L179+c_0
+  2950 00:E24F: 0A           	asl	A
+  2951 00:E250: 85 01        	sta	<R0
+  2952 00:E252: 18           	clc
+  2953 00:E253: A9 04 7C     	lda	#<var
+  2954 00:E256: 65 01        	adc	<R0
+  2955 00:E258: 85 05        	sta	<R1
+  2956 00:E25A: 18           	clc
+  2957 00:E25B: B2 05        	lda	(<R1)
+  2958 00:E25D: 65 0D        	adc	<L180+e_1
+  2959 00:E25F: 85 01        	sta	<R0
+  2960 00:E261: B2 01        	lda	(<R0)
+  2961 00:E263: 29 FF 00     	and	#$ff
+  2962 00:E266: 82 EF FD     	brl	L182
+  2963                        L10148:
+  2964 00:E269: A5 17        	lda	<L179+c_0
+  2965 00:E26B: 0A           	asl	A
+  2966 00:E26C: 85 01        	sta	<R0
+  2967 00:E26E: 18           	clc
+  2968 00:E26F: A9 04 7C     	lda	#<var
+  2969 00:E272: 65 01        	adc	<R0
+  2970 00:E274: 85 05        	sta	<R1
+  2971 00:E276: A5 0D        	lda	<L180+e_1
+  2972 00:E278: 0A           	asl	A
+  2973 00:E279: 85 01        	sta	<R0
+  2974 00:E27B: 18           	clc
+  2975 00:E27C: B2 05        	lda	(<R1)
+  2976 00:E27E: 65 01        	adc	<R0
+  2977 00:E280: 85 09        	sta	<R2
+  2978 00:E282: B2 09        	lda	(<R2)
+  2979 00:E284: 82 D1 FD     	brl	L182
+  2980                        L10145:
+  2981 00:E287: 20 F3 D1     	jsr	swt
+  2982 00:E28A: 02 00        	dw	2
+  2983 00:E28C: 28 00        	dw	40
+  2984 00:E28E: 68 E2        	dw	L10148-1
+  2985 00:E290: 3A 00        	dw	58
+  2986 00:E292: 4C E2        	dw	L10147-1
+  2987 00:E294: 95 E2        	dw	L10146-1
+  2988                        L10146:
+  2989                        L10143:
+  2990 00:E296: A5 17        	lda	<L179+c_0
+  2991 00:E298: 0A           	asl	A
+  2992 00:E299: 85 01        	sta	<R0
+  2993 00:E29B: 18           	clc
+  2994 00:E29C: A9 04 7C     	lda	#<var
+  2995 00:E29F: 65 01        	adc	<R0
+  2996 00:E2A1: 85 05        	sta	<R1
+  2997 00:E2A3: B2 05        	lda	(<R1)
+  2998 00:E2A5: 82 B0 FD     	brl	L182
+  2999             00000014   L179	equ	20
+  3000             0000000D   L180	equ	13
+  3001                        
+  3002                        L159:
+  3003 00:E2A8: 20 29 3F 00  	db	" )?",0
+  3004 00:E2AC: 20 22 3F 00  	db	' ','"','?',0
+  3005 00:E2B0: 20 29 3F 00  	db	" )?",0
+  3006                        
+  3007                        errMsg:
+  3008                        	longa	on
+  3009                        	longi	on
+  3010 00:E2B4: 3B           	tsc
+  3011 00:E2B5: 38           	sec
+  3012 00:E2B6: E9 08 00     	sbc	#L199
+  3013 00:E2B9: 1B           	tcs
+  3014 00:E2BA: 0B           	phd
+  3015 00:E2BB: 5B           	tcd
+  3016             00000003   s_0	set	3
+  3017             00000000   a_1	set	0
+  3018 00:E2BC: F4 02 E3     	pea	#<L198
+  3019 00:E2BF: 20 0F D2     	jsr	c_puts
+  3020 00:E2C2: D4 0B        	pei	<L199+s_0
+  3021 00:E2C4: 20 0F D2     	jsr	c_puts
+  3022 00:E2C7: AD 04 7D     	lda	lno
+  3023 00:E2CA: D0 03        	bne	L201
+  3024 00:E2CC: 82 1F 00     	brl	L10149
+  3025                        L201:
+  3026 00:E2CF: F4 08 E3     	pea	#<L198+6
+  3027 00:E2D2: 20 0F D2     	jsr	c_puts
+  3028 00:E2D5: F4 01 00     	pea	#<$1
+  3029 00:E2D8: AD 04 7D     	lda	lno
+  3030 00:E2DB: 48           	pha
+  3031 00:E2DC: 18           	clc
+  3032 00:E2DD: 7B           	tdc
+  3033 00:E2DE: 69 01 00     	adc	#<L200+a_1
+  3034 00:E2E1: 48           	pha
+  3035 00:E2E2: 20 39 D5     	jsr	mk_dStr
+  3036 00:E2E5: 18           	clc
+  3037 00:E2E6: 7B           	tdc
+  3038 00:E2E7: 69 01 00     	adc	#<L200+a_1
+  3039 00:E2EA: 48           	pha
+  3040 00:E2EB: 20 0F D2     	jsr	c_puts
+  3041                        L10149:
+  3042 00:E2EE: F4 00 00     	pea	#<$0
+  3043 00:E2F1: 20 0D E3     	jsr	w_boot
+  3044                        L202:
+  3045 00:E2F4: A8           	tay
+  3046 00:E2F5: A5 09        	lda	<L199+1
+  3047 00:E2F7: 85 0B        	sta	<L199+1+2
+  3048 00:E2F9: 2B           	pld
+  3049 00:E2FA: 3B           	tsc
+  3050 00:E2FB: 18           	clc
+  3051 00:E2FC: 69 0A 00     	adc	#L199+2
+  3052 00:E2FF: 1B           	tcs
+  3053 00:E300: 98           	tya
+  3054 00:E301: 60           	rts
+  3055             00000008   L199	equ	8
+  3056             00000001   L200	equ	1
+  3057                        
+  3058                        L198:
+  3059 00:E302: 0D 0A 45 72  	db	$0D,$0A,$45,$72,$72,$00,$20,$69,$6E,$20,$00
+       00:E306: 72 00 20 69 
+       00:E30A: 6E 20 00 
+  3060                        
+  3061                        w_boot:
+  3062                        	longa	on
+  3063                        	longi	on
+  3064 00:E30D: 3B           	tsc
+  3065 00:E30E: 38           	sec
+  3066 00:E30F: E9 00 00     	sbc	#L204
+  3067 00:E312: 1B           	tcs
+  3068 00:E313: 0B           	phd
+  3069 00:E314: 5B           	tcd
+  3070             00000003   msg_0	set	3
+  3071 00:E315: 20 E5 E3     	jsr	newline
+  3072 00:E318: A5 03        	lda	<L204+msg_0
+  3073 00:E31A: D0 03        	bne	L206
+  3074 00:E31C: 82 05 00     	brl	L10150
+  3075                        L206:
+  3076 00:E31F: D4 03        	pei	<L204+msg_0
+  3077 00:E321: 20 0F D2     	jsr	c_puts
+  3078                        L10150:
+  3079 00:E324: 20 4B D1     	jsr	warm_boot
+  3080                        L207:
+  3081 00:E327: A8           	tay
+  3082 00:E328: A5 01        	lda	<L204+1
+  3083 00:E32A: 85 03        	sta	<L204+1+2
+  3084 00:E32C: 2B           	pld
+  3085 00:E32D: 3B           	tsc
+  3086 00:E32E: 18           	clc
+  3087 00:E32F: 69 02 00     	adc	#L204+2
+  3088 00:E332: 1B           	tcs
+  3089 00:E333: 98           	tya
+  3090 00:E334: 60           	rts
+  3091             00000000   L204	equ	0
+  3092             00000001   L205	equ	1
+  3093                        
+  3094                        er_boot:
+  3095                        	longa	on
+  3096                        	longi	on
+  3097 00:E335: 3B           	tsc
+  3098 00:E336: 38           	sec
+  3099 00:E337: E9 00 00     	sbc	#L208
+  3100 00:E33A: 1B           	tcs
+  3101 00:E33B: 0B           	phd
+  3102 00:E33C: 5B           	tcd
+  3103             00000003   msg_0	set	3
+  3104 00:E33D: F4 60 E3     	pea	#<L203
+  3105 00:E340: 20 0F D2     	jsr	c_puts
+  3106 00:E343: A5 03        	lda	<L208+msg_0
+  3107 00:E345: D0 03        	bne	L210
+  3108 00:E347: 82 05 00     	brl	L10151
+  3109                        L210:
+  3110 00:E34A: D4 03        	pei	<L208+msg_0
+  3111 00:E34C: 20 0F D2     	jsr	c_puts
+  3112                        L10151:
+  3113 00:E34F: 20 4B D1     	jsr	warm_boot
+  3114                        L211:
+  3115 00:E352: A8           	tay
+  3116 00:E353: A5 01        	lda	<L208+1
+  3117 00:E355: 85 03        	sta	<L208+1+2
+  3118 00:E357: 2B           	pld
+  3119 00:E358: 3B           	tsc
+  3120 00:E359: 18           	clc
+  3121 00:E35A: 69 02 00     	adc	#L208+2
+  3122 00:E35D: 1B           	tcs
+  3123 00:E35E: 98           	tya
+  3124 00:E35F: 60           	rts
+  3125             00000000   L208	equ	0
+  3126             00000001   L209	equ	1
+  3127                        
+  3128                        L203:
+  3129 00:E360: 0D 0A 45 72  	db	$0D,$0A,$45,$72,$72,$00
+       00:E364: 72 00 
+  3130                        
+  3131                        c_isprint:
+  3132                        	longa	on
+  3133                        	longi	on
+  3134 00:E366: 3B           	tsc
+  3135 00:E367: 38           	sec
+  3136 00:E368: E9 04 00     	sbc	#L213
+  3137 00:E36B: 1B           	tcs
+  3138 00:E36C: 0B           	phd
+  3139 00:E36D: 5B           	tcd
+  3140             00000003   c_0	set	3
+  3141 00:E36E: 64 01        	stz	<R0
+  3142 00:E370: E2 20        	sep	#$20
+  3143                        	longa	off
+  3144 00:E372: A5 07        	lda	<L213+c_0
+  3145 00:E374: C9 20        	cmp	#<$20
+  3146 00:E376: C2 20        	rep	#$20
+  3147                        	longa	on
+  3148 00:E378: B0 03        	bcs	L216
+  3149 00:E37A: 82 0F 00     	brl	L215
+  3150                        L216:
+  3151 00:E37D: E2 20        	sep	#$20
+  3152                        	longa	off
+  3153 00:E37F: A9 7E        	lda	#$7e
+  3154 00:E381: C5 07        	cmp	<L213+c_0
+  3155 00:E383: C2 20        	rep	#$20
+  3156                        	longa	on
+  3157 00:E385: B0 03        	bcs	L217
+  3158 00:E387: 82 02 00     	brl	L215
+  3159                        L217:
+  3160 00:E38A: E6 01        	inc	<R0
+  3161                        L215:
+  3162 00:E38C: A5 01        	lda	<R0
+  3163 00:E38E: 29 FF 00     	and	#$ff
+  3164                        L218:
+  3165 00:E391: A8           	tay
+  3166 00:E392: A5 05        	lda	<L213+1
+  3167 00:E394: 85 07        	sta	<L213+1+2
+  3168 00:E396: 2B           	pld
+  3169 00:E397: 3B           	tsc
+  3170 00:E398: 18           	clc
+  3171 00:E399: 69 06 00     	adc	#L213+2
+  3172 00:E39C: 1B           	tcs
+  3173 00:E39D: 98           	tya
+  3174 00:E39E: 60           	rts
+  3175             00000004   L213	equ	4
+  3176             00000005   L214	equ	5
+  3177                        
+  3178                        c_isspace:
+  3179                        	longa	on
+  3180                        	longi	on
+  3181 00:E39F: 3B           	tsc
+  3182 00:E3A0: 38           	sec
+  3183 00:E3A1: E9 04 00     	sbc	#L219
+  3184 00:E3A4: 1B           	tcs
+  3185 00:E3A5: 0B           	phd
+  3186 00:E3A6: 5B           	tcd
+  3187             00000003   c_0	set	3
+  3188 00:E3A7: 64 01        	stz	<R0
+  3189 00:E3A9: E2 20        	sep	#$20
+  3190                        	longa	off
+  3191 00:E3AB: A5 07        	lda	<L219+c_0
+  3192 00:E3AD: C9 20        	cmp	#<$20
+  3193 00:E3AF: C2 20        	rep	#$20
+  3194                        	longa	on
+  3195 00:E3B1: D0 03        	bne	L223
+  3196 00:E3B3: 82 1A 00     	brl	L222
+  3197                        L223:
+  3198 00:E3B6: E2 20        	sep	#$20
+  3199                        	longa	off
+  3200 00:E3B8: A9 0D        	lda	#$d
+  3201 00:E3BA: C5 07        	cmp	<L219+c_0
+  3202 00:E3BC: C2 20        	rep	#$20
+  3203                        	longa	on
+  3204 00:E3BE: B0 03        	bcs	L224
+  3205 00:E3C0: 82 0F 00     	brl	L221
+  3206                        L224:
+  3207 00:E3C3: E2 20        	sep	#$20
+  3208                        	longa	off
+  3209 00:E3C5: A5 07        	lda	<L219+c_0
+  3210 00:E3C7: C9 09        	cmp	#<$9
+  3211 00:E3C9: C2 20        	rep	#$20
+  3212                        	longa	on
+  3213 00:E3CB: B0 03        	bcs	L225
+  3214 00:E3CD: 82 02 00     	brl	L221
+  3215                        L225:
+  3216                        L222:
+  3217 00:E3D0: E6 01        	inc	<R0
+  3218                        L221:
+  3219 00:E3D2: A5 01        	lda	<R0
+  3220 00:E3D4: 29 FF 00     	and	#$ff
+  3221                        L226:
+  3222 00:E3D7: A8           	tay
+  3223 00:E3D8: A5 05        	lda	<L219+1
+  3224 00:E3DA: 85 07        	sta	<L219+1+2
+  3225 00:E3DC: 2B           	pld
+  3226 00:E3DD: 3B           	tsc
+  3227 00:E3DE: 18           	clc
+  3228 00:E3DF: 69 06 00     	adc	#L219+2
+  3229 00:E3E2: 1B           	tcs
+  3230 00:E3E3: 98           	tya
+  3231 00:E3E4: 60           	rts
+  3232             00000004   L219	equ	4
+  3233             00000005   L220	equ	5
+  3234                        
+  3235                        newline:
+  3236                        	longa	on
+  3237                        	longi	on
+  3238 00:E3E5: 3B           	tsc
+  3239 00:E3E6: 38           	sec
+  3240 00:E3E7: E9 02 00     	sbc	#L227
+  3241 00:E3EA: 1B           	tcs
+  3242 00:E3EB: 0B           	phd
+  3243 00:E3EC: 5B           	tcd
+  3244             00000000   crlf_1	set	0
+  3245 00:E3ED: A9 FF E3     	lda	#<L212
+  3246 00:E3F0: 85 01        	sta	<L228+crlf_1
+  3247 00:E3F2: D4 01        	pei	<L228+crlf_1
+  3248 00:E3F4: 20 0F D2     	jsr	c_puts
+  3249                        L229:
+  3250 00:E3F7: 2B           	pld
+  3251 00:E3F8: 3B           	tsc
+  3252 00:E3F9: 18           	clc
+  3253 00:E3FA: 69 02 00     	adc	#L227
+  3254 00:E3FD: 1B           	tcs
+  3255 00:E3FE: 60           	rts
+  3256             00000002   L227	equ	2
+  3257             00000001   L228	equ	1
+  3258                        
+  3259                        L212:
+  3260 00:E3FF: 0D 0A 00     	db	$0D,$0A,$00
+  3261                        
+  3262                        c_gets:
+  3263                        	longa	on
+  3264                        	longi	on
+  3265 00:E402: 3B           	tsc
+  3266 00:E403: 38           	sec
+  3267 00:E404: E9 03 00     	sbc	#L231
+  3268 00:E407: 1B           	tcs
+  3269 00:E408: 0B           	phd
+  3270 00:E409: 5B           	tcd
+  3271             00000003   lbuf_0	set	3
+  3272             00000000   c_1	set	0
+  3273             00000001   len_1	set	1
+  3274 00:E40A: 64 02        	stz	<L232+len_1
+  3275                        L10152:
+  3276 00:E40C: 20 20 D1     	jsr	c_getch
+  3277 00:E40F: E2 20        	sep	#$20
+  3278                        	longa	off
+  3279 00:E411: 85 01        	sta	<L232+c_1
+  3280 00:E413: C2 20        	rep	#$20
+  3281                        	longa	on
+  3282 00:E415: E2 20        	sep	#$20
+  3283                        	longa	off
+  3284 00:E417: A5 01        	lda	<L232+c_1
+  3285 00:E419: C9 0D        	cmp	#<$d
+  3286 00:E41B: C2 20        	rep	#$20
+  3287                        	longa	on
+  3288 00:E41D: D0 03        	bne	L233
+  3289 00:E41F: 82 7F 00     	brl	L10153
+  3290                        L233:
+  3291 00:E422: E2 20        	sep	#$20
+  3292                        	longa	off
+  3293 00:E424: A5 01        	lda	<L232+c_1
+  3294 00:E426: C9 09        	cmp	#<$9
+  3295 00:E428: C2 20        	rep	#$20
+  3296                        	longa	on
+  3297 00:E42A: F0 03        	beq	L234
+  3298 00:E42C: 82 08 00     	brl	L10154
+  3299                        L234:
+  3300 00:E42F: E2 20        	sep	#$20
+  3301                        	longa	off
+  3302 00:E431: A9 20        	lda	#$20
+  3303 00:E433: 85 01        	sta	<L232+c_1
+  3304 00:E435: C2 20        	rep	#$20
+  3305                        	longa	on
+  3306                        L10154:
+  3307 00:E437: E2 20        	sep	#$20
+  3308                        	longa	off
+  3309 00:E439: A5 01        	lda	<L232+c_1
+  3310 00:E43B: C9 08        	cmp	#<$8
+  3311 00:E43D: C2 20        	rep	#$20
+  3312                        	longa	on
+  3313 00:E43F: D0 03        	bne	L236
+  3314 00:E441: 82 0D 00     	brl	L235
+  3315                        L236:
+  3316 00:E444: E2 20        	sep	#$20
+  3317                        	longa	off
+  3318 00:E446: A5 01        	lda	<L232+c_1
+  3319 00:E448: C9 7F        	cmp	#<$7f
+  3320 00:E44A: C2 20        	rep	#$20
+  3321                        	longa	on
+  3322 00:E44C: F0 03        	beq	L237
+  3323 00:E44E: 82 21 00     	brl	L10155
+  3324                        L237:
+  3325                        L235:
+  3326 00:E451: A9 00 00     	lda	#$0
+  3327 00:E454: C5 02        	cmp	<L232+len_1
+  3328 00:E456: 90 03        	bcc	L238
+  3329 00:E458: 82 17 00     	brl	L10155
+  3330                        L238:
+  3331 00:E45B: C6 02        	dec	<L232+len_1
+  3332 00:E45D: F4 08 00     	pea	#<$8
+  3333 00:E460: 20 26 D1     	jsr	c_putch
+  3334 00:E463: F4 20 00     	pea	#<$20
+  3335 00:E466: 20 26 D1     	jsr	c_putch
+  3336 00:E469: F4 08 00     	pea	#<$8
+  3337 00:E46C: 20 26 D1     	jsr	c_putch
+  3338 00:E46F: 82 2C 00     	brl	L10156
+  3339                        L10155:
+  3340 00:E472: D4 01        	pei	<L232+c_1
+  3341 00:E474: 20 66 E3     	jsr	c_isprint
+  3342 00:E477: 29 FF 00     	and	#$ff
+  3343 00:E47A: D0 03        	bne	L239
+  3344 00:E47C: 82 1F 00     	brl	L10157
+  3345                        L239:
+  3346 00:E47F: A5 02        	lda	<L232+len_1
+  3347 00:E481: C9 9F 00     	cmp	#<$9f
+  3348 00:E484: 90 03        	bcc	L240
+  3349 00:E486: 82 15 00     	brl	L10157
+  3350                        L240:
+  3351 00:E489: E2 20        	sep	#$20
+  3352                        	longa	off
+  3353 00:E48B: A5 01        	lda	<L232+c_1
+  3354 00:E48D: A4 02        	ldy	<L232+len_1
+  3355 00:E48F: 91 06        	sta	(<L231+lbuf_0),Y
+  3356 00:E491: C2 20        	rep	#$20
+  3357                        	longa	on
+  3358 00:E493: E6 02        	inc	<L232+len_1
+  3359 00:E495: A5 01        	lda	<L232+c_1
+  3360 00:E497: 29 FF 00     	and	#$ff
+  3361 00:E49A: 48           	pha
+  3362 00:E49B: 20 26 D1     	jsr	c_putch
+  3363                        L10157:
+  3364                        L10156:
+  3365 00:E49E: 82 6B FF     	brl	L10152
+  3366                        L10153:
+  3367 00:E4A1: 20 E5 E3     	jsr	newline
+  3368 00:E4A4: E2 20        	sep	#$20
+  3369                        	longa	off
+  3370 00:E4A6: A9 00        	lda	#$0
+  3371 00:E4A8: A4 02        	ldy	<L232+len_1
+  3372 00:E4AA: 91 06        	sta	(<L231+lbuf_0),Y
+  3373 00:E4AC: C2 20        	rep	#$20
+  3374                        	longa	on
+  3375 00:E4AE: A9 00 00     	lda	#$0
+  3376 00:E4B1: C5 02        	cmp	<L232+len_1
+  3377 00:E4B3: 90 03        	bcc	L241
+  3378 00:E4B5: 82 1E 00     	brl	L10158
+  3379                        L241:
+  3380                        L10161:
+  3381 00:E4B8: C6 02        	dec	<L232+len_1
+  3382                        L10159:
+  3383 00:E4BA: A4 02        	ldy	<L232+len_1
+  3384 00:E4BC: B1 06        	lda	(<L231+lbuf_0),Y
+  3385 00:E4BE: 48           	pha
+  3386 00:E4BF: 20 9F E3     	jsr	c_isspace
+  3387 00:E4C2: 29 FF 00     	and	#$ff
+  3388 00:E4C5: F0 03        	beq	L242
+  3389 00:E4C7: 82 EE FF     	brl	L10161
+  3390                        L242:
+  3391                        L10160:
+  3392 00:E4CA: E6 02        	inc	<L232+len_1
+  3393 00:E4CC: E2 20        	sep	#$20
+  3394                        	longa	off
+  3395 00:E4CE: A9 00        	lda	#$0
+  3396 00:E4D0: A4 02        	ldy	<L232+len_1
+  3397 00:E4D2: 91 06        	sta	(<L231+lbuf_0),Y
+  3398 00:E4D4: C2 20        	rep	#$20
+  3399                        	longa	on
+  3400                        L10158:
+  3401 00:E4D6: A5 02        	lda	<L232+len_1
+  3402                        L243:
+  3403 00:E4D8: A8           	tay
+  3404 00:E4D9: A5 04        	lda	<L231+1
+  3405 00:E4DB: 85 06        	sta	<L231+1+2
+  3406 00:E4DD: 2B           	pld
+  3407 00:E4DE: 3B           	tsc
+  3408 00:E4DF: 18           	clc
+  3409 00:E4E0: 69 05 00     	adc	#L231+2
+  3410 00:E4E3: 1B           	tcs
+  3411 00:E4E4: 98           	tya
+  3412 00:E4E5: 60           	rts
+  3413             00000003   L231	equ	3
+  3414             00000001   L232	equ	1
+  3415                        
+  3416                        memmove:
+  3417                        	longa	on
+  3418                        	longi	on
+  3419 00:E4E6: 3B           	tsc
+  3420 00:E4E7: 38           	sec
+  3421 00:E4E8: E9 08 00     	sbc	#L244
+  3422 00:E4EB: 1B           	tcs
+  3423 00:E4EC: 0B           	phd
+  3424 00:E4ED: 5B           	tcd
+  3425             00000003   dest_0	set	3
+  3426             00000005   src_0	set	5
+  3427             00000007   n_0	set	7
+  3428             00000000   tmp_1	set	0
+  3429             00000002   s_1	set	2
+  3430 00:E4EE: A5 0D        	lda	<L244+src_0
+  3431 00:E4F0: C5 0B        	cmp	<L244+dest_0
+  3432 00:E4F2: B0 03        	bcs	L246
+  3433 00:E4F4: 82 27 00     	brl	L10162
+  3434                        L246:
+  3435 00:E4F7: A5 0B        	lda	<L244+dest_0
+  3436 00:E4F9: 85 05        	sta	<L245+tmp_1
+  3437 00:E4FB: A5 0D        	lda	<L244+src_0
+  3438 00:E4FD: 85 07        	sta	<L245+s_1
+  3439                        L10163:
+  3440 00:E4FF: A5 0F        	lda	<L244+n_0
+  3441 00:E501: 85 01        	sta	<R0
+  3442 00:E503: C6 0F        	dec	<L244+n_0
+  3443 00:E505: A5 01        	lda	<R0
+  3444 00:E507: D0 03        	bne	L247
+  3445 00:E509: 82 0F 00     	brl	L10164
+  3446                        L247:
+  3447 00:E50C: E2 20        	sep	#$20
+  3448                        	longa	off
+  3449 00:E50E: B2 07        	lda	(<L245+s_1)
+  3450 00:E510: 92 05        	sta	(<L245+tmp_1)
+  3451 00:E512: C2 20        	rep	#$20
+  3452                        	longa	on
+  3453 00:E514: E6 07        	inc	<L245+s_1
+  3454 00:E516: E6 05        	inc	<L245+tmp_1
+  3455 00:E518: 82 E4 FF     	brl	L10163
+  3456                        L10164:
+  3457 00:E51B: 82 32 00     	brl	L10165
+  3458                        L10162:
+  3459 00:E51E: A5 0B        	lda	<L244+dest_0
+  3460 00:E520: 85 05        	sta	<L245+tmp_1
+  3461 00:E522: 18           	clc
+  3462 00:E523: A5 05        	lda	<L245+tmp_1
+  3463 00:E525: 65 0F        	adc	<L244+n_0
+  3464 00:E527: 85 05        	sta	<L245+tmp_1
+  3465 00:E529: A5 0D        	lda	<L244+src_0
+  3466 00:E52B: 85 07        	sta	<L245+s_1
+  3467 00:E52D: 18           	clc
+  3468 00:E52E: A5 07        	lda	<L245+s_1
+  3469 00:E530: 65 0F        	adc	<L244+n_0
+  3470 00:E532: 85 07        	sta	<L245+s_1
+  3471                        L10166:
+  3472 00:E534: A5 0F        	lda	<L244+n_0
+  3473 00:E536: 85 01        	sta	<R0
+  3474 00:E538: C6 0F        	dec	<L244+n_0
+  3475 00:E53A: A5 01        	lda	<R0
+  3476 00:E53C: D0 03        	bne	L248
+  3477 00:E53E: 82 0F 00     	brl	L10167
+  3478                        L248:
+  3479 00:E541: C6 05        	dec	<L245+tmp_1
+  3480 00:E543: C6 07        	dec	<L245+s_1
+  3481 00:E545: E2 20        	sep	#$20
+  3482                        	longa	off
+  3483 00:E547: B2 07        	lda	(<L245+s_1)
+  3484 00:E549: 92 05        	sta	(<L245+tmp_1)
+  3485 00:E54B: C2 20        	rep	#$20
+  3486                        	longa	on
+  3487 00:E54D: 82 E4 FF     	brl	L10166
+  3488                        L10167:
+  3489                        L10165:
+  3490                        L249:
+  3491 00:E550: A5 09        	lda	<L244+1
+  3492 00:E552: 85 0F        	sta	<L244+1+6
+  3493 00:E554: 2B           	pld
+  3494 00:E555: 3B           	tsc
+  3495 00:E556: 18           	clc
+  3496 00:E557: 69 0E 00     	adc	#L244+6
+  3497 00:E55A: 1B           	tcs
+  3498 00:E55B: 60           	rts
+  3499             00000008   L244	equ	8
+  3500             00000005   L245	equ	5
+  3501                        
+  3502                        strcpy:
+  3503                        	longa	on
+  3504                        	longi	on
+  3505 00:E55C: 3B           	tsc
+  3506 00:E55D: 38           	sec
+  3507 00:E55E: E9 06 00     	sbc	#L250
+  3508 00:E561: 1B           	tcs
+  3509 00:E562: 0B           	phd
+  3510 00:E563: 5B           	tcd
+  3511             00000003   p1_0	set	3
+  3512             00000005   p2_0	set	5
+  3513             00000000   c_1	set	0
+  3514             00000001   flg_1	set	1
+  3515 00:E564: E2 20        	sep	#$20
+  3516                        	longa	off
+  3517 00:E566: 64 06        	stz	<L251+flg_1
+  3518 00:E568: C2 20        	rep	#$20
+  3519                        	longa	on
+  3520                        L10168:
+  3521 00:E56A: A5 0B        	lda	<L250+p2_0
+  3522 00:E56C: 85 01        	sta	<R0
+  3523 00:E56E: E6 0B        	inc	<L250+p2_0
+  3524 00:E570: E2 20        	sep	#$20
+  3525                        	longa	off
+  3526 00:E572: B2 01        	lda	(<R0)
+  3527 00:E574: 85 05        	sta	<L251+c_1
+  3528 00:E576: C2 20        	rep	#$20
+  3529                        	longa	on
+  3530 00:E578: A5 05        	lda	<L251+c_1
+  3531 00:E57A: 29 FF 00     	and	#$ff
+  3532 00:E57D: D0 03        	bne	L252
+  3533 00:E57F: 82 50 00     	brl	L10169
+  3534                        L252:
+  3535 00:E582: E2 20        	sep	#$20
+  3536                        	longa	off
+  3537 00:E584: A5 05        	lda	<L251+c_1
+  3538 00:E586: C9 22        	cmp	#<$22
+  3539 00:E588: C2 20        	rep	#$20
+  3540                        	longa	on
+  3541 00:E58A: F0 03        	beq	L253
+  3542 00:E58C: 82 0A 00     	brl	L10170
+  3543                        L253:
+  3544 00:E58F: E2 20        	sep	#$20
+  3545                        	longa	off
+  3546 00:E591: A5 06        	lda	<L251+flg_1
+  3547 00:E593: 49 01        	eor	#<$1
+  3548 00:E595: 85 06        	sta	<L251+flg_1
+  3549 00:E597: C2 20        	rep	#$20
+  3550                        	longa	on
+  3551                        L10170:
+  3552 00:E599: E2 20        	sep	#$20
+  3553                        	longa	off
+  3554 00:E59B: A5 05        	lda	<L251+c_1
+  3555 00:E59D: C9 61        	cmp	#<$61
+  3556 00:E59F: C2 20        	rep	#$20
+  3557                        	longa	on
+  3558 00:E5A1: B0 03        	bcs	L254
+  3559 00:E5A3: 82 1F 00     	brl	L10171
+  3560                        L254:
+  3561 00:E5A6: E2 20        	sep	#$20
+  3562                        	longa	off
+  3563 00:E5A8: A9 7A        	lda	#$7a
+  3564 00:E5AA: C5 05        	cmp	<L251+c_1
+  3565 00:E5AC: C2 20        	rep	#$20
+  3566                        	longa	on
+  3567 00:E5AE: B0 03        	bcs	L255
+  3568 00:E5B0: 82 12 00     	brl	L10171
+  3569                        L255:
+  3570 00:E5B3: A5 06        	lda	<L251+flg_1
+  3571 00:E5B5: 29 FF 00     	and	#$ff
+  3572 00:E5B8: F0 03        	beq	L256
+  3573 00:E5BA: 82 08 00     	brl	L10171
+  3574                        L256:
+  3575 00:E5BD: E2 20        	sep	#$20
+  3576                        	longa	off
+  3577 00:E5BF: A9 20        	lda	#$20
+  3578 00:E5C1: 14 05        	trb	<L251+c_1
+  3579 00:E5C3: C2 20        	rep	#$20
+  3580                        	longa	on
+  3581                        L10171:
+  3582 00:E5C5: E2 20        	sep	#$20
+  3583                        	longa	off
+  3584 00:E5C7: A5 05        	lda	<L251+c_1
+  3585 00:E5C9: 92 09        	sta	(<L250+p1_0)
+  3586 00:E5CB: C2 20        	rep	#$20
+  3587                        	longa	on
+  3588 00:E5CD: E6 09        	inc	<L250+p1_0
+  3589 00:E5CF: 82 98 FF     	brl	L10168
+  3590                        L10169:
+  3591 00:E5D2: E2 20        	sep	#$20
+  3592                        	longa	off
+  3593 00:E5D4: A9 00        	lda	#$0
+  3594 00:E5D6: 92 09        	sta	(<L250+p1_0)
+  3595 00:E5D8: C2 20        	rep	#$20
+  3596                        	longa	on
+  3597                        L257:
+  3598 00:E5DA: A5 07        	lda	<L250+1
+  3599 00:E5DC: 85 0B        	sta	<L250+1+4
+  3600 00:E5DE: 2B           	pld
+  3601 00:E5DF: 3B           	tsc
+  3602 00:E5E0: 18           	clc
+  3603 00:E5E1: 69 0A 00     	adc	#L250+4
+  3604 00:E5E4: 1B           	tcs
+  3605 00:E5E5: 60           	rts
+  3606             00000006   L250	equ	6
+  3607             00000005   L251	equ	5
+  3608                        
+  3609                        strlen:
+  3610                        	longa	on
+  3611                        	longi	on
+  3612 00:E5E6: 3B           	tsc
+  3613 00:E5E7: 38           	sec
+  3614 00:E5E8: E9 06 00     	sbc	#L258
+  3615 00:E5EB: 1B           	tcs
+  3616 00:E5EC: 0B           	phd
+  3617 00:E5ED: 5B           	tcd
+  3618             00000003   s_0	set	3
+  3619             00000000   num_1	set	0
+  3620 00:E5EE: 64 05        	stz	<L259+num_1
+  3621                        L10172:
+  3622 00:E5F0: A5 09        	lda	<L258+s_0
+  3623 00:E5F2: 85 01        	sta	<R0
+  3624 00:E5F4: E6 09        	inc	<L258+s_0
+  3625 00:E5F6: B2 01        	lda	(<R0)
+  3626 00:E5F8: 29 FF 00     	and	#$ff
+  3627 00:E5FB: D0 03        	bne	L260
+  3628 00:E5FD: 82 05 00     	brl	L10173
+  3629                        L260:
+  3630 00:E600: E6 05        	inc	<L259+num_1
+  3631 00:E602: 82 EB FF     	brl	L10172
+  3632                        L10173:
+  3633 00:E605: A5 05        	lda	<L259+num_1
+  3634                        L261:
+  3635 00:E607: A8           	tay
+  3636 00:E608: A5 07        	lda	<L258+1
+  3637 00:E60A: 85 09        	sta	<L258+1+2
+  3638 00:E60C: 2B           	pld
+  3639 00:E60D: 3B           	tsc
+  3640 00:E60E: 18           	clc
+  3641 00:E60F: 69 08 00     	adc	#L258+2
+  3642 00:E612: 1B           	tcs
+  3643 00:E613: 98           	tya
+  3644 00:E614: 60           	rts
+  3645             00000006   L258	equ	6
+  3646             00000005   L259	equ	5
+  3647                        
+  3648                        getNum:
+  3649                        	longa	on
+  3650                        	longi	on
+  3651 00:E615: 3B           	tsc
+  3652 00:E616: 38           	sec
+  3653 00:E617: E9 0F 00     	sbc	#L262
+  3654 00:E61A: 1B           	tcs
+  3655 00:E61B: 0B           	phd
+  3656 00:E61C: 5B           	tcd
+  3657             00000003   f_0	set	3
+  3658             00000000   c_1	set	0
+  3659             00000001   n_1	set	1
+  3660 00:E61D: 64 0E        	stz	<L263+n_1
+  3661 00:E61F: A9 00 00     	lda	#$0
+  3662 00:E622: 92 12        	sta	(<L262+f_0)
+  3663 00:E624: AD D0 7D     	lda	pc
+  3664 00:E627: 85 01        	sta	<R0
+  3665 00:E629: E2 20        	sep	#$20
+  3666                        	longa	off
+  3667 00:E62B: B2 01        	lda	(<R0)
+  3668 00:E62D: 85 0D        	sta	<L263+c_1
+  3669 00:E62F: C2 20        	rep	#$20
+  3670                        	longa	on
+  3671                        L10174:
+  3672 00:E631: E2 20        	sep	#$20
+  3673                        	longa	off
+  3674 00:E633: A5 0D        	lda	<L263+c_1
+  3675 00:E635: C9 30        	cmp	#<$30
+  3676 00:E637: C2 20        	rep	#$20
+  3677                        	longa	on
+  3678 00:E639: B0 03        	bcs	L264
+  3679 00:E63B: 82 44 00     	brl	L10175
+  3680                        L264:
+  3681 00:E63E: E2 20        	sep	#$20
+  3682                        	longa	off
+  3683 00:E640: A9 39        	lda	#$39
+  3684 00:E642: C5 0D        	cmp	<L263+c_1
+  3685 00:E644: C2 20        	rep	#$20
+  3686                        	longa	on
+  3687 00:E646: B0 03        	bcs	L265
+  3688 00:E648: 82 37 00     	brl	L10175
+  3689                        L265:
+  3690 00:E64B: A5 0D        	lda	<L263+c_1
+  3691 00:E64D: 29 FF 00     	and	#$ff
+  3692 00:E650: 85 01        	sta	<R0
+  3693 00:E652: A5 0E        	lda	<L263+n_1
+  3694 00:E654: 0A           	asl	A
+  3695 00:E655: 0A           	asl	A
+  3696 00:E656: 65 0E        	adc	<L263+n_1
+  3697 00:E658: 0A           	asl	A
+  3698 00:E659: 85 05        	sta	<R1
+  3699 00:E65B: 18           	clc
+  3700 00:E65C: A5 05        	lda	<R1
+  3701 00:E65E: 65 01        	adc	<R0
+  3702 00:E660: 85 09        	sta	<R2
+  3703 00:E662: 18           	clc
+  3704 00:E663: A9 D0 FF     	lda	#$ffd0
+  3705 00:E666: 65 09        	adc	<R2
+  3706 00:E668: 85 0E        	sta	<L263+n_1
+  3707 00:E66A: EE D0 7D     	inc	pc
+  3708 00:E66D: AD D0 7D     	lda	pc
+  3709 00:E670: 85 01        	sta	<R0
+  3710 00:E672: E2 20        	sep	#$20
+  3711                        	longa	off
+  3712 00:E674: B2 01        	lda	(<R0)
+  3713 00:E676: 85 0D        	sta	<L263+c_1
+  3714 00:E678: C2 20        	rep	#$20
+  3715                        	longa	on
+  3716 00:E67A: A9 01 00     	lda	#$1
+  3717 00:E67D: 92 12        	sta	(<L262+f_0)
+  3718 00:E67F: 82 AF FF     	brl	L10174
+  3719                        L10175:
+  3720 00:E682: A5 0E        	lda	<L263+n_1
+  3721                        L266:
+  3722 00:E684: A8           	tay
+  3723 00:E685: A5 10        	lda	<L262+1
+  3724 00:E687: 85 12        	sta	<L262+1+2
+  3725 00:E689: 2B           	pld
+  3726 00:E68A: 3B           	tsc
+  3727 00:E68B: 18           	clc
+  3728 00:E68C: 69 11 00     	adc	#L262+2
+  3729 00:E68F: 1B           	tcs
+  3730 00:E690: 98           	tya
+  3731 00:E691: 60           	rts
+  3732             0000000F   L262	equ	15
+  3733             0000000D   L263	equ	13
+  3734                        
+  3735                        getHex:
+  3736                        	longa	on
+  3737                        	longi	on
+  3738 00:E692: 3B           	tsc
+  3739 00:E693: 38           	sec
+  3740 00:E694: E9 10 00     	sbc	#L267
+  3741 00:E697: 1B           	tcs
+  3742 00:E698: 0B           	phd
+  3743 00:E699: 5B           	tcd
+  3744             00000003   f_0	set	3
+  3745             00000000   c_1	set	0
+  3746             00000002   n_1	set	2
+  3747 00:E69A: 64 0F        	stz	<L268+n_1
+  3748 00:E69C: A9 00 00     	lda	#$0
+  3749 00:E69F: 92 13        	sta	(<L267+f_0)
+  3750 00:E6A1: AD D0 7D     	lda	pc
+  3751 00:E6A4: 85 01        	sta	<R0
+  3752 00:E6A6: B2 01        	lda	(<R0)
+  3753 00:E6A8: 29 FF 00     	and	#$ff
+  3754 00:E6AB: 85 0D        	sta	<L268+c_1
+  3755                        L10176:
+  3756 00:E6AD: 38           	sec
+  3757 00:E6AE: A5 0D        	lda	<L268+c_1
+  3758 00:E6B0: E9 30 00     	sbc	#<$30
+  3759 00:E6B3: 70 03        	bvs	L271
+  3760 00:E6B5: 49 00 80     	eor	#$8000
+  3761                        L271:
+  3762 00:E6B8: 30 03        	bmi	L272
+  3763 00:E6BA: 82 10 00     	brl	L270
+  3764                        L272:
+  3765 00:E6BD: 38           	sec
+  3766 00:E6BE: A9 39 00     	lda	#$39
+  3767 00:E6C1: E5 0D        	sbc	<L268+c_1
+  3768 00:E6C3: 70 03        	bvs	L273
+  3769 00:E6C5: 49 00 80     	eor	#$8000
+  3770                        L273:
+  3771 00:E6C8: 10 03        	bpl	L274
+  3772 00:E6CA: 82 40 00     	brl	L269
+  3773                        L274:
+  3774                        L270:
+  3775 00:E6CD: 38           	sec
+  3776 00:E6CE: A5 0D        	lda	<L268+c_1
+  3777 00:E6D0: E9 41 00     	sbc	#<$41
+  3778 00:E6D3: 70 03        	bvs	L276
+  3779 00:E6D5: 49 00 80     	eor	#$8000
+  3780                        L276:
+  3781 00:E6D8: 30 03        	bmi	L277
+  3782 00:E6DA: 82 10 00     	brl	L275
+  3783                        L277:
+  3784 00:E6DD: 38           	sec
+  3785 00:E6DE: A9 46 00     	lda	#$46
+  3786 00:E6E1: E5 0D        	sbc	<L268+c_1
+  3787 00:E6E3: 70 03        	bvs	L278
+  3788 00:E6E5: 49 00 80     	eor	#$8000
+  3789                        L278:
+  3790 00:E6E8: 10 03        	bpl	L279
+  3791 00:E6EA: 82 20 00     	brl	L269
+  3792                        L279:
+  3793                        L275:
+  3794 00:E6ED: 38           	sec
+  3795 00:E6EE: A5 0D        	lda	<L268+c_1
+  3796 00:E6F0: E9 61 00     	sbc	#<$61
+  3797 00:E6F3: 70 03        	bvs	L280
+  3798 00:E6F5: 49 00 80     	eor	#$8000
+  3799                        L280:
+  3800 00:E6F8: 30 03        	bmi	L281
+  3801 00:E6FA: 82 86 00     	brl	L10177
+  3802                        L281:
+  3803 00:E6FD: 38           	sec
+  3804 00:E6FE: A9 66 00     	lda	#$66
+  3805 00:E701: E5 0D        	sbc	<L268+c_1
+  3806 00:E703: 70 03        	bvs	L282
+  3807 00:E705: 49 00 80     	eor	#$8000
+  3808                        L282:
+  3809 00:E708: 30 03        	bmi	L283
+  3810 00:E70A: 82 76 00     	brl	L10177
+  3811                        L283:
+  3812                        L269:
+  3813 00:E70D: A5 0F        	lda	<L268+n_1
+  3814 00:E70F: 0A           	asl	A
+  3815 00:E710: 0A           	asl	A
+  3816 00:E711: 0A           	asl	A
+  3817 00:E712: 0A           	asl	A
+  3818 00:E713: 85 01        	sta	<R0
+  3819 00:E715: 38           	sec
+  3820 00:E716: A5 0D        	lda	<L268+c_1
+  3821 00:E718: E9 41 00     	sbc	#<$41
+  3822 00:E71B: 70 03        	bvs	L285
+  3823 00:E71D: 49 00 80     	eor	#$8000
+  3824                        L285:
+  3825 00:E720: 10 03        	bpl	L286
+  3826 00:E722: 82 0C 00     	brl	L284
+  3827                        L286:
+  3828 00:E725: 18           	clc
+  3829 00:E726: A9 D0 FF     	lda	#$ffd0
+  3830 00:E729: 65 0D        	adc	<L268+c_1
+  3831 00:E72B: 85 05        	sta	<R1
+  3832 00:E72D: A5 05        	lda	<R1
+  3833 00:E72F: 80 32        	bra	L287
+  3834                        L284:
+  3835 00:E731: 38           	sec
+  3836 00:E732: A5 0D        	lda	<L268+c_1
+  3837 00:E734: E9 61 00     	sbc	#<$61
+  3838 00:E737: 70 03        	bvs	L289
+  3839 00:E739: 49 00 80     	eor	#$8000
+  3840                        L289:
+  3841 00:E73C: 10 03        	bpl	L290
+  3842 00:E73E: 82 0C 00     	brl	L288
+  3843                        L290:
+  3844 00:E741: 18           	clc
+  3845 00:E742: A9 BF FF     	lda	#$ffbf
+  3846 00:E745: 65 0D        	adc	<L268+c_1
+  3847 00:E747: 85 05        	sta	<R1
+  3848 00:E749: A5 05        	lda	<R1
+  3849 00:E74B: 80 0A        	bra	L291
+  3850                        L288:
+  3851 00:E74D: 18           	clc
+  3852 00:E74E: A9 9F FF     	lda	#$ff9f
+  3853 00:E751: 65 0D        	adc	<L268+c_1
+  3854 00:E753: 85 05        	sta	<R1
+  3855 00:E755: A5 05        	lda	<R1
+  3856                        L291:
+  3857 00:E757: 85 05        	sta	<R1
+  3858 00:E759: 18           	clc
+  3859 00:E75A: A9 0A 00     	lda	#$a
+  3860 00:E75D: 65 05        	adc	<R1
+  3861 00:E75F: 85 09        	sta	<R2
+  3862 00:E761: A5 09        	lda	<R2
+  3863                        L287:
+  3864 00:E763: 85 05        	sta	<R1
+  3865 00:E765: 18           	clc
+  3866 00:E766: A5 05        	lda	<R1
+  3867 00:E768: 65 01        	adc	<R0
+  3868 00:E76A: 85 0F        	sta	<L268+n_1
+  3869 00:E76C: EE D0 7D     	inc	pc
+  3870 00:E76F: AD D0 7D     	lda	pc
+  3871 00:E772: 85 01        	sta	<R0
+  3872 00:E774: B2 01        	lda	(<R0)
+  3873 00:E776: 29 FF 00     	and	#$ff
+  3874 00:E779: 85 0D        	sta	<L268+c_1
+  3875 00:E77B: A9 01 00     	lda	#$1
+  3876 00:E77E: 92 13        	sta	(<L267+f_0)
+  3877 00:E780: 82 2A FF     	brl	L10176
+  3878                        L10177:
+  3879 00:E783: A5 0F        	lda	<L268+n_1
+  3880                        L292:
+  3881 00:E785: A8           	tay
+  3882 00:E786: A5 11        	lda	<L267+1
+  3883 00:E788: 85 13        	sta	<L267+1+2
+  3884 00:E78A: 2B           	pld
+  3885 00:E78B: 3B           	tsc
+  3886 00:E78C: 18           	clc
+  3887 00:E78D: 69 12 00     	adc	#L267+2
+  3888 00:E790: 1B           	tcs
+  3889 00:E791: 98           	tya
+  3890 00:E792: 60           	rts
+  3891             00000010   L267	equ	16
+  3892             0000000D   L268	equ	13
+  3893                        
+  3894                        newText:
+  3895                        	longa	on
+  3896                        	longi	on
+  3897 00:E793: 3B           	tsc
+  3898 00:E794: 38           	sec
+  3899 00:E795: E9 04 00     	sbc	#L293
+  3900 00:E798: 1B           	tcs
+  3901 00:E799: 0B           	phd
+  3902 00:E79A: 5B           	tcd
+  3903 00:E79B: AD 50 7C     	lda	var+76
+  3904 00:E79E: 85 01        	sta	<R0
+  3905 00:E7A0: E2 20        	sep	#$20
+  3906                        	longa	off
+  3907 00:E7A2: B2 01        	lda	(<R0)
+  3908 00:E7A4: C9 FF        	cmp	#<$ff
+  3909 00:E7A6: C2 20        	rep	#$20
+  3910                        	longa	on
+  3911 00:E7A8: D0 03        	bne	L295
+  3912 00:E7AA: 82 07 00     	brl	L10178
+  3913                        L295:
+  3914 00:E7AD: AD 69 D2     	lda	t_lock
+  3915 00:E7B0: 48           	pha
+  3916 00:E7B1: 20 35 E3     	jsr	er_boot
+  3917                        L10178:
+  3918 00:E7B4: 20 C1 E7     	jsr	newText1
+  3919                        L296:
+  3920 00:E7B7: A8           	tay
+  3921 00:E7B8: 2B           	pld
+  3922 00:E7B9: 3B           	tsc
+  3923 00:E7BA: 18           	clc
+  3924 00:E7BB: 69 04 00     	adc	#L293
+  3925 00:E7BE: 1B           	tcs
+  3926 00:E7BF: 98           	tya
+  3927 00:E7C0: 60           	rts
+  3928             00000004   L293	equ	4
+  3929             00000005   L294	equ	5
+  3930                        
+  3931                        newText1:
+  3932                        	longa	on
+  3933                        	longi	on
+  3934 00:E7C1: 3B           	tsc
+  3935 00:E7C2: 38           	sec
+  3936 00:E7C3: E9 04 00     	sbc	#L297
+  3937 00:E7C6: 1B           	tcs
+  3938 00:E7C7: 0B           	phd
+  3939 00:E7C8: 5B           	tcd
+  3940 00:E7C9: AD 7E 7C     	lda	var+122
+  3941 00:E7CC: 8D 50 7C     	sta	var+76
+  3942 00:E7CF: AD 50 7C     	lda	var+76
+  3943 00:E7D2: 85 01        	sta	<R0
+  3944 00:E7D4: E2 20        	sep	#$20
+  3945                        	longa	off
+  3946 00:E7D6: A9 FF        	lda	#$ff
+  3947 00:E7D8: 92 01        	sta	(<R0)
+  3948 00:E7DA: C2 20        	rep	#$20
+  3949                        	longa	on
+  3950                        L299:
+  3951 00:E7DC: A8           	tay
+  3952 00:E7DD: 2B           	pld
+  3953 00:E7DE: 3B           	tsc
+  3954 00:E7DF: 18           	clc
+  3955 00:E7E0: 69 04 00     	adc	#L297
+  3956 00:E7E3: 1B           	tcs
+  3957 00:E7E4: 98           	tya
+  3958 00:E7E5: 60           	rts
+  3959             00000004   L297	equ	4
+  3960             00000005   L298	equ	5
+  3961                        
+  3962 00:E7E6:              	ds	$10000-$
+  3963                        	end
+
+
+      Lines assembled: 4089
+      Errors: 0

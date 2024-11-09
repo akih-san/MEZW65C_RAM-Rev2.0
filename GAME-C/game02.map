@@ -1,0 +1,720 @@
+Modules list:
+-------------
+gm_stup.o:
+    CODE              Offs=000000  Size=00004F  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000020  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000002  Align=00001  Fill=0000
+game02.o:
+    CODE              Offs=00004F  Size=001754  Align=00001  Fill=0000
+    RODATA            Offs=000020  Size=000056  Align=00001  Fill=0000
+    BSS               Offs=000002  Size=007B12  Align=00001  Fill=0000
+crt0.o:
+    STARTUP           Offs=000000  Size=000017  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(addeqsp.o):
+    CODE              Offs=0017A3  Size=000011  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(addysp.o):
+    CODE              Offs=0017B4  Size=00000E  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(aslax1.o):
+    CODE              Offs=0017C2  Size=000008  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(aslax2.o):
+    CODE              Offs=0017CA  Size=00000B  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(aslax4.o):
+    CODE              Offs=0017D5  Size=000011  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(bneg.o):
+    CODE              Offs=0017E6  Size=00000E  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(compl.o):
+    CODE              Offs=0017F4  Size=000009  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(condes.o):
+    CODE              Offs=0017FD  Size=00000C  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000025  Align=00001  Fill=0000
+    ONCE              Offs=000000  Size=00000C  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax1.o):
+    CODE              Offs=001809  Size=000007  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decaxy.o):
+    CODE              Offs=001810  Size=000009  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp1.o):
+    CODE              Offs=001819  Size=000009  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp2.o):
+    CODE              Offs=001822  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp3.o):
+    CODE              Offs=00182F  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp4.o):
+    CODE              Offs=00183C  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp5.o):
+    CODE              Offs=001849  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp6.o):
+    CODE              Offs=001856  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp8.o):
+    CODE              Offs=001863  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(div.o):
+    CODE              Offs=001870  Size=000015  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(eq.o):
+    CODE              Offs=001885  Size=00000A  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(gt.o):
+    CODE              Offs=00188F  Size=00000A  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(icmp.o):
+    CODE              Offs=001899  Size=00002E  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incax2.o):
+    CODE              Offs=0018C7  Size=000007  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incaxy.o):
+    CODE              Offs=0018CE  Size=00000B  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp1.o):
+    CODE              Offs=0018D9  Size=000007  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp2.o):
+    CODE              Offs=0018E0  Size=000016  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp4.o):
+    CODE              Offs=0018F6  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp5.o):
+    CODE              Offs=0018FB  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp6.o):
+    CODE              Offs=001900  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp8.o):
+    CODE              Offs=001905  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(ldaxi.o):
+    CODE              Offs=00190A  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(ldaxsp.o):
+    CODE              Offs=001917  Size=000009  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(le.o):
+    CODE              Offs=001920  Size=00000A  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(leaaxsp.o):
+    CODE              Offs=00192A  Size=00000C  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(makebool.o):
+    CODE              Offs=001936  Size=00002C  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(mod.o):
+    CODE              Offs=001962  Size=000011  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(mul.o):
+    CODE              Offs=001973  Size=000045  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(mul8.o):
+    CODE              Offs=0019B8  Size=00003A  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(mulax10.o):
+    CODE              Offs=0019F2  Size=000019  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(negabs.o):
+    CODE              Offs=001A0B  Size=000012  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(popptr1.o):
+    CODE              Offs=001A1D  Size=00000E  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(pusha.o):
+    CODE              Offs=001A2B  Size=000016  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(pushax.o):
+    CODE              Offs=001A41  Size=00001A  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(pushwsp.o):
+    CODE              Offs=001A5B  Size=00001C  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(shelp.o):
+    CODE              Offs=001A77  Size=000020  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(shr.o):
+    CODE              Offs=001A97  Size=000034  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(shrax4.o):
+    CODE              Offs=001ACB  Size=000011  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(staspidx.o):
+    CODE              Offs=001ADC  Size=000016  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(staxsp.o):
+    CODE              Offs=001AF2  Size=00000B  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(subeqsp.o):
+    CODE              Offs=001AFD  Size=000015  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(subysp.o):
+    CODE              Offs=001B12  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(udiv.o):
+    CODE              Offs=001B1F  Size=00004F  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(umod.o):
+    CODE              Offs=001B6E  Size=000011  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(zerobss.o):
+    CODE              Offs=001B7F  Size=000023  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(zeropage.o):
+    ZEROPAGE          Offs=000000  Size=00001A  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+ZEROPAGE              000050  000069  00001A  00001
+BSS                   000200  007D13  007B14  00001
+RODATA                00CC00  00CC75  000076  00001
+CODE                  00CC76  00E817  001BA2  00001
+STARTUP               00E818  00E82E  000017  00001
+ONCE                  00E82F  00E83A  00000C  00001
+DATA                  00E83B  00E85F  000025  00001
+
+
+Exports list by name:
+---------------------
+COLD_START                00CCB7 RLA    __BSS_RUN__               000200 RLA    
+__BSS_SIZE__              007B14 REA    __CONSTRUCTOR_COUNT__     000000 REA    
+__CONSTRUCTOR_TABLE__     00E83B RLA    __DESTRUCTOR_COUNT__      000000 REA    
+__DESTRUCTOR_TABLE__      00CC76 RLA    __FILETOP__               00CC00 REA    
+__STACKSIZE__             000100 REA    __STACKSTART__            00EAF0 REA    
+__STARTUP__               000001 REA    __ZPSTART__               000050 REA    
+_c_getch                  00CC76 RLA    _c_kbhit                  00CC79 RLA    
+_c_putch                  00CC7C RLA    _mach_fin                 00CCC1 RLA    
+_main                     00DF2E RLA    _rand                     00CC7F RLA    
+_srand                    00CCA4 RLA    _startup                  00E818 RLA    
+_warm_boot                00CCAB RLA    addeq0sp                  00E419 RLA    
+addeqysp                  00E41B RLA    addysp                    00E42B RLA    
+aslax1                    00E438 RLA    aslax2                    00E440 RLA    
+aslax4                    00E44B RLA    bnegax                    00E45C RLA    
+booleq                    00E5B2 RLA    boolgt                    00E5C1 RLA    
+boolle                    00E5B9 RLA    boolne                    00E5AC RLA    
+complax                   00E46A RLA    decax1                    00E47F RLA    
+decaxy                    00E486 RLA    decsp1                    00E48F RLA    
+decsp2                    00E498 RLA    decsp3                    00E4A5 RLA    
+decsp4                    00E4B2 RLA    decsp5                    00E4BF RLA    
+decsp6                    00E4CC RLA    decsp8                    00E4D9 RLA    
+donelib                   00E473 RLA    incax2                    00E53D RLA    
+incaxy                    00E546 RLA    incsp1                    00E54F RLA    
+incsp2                    00E55E RLA    incsp4                    00E56C RLA    
+incsp5                    00E571 RLA    incsp6                    00E576 RLA    
+incsp8                    00E57B RLA    initlib                   00E82F RLA    
+ldax0sp                   00E58D RLA    ldaxi                     00E580 RLA    
+ldaxysp                   00E58F RLA    leaa0sp                   00E5A0 RLA    
+leaaxsp                   00E5A2 RLA    mul8x16                   00E630 RLA    
+mul8x16a                  00E63A RLA    mulax10                   00E668 RLA    
+negax                     00E685 RLA    popax                     00E556 RLA    
+popptr1                   00E693 RLA    popsargsudiv16            00E6ED RLA    
+ptr1                      000058 RLZ    ptr4                      00005E RLZ    
+push0                     00E6B7 RLA    pusha                     00E6A5 RLA    
+pusha0                    00E6B9 RLA    pushax                    00E6BB RLA    
+pushw0sp                  00E6D1 RLA    pushwysp                  00E6D3 RLA    
+regsave                   000054 RLZ    shrax4                    00E741 RLA    
+shraxy                    00E714 RLA    sp                        000050 RLZ    
+sreg                      000052 RLZ    staspidx                  00E752 RLA    
+stax0sp                   00E768 RLA    staxysp                   00E76A RLA    
+subeq0sp                  00E773 RLA    subeqysp                  00E775 RLA    
+subysp                    00E788 RLA    tmp1                      000060 RLZ    
+tmp2                      000061 RLZ    tosdivax                  00E4E8 RLA    
+toseqa0                   00E4FD RLA    tosgtax                   00E509 RLA    
+tosicmp                   00E511 RLA    tosleax                   00E59A RLA    
+tosmodax                  00E5DA RLA    tosmulax                  00E5E9 RLA    
+tosudiva0                 00E795 RLA    tosumoda0                 00E7E4 RLA    
+udiv16                    00E7A6 RLA    zerobss                   00E7F5 RLA    
+
+
+
+Exports list by value:
+----------------------
+__DESTRUCTOR_COUNT__      000000 REA    __CONSTRUCTOR_COUNT__     000000 REA    
+__STARTUP__               000001 REA    sp                        000050 RLZ    
+__ZPSTART__               000050 REA    sreg                      000052 RLZ    
+regsave                   000054 RLZ    ptr1                      000058 RLZ    
+ptr4                      00005E RLZ    tmp1                      000060 RLZ    
+tmp2                      000061 RLZ    __STACKSIZE__             000100 REA    
+__BSS_RUN__               000200 RLA    __BSS_SIZE__              007B14 REA    
+__FILETOP__               00CC00 REA    __DESTRUCTOR_TABLE__      00CC76 RLA    
+_c_getch                  00CC76 RLA    _c_kbhit                  00CC79 RLA    
+_c_putch                  00CC7C RLA    _rand                     00CC7F RLA    
+_srand                    00CCA4 RLA    _warm_boot                00CCAB RLA    
+COLD_START                00CCB7 RLA    _mach_fin                 00CCC1 RLA    
+_main                     00DF2E RLA    addeq0sp                  00E419 RLA    
+addeqysp                  00E41B RLA    addysp                    00E42B RLA    
+aslax1                    00E438 RLA    aslax2                    00E440 RLA    
+aslax4                    00E44B RLA    bnegax                    00E45C RLA    
+complax                   00E46A RLA    donelib                   00E473 RLA    
+decax1                    00E47F RLA    decaxy                    00E486 RLA    
+decsp1                    00E48F RLA    decsp2                    00E498 RLA    
+decsp3                    00E4A5 RLA    decsp4                    00E4B2 RLA    
+decsp5                    00E4BF RLA    decsp6                    00E4CC RLA    
+decsp8                    00E4D9 RLA    tosdivax                  00E4E8 RLA    
+toseqa0                   00E4FD RLA    tosgtax                   00E509 RLA    
+tosicmp                   00E511 RLA    incax2                    00E53D RLA    
+incaxy                    00E546 RLA    incsp1                    00E54F RLA    
+popax                     00E556 RLA    incsp2                    00E55E RLA    
+incsp4                    00E56C RLA    incsp5                    00E571 RLA    
+incsp6                    00E576 RLA    incsp8                    00E57B RLA    
+ldaxi                     00E580 RLA    ldax0sp                   00E58D RLA    
+ldaxysp                   00E58F RLA    tosleax                   00E59A RLA    
+leaa0sp                   00E5A0 RLA    leaaxsp                   00E5A2 RLA    
+boolne                    00E5AC RLA    booleq                    00E5B2 RLA    
+boolle                    00E5B9 RLA    boolgt                    00E5C1 RLA    
+tosmodax                  00E5DA RLA    tosmulax                  00E5E9 RLA    
+mul8x16                   00E630 RLA    mul8x16a                  00E63A RLA    
+mulax10                   00E668 RLA    negax                     00E685 RLA    
+popptr1                   00E693 RLA    pusha                     00E6A5 RLA    
+push0                     00E6B7 RLA    pusha0                    00E6B9 RLA    
+pushax                    00E6BB RLA    pushw0sp                  00E6D1 RLA    
+pushwysp                  00E6D3 RLA    popsargsudiv16            00E6ED RLA    
+shraxy                    00E714 RLA    shrax4                    00E741 RLA    
+staspidx                  00E752 RLA    stax0sp                   00E768 RLA    
+staxysp                   00E76A RLA    subeq0sp                  00E773 RLA    
+subeqysp                  00E775 RLA    subysp                    00E788 RLA    
+tosudiva0                 00E795 RLA    udiv16                    00E7A6 RLA    
+tosumoda0                 00E7E4 RLA    zerobss                   00E7F5 RLA    
+_startup                  00E818 RLA    initlib                   00E82F RLA    
+__CONSTRUCTOR_TABLE__     00E83B RLA    __STACKSTART__            00EAF0 REA    
+
+
+
+Imports list:
+-------------
+COLD_START (gm_stup.o):
+    crt0.o                    .\crt0.s:7
+__BSS_RUN__ ([linker generated]):
+    zerobss.o                 common/zerobss.s:8
+__BSS_SIZE__ ([linker generated]):
+    zerobss.o                 common/zerobss.s:8
+__CONSTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s:18
+__CONSTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s:18
+__DESTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s:19
+__DESTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s:19
+__FILETOP__ ([linker generated]):
+    gm_stup.o                 .\gm_stup.s:49
+__STACKSIZE__ ([linker generated]):
+    [linker generated]        .\mezw65c_ram.cfg:12
+__STACKSTART__ ([linker generated]):
+    crt0.o                    .\crt0.s:6
+    [linker generated]        .\mezw65c_ram.cfg:12
+__STARTUP__ (crt0.o):
+    game02.o                  .\game02_refine.s:13
+__ZPSTART__ ([linker generated]):
+    [linker generated]        .\mezw65c_ram.cfg:11
+_c_getch (gm_stup.o):
+    game02.o                  .\game02_refine.s:16
+_c_kbhit (gm_stup.o):
+    game02.o                  .\game02_refine.s:15
+_c_putch (gm_stup.o):
+    game02.o                  .\game02_refine.s:17
+_mach_fin (gm_stup.o):
+    game02.o                  .\game02_refine.s:21
+_main (game02.o):
+    gm_stup.o                 .\gm_stup.s:46
+_rand (gm_stup.o):
+    game02.o                  .\game02_refine.s:19
+_srand (gm_stup.o):
+    game02.o                  .\game02_refine.s:18
+_startup (crt0.o):
+    gm_stup.o                 .\gm_stup.s:48
+_warm_boot (gm_stup.o):
+    game02.o                  .\game02_refine.s:20
+addeq0sp (addeqsp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+addeqysp (addeqsp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+addysp (addysp.o):
+    incsp8.o                  runtime/incsp8.s:8
+    incsp6.o                  runtime/incsp6.s:8
+    incsp5.o                  runtime/incsp5.s:8
+    incsp4.o                  runtime/incsp4.s:8
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+aslax1 (aslax1.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+aslax2 (aslax2.o):
+    game02.o                  .\game02_refine.s:3317
+aslax4 (aslax4.o):
+    game02.o                  .\game02_refine.s:3317
+bnegax (bneg.o):
+    game02.o                  .\game02_refine.s:3317
+booleq (makebool.o):
+    eq.o                      runtime/eq.s:8
+    game02.o                  .\game02_refine.s:3317
+boolgt (makebool.o):
+    gt.o                      runtime/gt.s:8
+boolle (makebool.o):
+    le.o                      runtime/le.s:8
+boolne (makebool.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+complax (compl.o):
+    game02.o                  .\game02_refine.s:3317
+decax1 (decax1.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+decaxy (decaxy.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+decsp1 (decsp1.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+decsp2 (decsp2.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+decsp3 (decsp3.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+decsp4 (decsp4.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+decsp5 (decsp5.o):
+    game02.o                  .\game02_refine.s:3317
+decsp6 (decsp6.o):
+    game02.o                  .\game02_refine.s:3317
+decsp8 (decsp8.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+donelib (condes.o):
+    crt0.o                    .\crt0.s:5
+incax2 (incax2.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+incaxy (incaxy.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+incsp1 (incsp1.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+incsp2 (incsp2.o):
+    staspidx.o                runtime/staspidx.s:8
+    popptr1.o                 runtime/popptr1.s:8
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+incsp4 (incsp4.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+incsp5 (incsp5.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+incsp6 (incsp6.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+incsp8 (incsp8.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+initlib (condes.o):
+    crt0.o                    .\crt0.s:5
+ldax0sp (ldaxsp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+ldaxi (ldaxi.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+ldaxysp (ldaxsp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+leaa0sp (leaaxsp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+leaaxsp (leaaxsp.o):
+    game02.o                  .\game02_refine.s:3317
+mul8x16 (mul8.o):
+    mul.o                     runtime/mul.s:8
+mul8x16a (mul8.o):
+    mul.o                     runtime/mul.s:8
+mulax10 (mulax10.o):
+    game02.o                  .\game02_refine.s:3317
+negax (negabs.o):
+    shelp.o                   runtime/shelp.s:11
+    mod.o                     runtime/mod.s:11
+    div.o                     runtime/div.s:11
+    game02.o                  .\game02_refine.s:3317
+popax (incsp2.o):
+    shr.o                     runtime/shr.s:15
+    shelp.o                   runtime/shelp.s:11
+popptr1 (popptr1.o):
+    umod.o                    runtime/umod.s:8
+    udiv.o                    runtime/udiv.s:9
+    mul8.o                    runtime/mul8.s:9
+    mul.o                     runtime/mul.s:9
+popsargsudiv16 (shelp.o):
+    mod.o                     runtime/mod.s:11
+    div.o                     runtime/div.s:11
+ptr1 (zeropage.o):
+    zerobss.o                 common/zerobss.s:9
+    udiv.o                    runtime/udiv.s:10
+    staspidx.o                runtime/staspidx.s:9
+    shelp.o                   runtime/shelp.s:12
+    popptr1.o                 runtime/popptr1.s:9
+    mulax10.o                 runtime/mulax10.s:9
+    mul8.o                    runtime/mul8.s:10
+    mul.o                     runtime/mul.s:10
+    ldaxi.o                   runtime/ldaxi.s:8
+    div.o                     runtime/div.s:12
+    game02.o                  .\game02_refine.s:11
+ptr4 (zeropage.o):
+    umod.o                    runtime/umod.s:9
+    udiv.o                    runtime/udiv.s:10
+    shelp.o                   runtime/shelp.s:12
+    mul8.o                    runtime/mul8.s:10
+    mul.o                     runtime/mul.s:10
+push0 (pushax.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+pusha (pusha.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+pusha0 (pushax.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+pushax (pushax.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+pushw0sp (pushwsp.o):
+    game02.o                  .\game02_refine.s:3317
+pushwysp (pushwsp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+regsave (zeropage.o):
+    game02.o                  .\game02_refine.s:10
+shrax4 (shrax4.o):
+    game02.o                  .\game02_refine.s:3317
+shraxy (shr.o):
+    game02.o                  .\game02_refine.s:3317
+sp (zeropage.o):
+    subysp.o                  runtime/subysp.s:9
+    subeqsp.o                 runtime/subeqsp.s:8
+    staxsp.o                  runtime/staxsp.s:8
+    staspidx.o                runtime/staspidx.s:9
+    pushwsp.o                 runtime/pushwsp.s:8
+    pushax.o                  runtime/pushax.s:8
+    pusha.o                   runtime/pusha.s:8
+    popptr1.o                 runtime/popptr1.s:9
+    leaaxsp.o                 runtime/leaaxsp.s:8
+    ldaxsp.o                  runtime/ldaxsp.s:8
+    incsp2.o                  runtime/incsp2.s:8
+    incsp1.o                  runtime/incsp1.s:8
+    icmp.o                    runtime/icmp.s:9
+    decsp8.o                  runtime/decsp8.s:8
+    decsp6.o                  runtime/decsp6.s:8
+    decsp5.o                  runtime/decsp5.s:8
+    decsp4.o                  runtime/decsp4.s:8
+    decsp3.o                  runtime/decsp3.s:8
+    decsp2.o                  runtime/decsp2.s:8
+    decsp1.o                  runtime/decsp1.s:8
+    addysp.o                  runtime/addysp.s:8
+    addeqsp.o                 runtime/addeqsp.s:8
+    crt0.o                    C:\Users\akihito\bin\cc65-win64\asminc/zeropage.inc:11
+    game02.o                  .\game02_refine.s:10
+sreg (zeropage.o):
+    umod.o                    runtime/umod.s:9
+    udiv.o                    runtime/udiv.s:10
+    mod.o                     runtime/mod.s:12
+    icmp.o                    runtime/icmp.s:9
+    game02.o                  .\game02_refine.s:10
+staspidx (staspidx.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+stax0sp (staxsp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+staxysp (staxsp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+subeq0sp (subeqsp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+subeqysp (subeqsp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+subysp (subysp.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+tmp1 (zeropage.o):
+    staspidx.o                runtime/staspidx.s:9
+    shrax4.o                  runtime/shrax4.s:8
+    shr.o                     runtime/shr.s:16
+    shelp.o                   runtime/shelp.s:12
+    mul.o                     runtime/mul.s:10
+    mod.o                     runtime/mod.s:12
+    incaxy.o                  runtime/incaxy.s:8
+    div.o                     runtime/div.s:12
+    decaxy.o                  runtime/decaxy.s:8
+    aslax4.o                  runtime/aslax4.s:8
+    aslax2.o                  runtime/aslax2.s:8
+    aslax1.o                  runtime/aslax1.s:8
+    game02.o                  .\game02_refine.s:11
+tmp2 (zeropage.o):
+    shelp.o                   runtime/shelp.s:12
+    div.o                     runtime/div.s:12
+tosdivax (div.o):
+    game02.o                  .\game02_refine.s:3317
+toseqa0 (eq.o):
+    game02.o                  .\game02_refine.s:3317
+tosgtax (gt.o):
+    game02.o                  .\game02_refine.s:3317
+tosicmp (icmp.o):
+    le.o                      runtime/le.s:8
+    gt.o                      runtime/gt.s:8
+    eq.o                      runtime/eq.s:8
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+tosleax (le.o):
+    game02.o                  .\game02_refine.s:3317
+tosmodax (mod.o):
+    game02.o                  .\game02_refine.s:3317
+    game02.o                  .\game02_refine.s:3317
+tosmulax (mul.o):
+    game02.o                  .\game02_refine.s:3317
+tosudiva0 (udiv.o):
+    game02.o                  .\game02_refine.s:3317
+tosumoda0 (umod.o):
+    game02.o                  .\game02_refine.s:3317
+udiv16 (udiv.o):
+    umod.o                    runtime/umod.s:8
+    shelp.o                   runtime/shelp.s:11
+zerobss (zerobss.o):
+    crt0.o                    .\crt0.s:4
+

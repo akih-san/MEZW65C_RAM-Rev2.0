@@ -7,7 +7,7 @@
 VTL-Cを公開されています。<br>
 VTLの基本的なことや、インプリメント方法が載っていますので、是非ご覧ください。<br>
 W65C816ネイティブモード用として、T. Nakagawa氏のVTL-Cをポーティングしました。<br>
-- [VTL-C](https://middleriver.chagasi.com/electronics/vtl.html)<br>
+- [VTL(Very Tiny Language)の作成](http://middleriver.chagasi.com/electronics/vtl.html)<br>
 <br>
 6502.orgでVTL02のソースコードが公開されていましたので、W65C02用にポーティングしました。<br>
 <br>
@@ -21,6 +21,5 @@ W65C816ネイティブモード用として、T. Nakagawa氏のVTL-Cをポーテ
 ショートレンジセンサーが文字化けするので、その部分を修正してあります。<br>
 <br>
 
-- [VTL(Very Tiny Language)の作成](http://middleriver.chagasi.com/electronics/vtl.html)<br>
 
 - [超ミニ言語で遊ぼう（４）みんなで「スタ☆トレ」](https://ameblo.jp/siropyon/entry-11917965564.html)<br>

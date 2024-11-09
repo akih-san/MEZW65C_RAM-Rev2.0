@@ -21,5 +21,6 @@ W65C816ネイティブモード用として、T. Nakagawa氏のVTL-Cをポーテ
 ショートレンジセンサーが文字化けするので、その部分を修正してあります。<br>
 <br>
 
-
 - [超ミニ言語で遊ぼう（４）みんなで「スタ☆トレ」](https://ameblo.jp/siropyon/entry-11917965564.html)<br>
+
+![photo 1](../photo/STATRE.png)

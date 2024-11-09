@@ -10,10 +10,10 @@
 - [豊四季タイニーベーシック](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/ttbasic)<br>
 - [GAMEインタープリタ](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/GAME-C)<br>
 - [MEZW65C_RAMピンアサイン](https://github.com/akih-san/MEZW65C_RAM/blob/main/MEZW65C_RAM%E3%83%94%E3%83%B3%E3%82%A2%E3%82%B5%E3%82%A4%E3%83%B3.pdf)
-  https://github.com/akih-san/MEZW65C_RAM/blob/main/MEZW65C_RAM%E5%9B%B3%E9%9D%A2.pdf
-  https://github.com/akih-san/MEZW65C_RAM/blob/main/MEZW65C_RAM%E9%83%A8%E5%93%81%E8%A1%A8.pdf
-  https://github.com/akih-san/MEZW65C_RAM/blob/main/65c02%2065c816%E6%AF%94%E8%BC%83.pdf
-  https://github.com/akih-san/MEZW65C_RAM/tree/main/w65c_Rev1.2_Gerber
+- [MEZW65C_RAM図面](https://github.com/akih-san/MEZW65C_RAM/blob/main/MEZW65C_RAM%E5%9B%B3%E9%9D%A2.pdf)
+- [MEZW65C_RAM部品表](https://github.com/akih-san/MEZW65C_RAM/blob/main/MEZW65C_RAM%E9%83%A8%E5%93%81%E8%A1%A8.pdf)
+- [W65c02 W65c816比較](https://github.com/akih-san/MEZW65C_RAM/blob/main/65c02%2065c816%E6%AF%94%E8%BC%83.pdf)
+- [ガーバーデータ](https://github.com/akih-san/MEZW65C_RAM/tree/main/w65c_Rev1.2_Gerber)
   
 # Rev2.0を作成した経緯
 

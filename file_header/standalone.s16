@@ -1,0 +1,94 @@
+;;;
+;;; File header template (W65C816 Standalone)
+;;;	
+
+PRG_B	EQU	$EC00
+UNIMON_DB	equ	0
+UNIMON_DP	equ	PRG_B-256	; $EB00
+WORK_B		equ	UNIMON_DP-$180	; $E980
+
+ZERO_B	EQU	$0018		; Must fit in ZERO page
+
+;--------------------------------------
+;ZERO page
+;--------------------------------------
+	.page0
+	ORG	ZERO_B
+
+
+;--------------------------------------
+; Data area
+;--------------------------------------
+	.data
+	org	WORK_B
+
+	.code
+	ORG	PRG_B
+
+
+CSTART:
+;--------- MEZW65C_RAM file header --------------------------
+	jmp	COLD_START
+	jmp	WSTART
+
+	dw	UNIMON_DP		; DP
+
+mezID:	db	"MEZW65C",0	; Unique ID
+
+start_p:	;file load address(program start address)
+	dw	PRG_B		; start offset
+	db	0		; PBR : program bank
+	db	0		; reserve
+
+	; define Common memory address
+PIC_IF:	dw	UNIMON_DP+UREQ_COM	;  Common memory address for PIC (Low)
+	dw	0		; reserve
+
+SW_816:	db	1	; 0 : W65C02
+			; 1 : W65C816 native mode 
+irq_sw	db	0	; 0 : no use IRQ console I/O
+			; 1 : use IRQ timer interrupt driven console I/O
+reg_tp	dw	0	; monitor reserve (register save pointer)
+reg_ts	dw	0	; monitor reserve (register table size)
+nmi_sw	db	0	; 0 : No NMI support, 1: NMI support
+bios_sw	db	0	; 0 : standalone program
+			; 1 : program call bios command
+			; 2 : monitor program (.SYS)
+COLD_START:
+;--------- MEZW65C_RAM file header --------------------------
+
+WSTART:
+
+COP_N:
+BRK_N:
+ABORT_N:
+NMI_N:
+IRQ_N:
+COP_E:
+ABORT_E:
+NMI_E:
+IRQBRK:
+		stp
+
+;Vectors         section offset $ffe0
+
+	org	$ffe0
+
+	ds	4		; Reserved
+	dw	COP_N		; $FFE4 - COP(816)
+	dw	BRK_N		; $FFE6 - BRK(816)
+	dw	ABORT_N		; $FFE8 - ABORT(816)
+	dw	NMI_N		; $FFEA - NMI(816)
+	ds	2		; Reserved
+	dw	IRQ_N		; $FFEE - IRQ(816)
+
+	ds	4
+	dw	COP_E		; $FFF4 - COP(C02)
+	ds	2		; $Reserved
+	dw	ABORT_E		; $FFF8 - ABORT(C02)
+
+	dw	NMI_E		; NMI
+	dw	CSTART		; RESET
+	dw	IRQBRK		; IRQ/BRK
+
+	END

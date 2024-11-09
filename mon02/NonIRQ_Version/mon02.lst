@@ -1,0 +1,2541 @@
+     1                        ;;;
+     2                        ;;; Universal Monitor 6502 Copyright (C) 2019 Haruo Asano
+     3                        ;;; https://electrelic.com/electrelic/node/1317
+     4                        ;;;
+     5                        ;;; -- original disassemble sorce code --
+     6                        ;:; https://github.com/zuiko21/minimOS/blob/master/OS/shell/miniMoDA.s
+     7                        ;;;
+     8                        ;;;    Monitor-debugger-assembler shell for minimOS!
+     9                        ;;;    v0.6rc3
+    10                        ;;;    last modified 20220104-1122
+    11                        ;;;    (c) 2016-2022 Carlos J. Santisteban
+    12                        ;;;
+    13                        ;;; This program is based on Universal Monitor 6502
+    14                        ;;; Programed by Akihito Honda. 2024.10
+    15                        ;;;
+    16                        ;;; Thanks all.
+    17                        ;;;
+    18                        
+    19                        	pl	0
+    20                        	pw      132
+    21                        	chip    65C02
+    22                        ;                inclist on
+    23                        ;;;
+    24                        ;;; MEZW65C_RAM Monitor for WDC65C02
+    25                        ;;;
+    26                        
+    27                        ;;;
+    28                        ;;; Memory
+    29                        ;;;
+    30                        
+    31             0000EE00   PRG_B	EQU	$EE00
+    32             0000ED00   WORK_B	equ	PRG_B-$100	; $ED00
+    33             00000200   USER_M	equ	$200
+    34                        
+    35             00000018   ZERO_B	EQU	$0018		; Must fit in ZERO page
+    36                        
+    37             000001FF   STACK	EQU	$01FF
+    38             000001BF   USER_SP	equ	$01BF
+    39                        
+    40             00000010   BUFLEN	EQU	16		; Buffer length ( 16 or above )
+    41             00000000   cpu_id	equ	$00		; memory address $0000 is written CPU ID by PIC
+    42                        
+    43                        ; PIC function code
+    44                        
+    45             00000001   CONIN_REQ	EQU	$01
+    46             00000002   CONOUT_REQ	EQU	$02
+    47             00000003   CONST_REQ	EQU	$03
+    48             00000004   STROUT_REQ	equ	$04
+    49             00000007   STRIN_REQ	equ	$07
+    50             000000FF   WUP_REQ		equ	$ff
+    51                        
+    52                        ;;; Constants
+    53             0000000D   CR	EQU	$0D
+    54             0000000A   LF	EQU	$0A
+    55             00000008   BS	EQU	$08
+    56             00000009   TAB	EQU	$09
+    57             0000007F   DEL	EQU	$7F
+    58             00000000   NULL	EQU	$00
+    59                        
+    60                        ;--------------------------------------
+    61                        ;ZERO page
+    62                        ;--------------------------------------
+    63                        	;;
+    64                        	;; Work Area
+    65                        	;;
+    66                        
+    67                        	.page0
+    68                        	ORG	ZERO_B
+    69                        
+    70                        ; PIC18F47QXX I/F
+    71 00:0018:              UREQ_COM	rmb	1	; unimon CONIN/CONOUT request command
+    72 00:0019:              UNI_CHR		rmb	1	; charcter (CONIN/CONOUT) or number of strings
+    73 00:001A:              CREQ_COM	rmb	1	; unimon CONIN/CONOUT request command
+    74 00:001B:              CBI_CHR		rmb	1	; charcter (CONIN/CONOUT) or number of strings
+    75 00:001C:              disk_drive	rmb	1	;
+    76 00:001D:              disk_track	rmb	2	;
+    77 00:001F:              disk_sector	rmb	2	;
+    78 00:0021:              data_adr	rmb	2	;
+    79 00:0023:              bank		rmb	1	;
+    80 00:0024:              reserve		rmb	1	;
+    81                        
+    82 00:0025:              PT0	RMB	2		; Generic Pointer 0
+    83 00:0027:              PT1	RMB	2		; Generic Pointer 1
+    84 00:0029:              CNT	RMB	1		; Generic Counter
+    85 00:002A:              bk_no	rmb	2
+    86                        ;Go command variable
+    87 00:002C:              sav_adr	rmb	2
+    88                        
+    89 00:002E:              oper		RMB	2
+    90 00:0030:              scan		RMB	2
+    91                        
+    92 00:0032:              SADDR	RMB	2		; Set address
+    93 00:0034:              DMPPT	RMB	2
+    94                        reg_tbls
+    95 00:0036:              REGA	RMB	1		; Accumulator A
+    96 00:0037:              REGX	RMB	1		; Index register X
+    97 00:0038:              REGY	RMB	1		; Index register Y
+    98 00:0039:              REGSP	RMB	1		; Stack pointer SP
+    99 00:003A:              REGPC	RMB	2		; Program counter PC
+   100 00:003C:              REGPSR	RMB	1		; Processor status register PSR
+   101                        reg_tble
+   102             00000007   reg_size	equ reg_tble-reg_tbls
+   103                        
+   104                        
+   105                        	.data
+   106                        	org	WORK_B
+   107                        
+   108 00:ED00:              INBUF	RMB	BUFLEN		; Line input buffer
+   109 00:ED10:              DSADDR	RMB	2		; Dump start address
+   110 00:ED12:              DEADDR	RMB	2		; Dump end address
+   111 00:ED14:              DSTATE	RMB	1		; Dump state
+   112 00:ED15:              GADDR	RMB	2		; Go address
+   113 00:ED17:              HEXMOD	RMB	1		; HEX file mode
+   114 00:ED18:              RECTYP	RMB	1		; Record type
+   115                        
+   116 00:ED19:              ILL_PC	RMB	2
+   117                        
+   118 00:ED1B:              REGSIZ	RMB	1		; Register size
+   119                        	
+   120 00:ED1C:              CKSUM	RMB	1		; Checksum
+   121 00:ED1D:              HITMP	RMB	1		; Temporary (used in HEXIN)
+   122                        
+   123                        
+   124                        ; disassemble variable
+   125 00:ED1E:              temp		RMB	1
+   126 00:ED1F:              lines		RMB	1
+   127 00:ED20:              bytes		RMB	1
+   128 00:ED21:              s_value		RMB	2
+   129 00:ED23:              e_value		RMB	2
+   130 00:ED25:              count		RMB	1
+   131 00:ED26:              vnim_buf	RMB	16	;virtual console buffer for mnemonic
+   132                        
+   133                        ;Go command variable
+   134 00:ED36:              stp_flg		rmb	1
+   135 00:ED37:              sav_dat		rmb	2
+   136                        
+   137                        ;;;
+   138                        ;;; Program area
+   139                        ;;;	
+   140                        	.code
+   141                        	ORG	PRG_B
+   142                        
+   143                        CSTART:
+   144                        ;--------- MEZW65C_RAM file header --------------------------
+   145 00:EE00: 4C 20 EE     	jmp	COLD_START
+   146 00:EE03: 4C 88 EE     	jmp	WSTART
+   147                        
+   148                        	; uinimon config data
+   149                        	;
+   150 00:EE06: 00 00        	db	0,0
+   151                        	; Unique ID
+   152 00:EE08: 4D 45 5A 57  mezID:	db	"MEZW65C",0
+       00:EE0C: 36 35 43 00 
+   153                        	;start program address
+   154 00:EE10: 00 EE        start_p:	dw	PRG_B		; start address (Low)
+   155 00:EE12: 00 00        	dw	0		; (high)
+   156                        
+   157                        	; define Common memory address
+   158 00:EE14: 18 00        PIC_IF:	dw	UREQ_COM	;  Common memory address for PIC (Low)
+   159 00:EE16: 00 00        	dw	0		; (high)
+   160                        
+   161 00:EE18: 00           SW_816:	db	0	; 0 : W65C02
+   162                        			; 1 : W65C816 native mode 
+   163 00:EE19: 00           irq_sw	db	0	; 0 : no use IRQ console I/O
+   164                        			; 1 : use IRQ timer interrupt driven console I/O
+   165 00:EE1A: 36 00        reg_tp	dw	reg_tbls	; register save pointer
+   166 00:EE1C: 07 00        reg_ts	dw	reg_size	; register table size
+   167 00:EE1E: 01           nmi_sw	db	1	; 0 : No NMI support, 1: NMI support
+   168 00:EE1F: 02           bios_sw	db	2	; 0 : standalone program
+   169                        			; 1 : program call bios command
+   170                        			; 2 : monitor program (.SYS)
+   171                        COLD_START:
+   172                        ;--------- MEZW65C_RAM file header --------------------------
+   173                        
+   174                        ; user program infomation pointer
+   175             0000EE08   u_sw	equ	mezID+0
+   176             0000EE09   u_addr	equ	mezID+1
+   177                        
+   178 00:EE20: 78           	sei			; disable interrupt
+   179 00:EE21: A2 FF        	LDX	#STACK & $ff
+   180 00:EE23: 9A           	TXS
+   181                        
+   182 00:EE24: 20 72 FF     	JSR	INIT
+   183 00:EE27: A9 00        	LDA	#$00
+   184 00:EE29: 8D 10 ED     	STA	DSADDR
+   185 00:EE2C: 8D 11 ED     	STA	DSADDR+1
+   186 00:EE2F: 85 32        	STA	SADDR
+   187 00:EE31: 85 33        	STA	SADDR+1
+   188 00:EE33: 8D 15 ED     	STA	GADDR
+   189 00:EE36: 8D 16 ED     	STA	GADDR+1
+   190 00:EE39: A9 53        	LDA	#'S'
+   191 00:EE3B: 8D 17 ED     	STA	HEXMOD
+   192                        
+   193 00:EE3E: A9 00        	LDA	#$00
+   194 00:EE40: 85 36        	STA	REGA
+   195 00:EE42: 85 37        	STA	REGX
+   196 00:EE44: 85 38        	STA	REGY
+   197 00:EE46: A9 20        	lda	#$20
+   198 00:EE48: 85 3C        	STA	REGPSR
+   199 00:EE4A: A2 BF        	ldx	#USER_SP
+   200 00:EE4C: 86 39        	STX	REGSP
+   201 00:EE4E: A9 00        	lda	#USER_M
+   202 00:EE50: 85 3A        	STA	REGPC
+   203 00:EE52: 64 3B        	stz	REGPC+1
+   204 00:EE54: 8D 21 ED     	sta	s_value
+   205 00:EE57: 9C 22 ED     	stz	s_value+1
+   206 00:EE5A: 9C 23 ED     	stz	e_value
+   207 00:EE5D: 9C 24 ED     	stz	e_value+1
+   208 00:EE60: 9C 36 ED     	stz	stp_flg
+   209                        
+   210 00:EE63: AD 08 EE     	lda	u_sw
+   211 00:EE66: F0 13        	beq	wup_umon
+   212 00:EE68: C9 01        	cmp	#1
+   213 00:EE6A: F0 09        	beq	apli_start
+   214                        ;
+   215                        ; sleep moniotr
+   216                        ;
+   217                        wup
+   218 00:EE6C: A9 01        	lda	#1
+   219 00:EE6E: 85 19        	sta	UNI_CHR		; sleep signal
+   220 00:EE70: 20 97 FF     	jsr	NMI_SIG
+   221 00:EE73: 80 F7        	bra	wup
+   222                        
+   223                        apli_start
+   224 00:EE75: A2 BF        	LDX	#USER_SP & $ff
+   225 00:EE77: 9A           	TXS
+   226 00:EE78: 6C 09 EE     	jmp	(u_addr)	; application cold start
+   227                        
+   228                        	;; Opening message
+   229                        wup_umon
+   230 00:EE7B: A9 6F        	LDA	#$FF&OPNMSG
+   231 00:EE7D: 85 25        	STA	PT0
+   232 00:EE7F: A9 FE        	LDA	#OPNMSG>>8
+   233 00:EE81: 85 26        	STA	PT0+1
+   234 00:EE83: 20 63 FC     	JSR	STROUT
+   235 00:EE86: 80 03        	bra	prt_prompt
+   236                        
+   237                        WSTART
+   238 00:EE88: A2 FF        	LDX	#STACK & $ff
+   239 00:EE8A: 9A           	TXS
+   240                        
+   241                        prt_prompt
+   242 00:EE8B: A9 8E        	LDA	#$FF&PROMPT
+   243 00:EE8D: 85 25        	STA	PT0
+   244 00:EE8F: A9 FE        	LDA	#PROMPT>>8
+   245 00:EE91: 85 26        	STA	PT0+1
+   246 00:EE93: 20 63 FC     	JSR	STROUT
+   247 00:EE96: 20 C0 FC     	JSR	GETLIN
+   248 00:EE99: A2 00        	LDX	#0
+   249 00:EE9B: 20 0B FD     	JSR	SKIPSP
+   250 00:EE9E: 20 17 FD     	JSR	UPPER
+   251 00:EEA1: C9 00        	CMP	#0
+   252 00:EEA3: F0 E3        	BEQ	WSTART
+   253                        
+   254 00:EEA5: C9 44        	CMP	#'D'
+   255 00:EEA7: D0 03        	BNE	M00
+   256 00:EEA9: 4C FD EE     	JMP	DUMP
+   257                        M00
+   258 00:EEAC: C9 47        	CMP	#'G'
+   259 00:EEAE: D0 03        	BNE	M01
+   260 00:EEB0: 4C 90 F7     	JMP	GO
+   261                        M01
+   262 00:EEB3: C9 53        	CMP	#'S'
+   263 00:EEB5: D0 03        	BNE	M02
+   264 00:EEB7: 4C 02 F8     	JMP	SETM
+   265                        M02
+   266 00:EEBA: C9 4C        	CMP	#'L'
+   267 00:EEBC: D0 03        	BNE	M03
+   268 00:EEBE: 4C 91 F8     	JMP	LOADH
+   269                        M03
+   270                        	
+   271 00:EEC1: C9 52        	CMP	#'R'
+   272 00:EEC3: D0 03        	BNE	M05
+   273 00:EEC5: 4C B9 F9     	JMP	REG
+   274                        M05	
+   275 00:EEC8: C9 3F        	CMP	#'?'
+   276 00:EECA: D0 03        	BNE	M06
+   277 00:EECC: 4C 0E FB     	jmp	prt_help
+   278                        
+   279                        M06
+   280 00:EECF: C9 42        	cmp	#'B'
+   281 00:EED1: D0 1C        	bne	ERR
+   282 00:EED3: E8           	inx
+   283 00:EED4: BD 00 ED     	LDA	INBUF,X
+   284 00:EED7: 20 17 FD     	JSR	UPPER
+   285 00:EEDA: C9 59        	CMP	#'Y'
+   286 00:EEDC: D0 11        	bne	ERR
+   287 00:EEDE: E8           	inx
+   288 00:EEDF: BD 00 ED     	LDA	INBUF,X
+   289 00:EEE2: 20 17 FD     	JSR	UPPER
+   290 00:EEE5: C9 45        	CMP	#'E'
+   291 00:EEE7: D0 06        	bne	ERR
+   292 00:EEE9: 20 B6 FC     	jsr	CRLF
+   293 00:EEEC: 4C 6C EE     	jmp	wup
+   294                        ERR
+   295 00:EEEF: A9 AB        	LDA	#$FF&ERRMSG
+   296 00:EEF1: 85 25        	STA	PT0
+   297 00:EEF3: A9 FE        	LDA	#ERRMSG>>8
+   298 00:EEF5: 85 26        	STA	PT0+1
+   299 00:EEF7: 20 63 FC     	JSR	STROUT
+   300 00:EEFA: 4C 88 EE     	JMP	WSTART
+   301                        
+   302                        ;;;
+   303                        ;;; Dump memory
+   304                        ;;;
+   305                        DUMP
+   306 00:EEFD: E8           	INX
+   307 00:EEFE: 20 0B FD     	JSR	SKIPSP
+   308 00:EF01: 20 17 FD     	JSR	UPPER
+   309 00:EF04: C9 49        	cmp	#'I'
+   310 00:EF06: D0 03        	bne	dmp1
+   311 00:EF08: 4C 55 F0     	jmp	disassemble
+   312                        dmp1
+   313 00:EF0B: 20 22 FD     	JSR	RDHEX
+   314 00:EF0E: A5 29        	LDA	CNT
+   315 00:EF10: D0 1C        	BNE	DP0	; jmp 1st arg.
+   316                        
+   317                        	; check remain string
+   318                        
+   319 00:EF12: 20 0B FD     	JSR	SKIPSP
+   320 00:EF15: BD 00 ED     	LDA	INBUF,X
+   321 00:EF18: D0 24        	BNE	DP01	; jmp if string exist
+   322                        
+   323                        	;; No arg.
+   324                        
+   325                        DP00	; set end address (DSADDR + 128 bytes)
+   326                        
+   327 00:EF1A: AD 10 ED     	LDA	DSADDR
+   328 00:EF1D: 18           	CLC
+   329 00:EF1E: 69 80        	ADC	#128
+   330 00:EF20: 8D 12 ED     	STA	DEADDR
+   331 00:EF23: AD 11 ED     	LDA	DSADDR+1
+   332 00:EF26: 69 00        	ADC	#0
+   333 00:EF28: 8D 13 ED     	STA	DEADDR+1
+   334 00:EF2B: 4C 65 EF     	JMP	DPM
+   335                        
+   336                        DP0	;; 1st arg. found
+   337                        
+   338 00:EF2E: A5 27        	LDA	PT1
+   339 00:EF30: 8D 10 ED     	STA	DSADDR		; set start address(low)
+   340 00:EF33: A5 28        	LDA	PT1+1
+   341 00:EF35: 8D 11 ED     	STA	DSADDR+1	; set start address(high)
+   342                        
+   343 00:EF38: 20 0B FD     	JSR	SKIPSP
+   344 00:EF3B: BD 00 ED     	LDA	INBUF,X		; get next string
+   345                        	
+   346                        DP01	; check exist 2nd arg.
+   347                        
+   348 00:EF3E: C9 2C        	CMP	#','
+   349 00:EF40: F0 06        	BEQ	DP1		; yes, jmp and chk 2nd arg
+   350 00:EF42: C9 00        	CMP	#0
+   351 00:EF44: F0 D4        	BEQ	DP00		; jmp if no 2nd arg.(set end address)
+   352 00:EF46: 80 A7        	BRA	ERR
+   353                        
+   354                        DP1	; chk 2nd arg
+   355                        
+   356 00:EF48: E8           	INX
+   357 00:EF49: 20 0B FD     	JSR	SKIPSP
+   358 00:EF4C: 20 22 FD     	JSR	RDHEX
+   359 00:EF4F: 20 0B FD     	JSR	SKIPSP
+   360 00:EF52: A5 29        	LDA	CNT
+   361 00:EF54: F0 99        	BEQ	ERR
+   362                        
+   363                        	;; set 2nd arg.
+   364                        
+   365 00:EF56: A5 27        	LDA	PT1
+   366 00:EF58: 38           	SEC
+   367 00:EF59: 69 00        	ADC	#0
+   368 00:EF5B: 8D 12 ED     	STA	DEADDR
+   369 00:EF5E: A5 28        	LDA	PT1+1
+   370 00:EF60: 69 00        	ADC	#0
+   371 00:EF62: 8D 13 ED     	STA	DEADDR+1
+   372                        
+   373                        	;; DUMP main
+   374                        DPM	
+   375 00:EF65: AD 10 ED     	LDA	DSADDR
+   376 00:EF68: 29 F0        	AND	#$F0
+   377 00:EF6A: 85 27        	STA	PT1
+   378 00:EF6C: AD 11 ED     	LDA	DSADDR+1
+   379 00:EF6F: 85 28        	STA	PT1+1
+   380 00:EF71: A9 00        	LDA	#0
+   381 00:EF73: 8D 14 ED     	STA	DSTATE
+   382                        DPM0
+   383 00:EF76: 20 B1 EF     	JSR	DPL
+   384 00:EF79: A5 27        	LDA	PT1
+   385 00:EF7B: 18           	CLC
+   386 00:EF7C: 69 10        	ADC	#16
+   387 00:EF7E: 85 27        	STA	PT1
+   388 00:EF80: A5 28        	LDA	PT1+1
+   389 00:EF82: 69 00        	ADC	#0
+   390 00:EF84: 85 28        	STA	PT1+1
+   391 00:EF86: 20 85 FF     	JSR	CONST
+   392 00:EF89: D0 16        	BNE	DPM1
+   393 00:EF8B: AD 14 ED     	LDA	DSTATE
+   394 00:EF8E: C9 02        	CMP	#2
+   395 00:EF90: 90 E4        	BCC	DPM0
+   396 00:EF92: AD 12 ED     	LDA	DEADDR
+   397 00:EF95: 8D 10 ED     	STA	DSADDR
+   398 00:EF98: AD 13 ED     	LDA	DEADDR+1
+   399 00:EF9B: 8D 11 ED     	STA	DSADDR+1
+   400 00:EF9E: 4C 88 EE     	JMP	WSTART
+   401                        DPM1
+   402 00:EFA1: A5 27        	LDA	PT1
+   403 00:EFA3: 8D 10 ED     	STA	DSADDR
+   404 00:EFA6: A5 28        	LDA	PT1+1
+   405 00:EFA8: 8D 11 ED     	STA	DSADDR+1
+   406 00:EFAB: 20 7D FF     	JSR	CONIN
+   407 00:EFAE: 4C 88 EE     	JMP	WSTART
+   408                        
+   409                        	;; Dump line
+   410                        DPL
+   411 00:EFB1: A5 28        	LDA	PT1+1
+   412 00:EFB3: 20 71 FC     	JSR	HEXOUT2
+   413 00:EFB6: A5 27        	LDA	PT1
+   414 00:EFB8: 20 71 FC     	JSR	HEXOUT2
+   415 00:EFBB: A9 B3        	LDA	#$FF&DSEP0
+   416 00:EFBD: 85 25        	STA	PT0
+   417 00:EFBF: A9 FE        	LDA	#DSEP0>>8
+   418 00:EFC1: 85 26        	STA	PT0+1
+   419 00:EFC3: 20 63 FC     	JSR	STROUT
+   420 00:EFC6: A2 00        	LDX	#0
+   421 00:EFC8: A0 00        	LDY	#0
+   422                        DPL0
+   423 00:EFCA: 20 FC EF     	JSR	DPB
+   424 00:EFCD: E0 10        	CPX	#16
+   425 00:EFCF: D0 F9        	BNE	DPL0
+   426                        
+   427 00:EFD1: A9 B6        	LDA	#$FF&DSEP1
+   428 00:EFD3: 85 25        	STA	PT0
+   429 00:EFD5: A9 FE        	LDA	#DSEP1>>8
+   430 00:EFD7: 85 26        	STA	PT0+1
+   431 00:EFD9: 20 63 FC     	JSR	STROUT
+   432                        
+   433                        	;; Print ASCII area
+   434 00:EFDC: A2 00        	LDX	#0
+   435                        DPL1
+   436 00:EFDE: BD 00 ED     	LDA	INBUF,X
+   437 00:EFE1: C9 20        	CMP	#' '
+   438 00:EFE3: 90 0A        	BCC	DPL2
+   439 00:EFE5: C9 7F        	CMP	#$7F
+   440 00:EFE7: B0 06        	BCS	DPL2
+   441 00:EFE9: 20 8D FF     	JSR	CONOUT
+   442 00:EFEC: 4C F4 EF     	JMP	DPL3
+   443                        DPL2
+   444 00:EFEF: A9 2E        	LDA	#'.'
+   445 00:EFF1: 20 8D FF     	JSR	CONOUT
+   446                        DPL3
+   447 00:EFF4: E8           	INX
+   448 00:EFF5: E0 10        	CPX	#16
+   449 00:EFF7: D0 E5        	BNE	DPL1
+   450 00:EFF9: 4C B6 FC     	JMP	CRLF
+   451                        
+   452                        	;; Dump byte
+   453                        DPB
+   454 00:EFFC: A9 20        	LDA	#' '
+   455 00:EFFE: 20 8D FF     	JSR	CONOUT
+   456 00:F001: AD 14 ED     	LDA	DSTATE
+   457 00:F004: D0 1E        	BNE	DPB2
+   458                        	;; Dump state 0
+   459 00:F006: 98           	TYA
+   460 00:F007: 38           	SEC
+   461 00:F008: ED 10 ED     	SBC	DSADDR
+   462 00:F00B: 29 0F        	AND	#$0F
+   463 00:F00D: F0 10        	BEQ	DPB1
+   464                        	;; Still 0 or 2
+   465                        DPB0
+   466 00:F00F: A9 20        	LDA	#' '
+   467 00:F011: 9D 00 ED     	STA	INBUF,X
+   468 00:F014: 20 8D FF     	JSR	CONOUT
+   469 00:F017: A9 20        	LDA	#' '
+   470 00:F019: 20 8D FF     	JSR	CONOUT
+   471 00:F01C: E8           	INX
+   472 00:F01D: C8           	INY
+   473 00:F01E: 60           	RTS
+   474                        	;; Found start address
+   475                        DPB1
+   476 00:F01F: A9 01        	LDA	#1
+   477 00:F021: 8D 14 ED     	STA	DSTATE
+   478                        DPB2
+   479 00:F024: AD 14 ED     	LDA	DSTATE
+   480 00:F027: C9 01        	CMP	#1
+   481 00:F029: D0 E4        	BNE	DPB0
+   482                        	;; Dump state 1
+   483 00:F02B: B1 27        	LDA	(PT1),Y
+   484 00:F02D: 9D 00 ED     	STA	INBUF,X
+   485 00:F030: 20 71 FC     	JSR	HEXOUT2
+   486 00:F033: E8           	INX
+   487 00:F034: C8           	INY
+   488 00:F035: 98           	TYA
+   489 00:F036: 18           	CLC
+   490 00:F037: 65 27        	ADC	PT1
+   491 00:F039: 85 25        	STA	PT0
+   492 00:F03B: A5 28        	LDA	PT1+1
+   493 00:F03D: 69 00        	ADC	#0
+   494 00:F03F: 85 26        	STA	PT0+1
+   495 00:F041: A5 25        	LDA	PT0
+   496 00:F043: CD 12 ED     	CMP	DEADDR
+   497 00:F046: D0 0C        	BNE	DPBE
+   498 00:F048: A5 26        	LDA	PT0+1
+   499 00:F04A: CD 13 ED     	CMP	DEADDR+1
+   500 00:F04D: D0 05        	BNE	DPBE
+   501                        	;; Found end address
+   502 00:F04F: A9 02        	LDA	#2
+   503 00:F051: 8D 14 ED     	STA	DSTATE
+   504                        DPBE
+   505 00:F054: 60           	RTS
+   506                        
+   507                        ;++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   508                        ;
+   509                        ; disassemble 
+   510                        ;
+   511                        ;++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   512                        disassemble:
+   513 00:F055: E8           	INX
+   514 00:F056: 20 0B FD     	JSR	SKIPSP
+   515 00:F059: 20 22 FD     	JSR	RDHEX
+   516 00:F05C: A5 29        	LDA	CNT
+   517                        
+   518 00:F05E: D0 10        	BNE	PP0	; jmp, if 1st arg. exist
+   519                        
+   520                        	;; No arg.
+   521 00:F060: 20 0B FD     	JSR	SKIPSP
+   522 00:F063: BD 00 ED     	LDA	INBUF,X
+   523 00:F066: D0 18        	BNE	PP01	; jmp, if remain strings exist
+   524                        
+   525                        	; no arg.
+   526                        
+   527                        PP00	; set end parameter
+   528 00:F068: A9 10        	lda	#16
+   529 00:F06A: 8D 1F ED     	sta	lines
+   530 00:F06D: 4C AD F0     	jmp	dis_next
+   531                        
+   532                        	;; 1st arg. found
+   533                        
+   534                        PP0	; set start parameter
+   535 00:F070: A5 27        	LDA	PT1
+   536 00:F072: 8D 21 ED     	sta	s_value		; save start address(low)
+   537 00:F075: A5 28        	LDA	PT1+1
+   538 00:F077: 8D 22 ED     	STA	s_value+1	; save start address(high)
+   539                        
+   540                        	; check 2nd parameter exist
+   541                        
+   542 00:F07A: 20 0B FD     	JSR	SKIPSP
+   543 00:F07D: BD 00 ED     	LDA	INBUF,X
+   544                        PP01
+   545 00:F080: C9 2C        	CMP	#','
+   546 00:F082: F0 07        	BEQ	PP1		; jmp if 2nd parameter exist
+   547 00:F084: C9 00        	cmp	#0
+   548 00:F086: F0 E0        	beq	PP00		; jmp if no 2nd parameter
+   549                        
+   550                        D_ERR
+   551 00:F088: 4C EF EE     	JMP	ERR
+   552                        
+   553                        PP1	;; check 2nd arg.
+   554                        
+   555 00:F08B: E8           	INX
+   556 00:F08C: 20 0B FD     	JSR	SKIPSP
+   557 00:F08F: 20 22 FD     	JSR	RDHEX
+   558 00:F092: 20 0B FD     	JSR	SKIPSP
+   559 00:F095: A5 29        	LDA	CNT
+   560 00:F097: F0 EF        	BEQ	D_ERR
+   561 00:F099: BD 00 ED     	LDA	INBUF,X
+   562 00:F09C: D0 EA        	BNE	D_ERR
+   563 00:F09E: A5 27        	LDA	PT1
+   564 00:F0A0: 8D 23 ED     	STA	e_value
+   565 00:F0A3: A5 28        	LDA	PT1+1
+   566 00:F0A5: 69 00        	ADC	#0
+   567 00:F0A7: 8D 24 ED     	STA	e_value+1
+   568 00:F0AA: 9C 1F ED     	stz	lines
+   569                        
+   570                        dis_next:
+   571                        
+   572 00:F0AD: AC 21 ED     	LDY	s_value
+   573 00:F0B0: AD 22 ED     	LDA	s_value+1
+   574 00:F0B3: 84 2E        	STY	oper
+   575 00:F0B5: 85 2F        	STA	oper+1
+   576                        
+   577                        das_l:
+   578                        
+   579                        ; time to show the opcode and trailing spaces until 20 chars
+   580                        
+   581 00:F0B7: 20 0B F1     	JSR	disOpcode	; disassemble one opcode @oper (will print it)
+   582 00:F0BA: 20 85 FF     	JSR	CONST
+   583 00:F0BD: D0 1C        	BNE	das_end
+   584                        
+   585 00:F0BF: AD 1F ED     	lda	lines
+   586 00:F0C2: F0 07        	beq	chk_diadr
+   587 00:F0C4: CE 1F ED     	dec	lines
+   588 00:F0C7: F0 12        	beq	das_end		; continue until done
+   589 00:F0C9: 80 EC        	bra	das_l
+   590                        
+   591                        chk_diadr:
+   592 00:F0CB: AD 23 ED     	lda	e_value
+   593 00:F0CE: C5 2E        	cmp	oper
+   594 00:F0D0: B0 E5        	bcs	das_l
+   595                        
+   596 00:F0D2: AD 24 ED     	lda	e_value+1
+   597 00:F0D5: C5 2F        	cmp	oper+1
+   598 00:F0D7: F0 02        	beq	das_end
+   599 00:F0D9: B0 DC        	bcs	das_l
+   600                        
+   601                        das_end
+   602 00:F0DB: A4 2E        	ldy	oper
+   603 00:F0DD: A5 2F        	lda	oper+1
+   604 00:F0DF: 8C 21 ED     	sty	s_value
+   605 00:F0E2: 8D 22 ED     	sta	s_value+1
+   606                        
+   607 00:F0E5: 4C 88 EE     	JMP	WSTART
+   608                        
+   609                        ; virtual console output for mnemonic characters
+   610                        
+   611                        vPUT_CH	; input A
+   612 00:F0E8: DA           	phx
+   613 00:F0E9: AE 25 ED     	ldx	count
+   614 00:F0EC: 9D 26 ED     	sta	vnim_buf,x
+   615 00:F0EF: EE 25 ED     	inc	count
+   616 00:F0F2: FA           	plx
+   617 00:F0F3: 60           	rts
+   618                        
+   619                        vHEXOUT2
+   620 00:F0F4: 48           	PHA
+   621 00:F0F5: 4A           	LSR	A
+   622 00:F0F6: 4A           	LSR	A
+   623 00:F0F7: 4A           	LSR	A
+   624 00:F0F8: 4A           	LSR	A
+   625 00:F0F9: 20 FD F0     	JSR	vHEXOUT1
+   626 00:F0FC: 68           	PLA
+   627                        vHEXOUT1
+   628 00:F0FD: 29 0F        	AND	#$0F
+   629 00:F0FF: 18           	CLC
+   630 00:F100: 69 30        	ADC	#'0'
+   631 00:F102: C9 3A        	CMP	#'9'+1
+   632 00:F104: 90 03        	BCC	vHEXOUTE
+   633 00:F106: 18           	CLC
+   634 00:F107: 69 07        	ADC	#'A'-'9'-1
+   635                        vHEXOUTE
+   636 00:F109: 80 DD        	bra	vPUT_CH
+   637                        
+   638                        ;------------------------------------------------------
+   639                        ; disassemble one opcode and print it
+   640                        ;------------------------------------------------------
+   641                        disOpcode:
+   642 00:F10B: B2 2E        	LDA	(oper)		; check pointed opcode
+   643 00:F10D: 8D 25 ED     	STA	count		; keep for comparisons
+   644 00:F110: A0 20        	LDY	#<da_oclist	; get address of opcode list
+   645 00:F112: A9 F2        	LDA	#>da_oclist
+   646 00:F114: 64 30        	stz	scan		; indirect-indexed pointer
+   647 00:F116: 85 31        	STA	scan+1
+   648                        
+   649                        ; proceed normally now
+   650                        
+   651 00:F118: A2 00        	LDX	#0		; counter of skipped opcodes
+   652                        do_chkopc:
+   653 00:F11A: EC 25 ED     	CPX	count		; check if desired opcode already pointed
+   654 00:F11D: F0 13        	BEQ	do_found		; no more to skip
+   655                        
+   656                        do_skip:
+   657 00:F11F: B1 30        	LDA	(scan),Y		; get char in list
+   658 00:F121: 30 07        	BMI	do_other		; found end-of-opcode mark (bit 7)
+   659 00:F123: C8           	INY
+   660 00:F124: D0 F9        	BNE	do_skip		; next char in list if not crossed
+   661 00:F126: E6 31        	INC	scan+1		; otherwise correct MSB
+   662 00:F128: 80 F5        	bra	do_skip
+   663                        
+   664                        do_other:
+   665 00:F12A: C8           	INY			; needs to point to actual opcode, not previous end eeeeeek!
+   666 00:F12B: D0 02        	BNE	do_set		; if not crossed
+   667 00:F12D: E6 31        	INC	scan+1		; otherwise correct MSB
+   668                        
+   669                        do_set:
+   670 00:F12F: E8           	INX			; yet another opcode skipped
+   671 00:F130: D0 E8        	BNE	do_chkopc	; until list is done ***should not arrive here***
+   672                        
+   673                        do_found:
+   674 00:F132: 84 30        	STY	scan		; restore pointer
+   675                        
+   676                        ;
+   677                        ; decode opcode and print hex dump
+   678                        ;
+   679                        prnOpcode: ; first goes the current address in label style
+   680                        
+   681 00:F134: A9 20        	LDA	#' '		; make it self-hosting
+   682 00:F136: 20 8D FF     	JSR	CONOUT
+   683 00:F139: A5 2F        	LDA	oper+1		; address MSB
+   684 00:F13B: 20 71 FC     	JSR	HEXOUT2	; print it
+   685 00:F13E: A5 2E        	LDA	oper		; same for LSB
+   686 00:F140: 20 71 FC     	JSR	HEXOUT2
+   687                        
+   688                        ; then extract the opcode string from scan
+   689                        
+   690 00:F143: A0 00        	LDY	#0		; scan increase, temporarily stored in temp
+   691 00:F145: 8C 20 ED     	STY	bytes		; number of bytes to be dumped (-1)
+   692 00:F148: 8C 25 ED     	STY	count		; printed chars for virtual console buffe
+   693                        
+   694                        po_loop:
+   695 00:F14B: B1 30        	LDA	(scan),Y	; get char in opcode list
+   696 00:F14D: 8C 1E ED     	STY	temp		; keep index as will be destroyed
+   697 00:F150: 29 7F        	AND	#$7F		; filter out possible end mark
+   698 00:F152: C9 25        	CMP	#'%'		; relative addressing
+   699 00:F154: D0 35        	BNE	po_nrel		; currently the same as single byte!
+   700                        
+   701                        ; put here specific code for relative arguments!
+   702                        
+   703 00:F156: A9 24        	LDA	#'$'		; hex radix
+   704 00:F158: 20 E8 F0     	JSR	vPUT_CH
+   705 00:F15B: B2 2E        	lda	(oper)		; check opocde for a moment
+   706 00:F15D: A0 01        	LDY	#1		; standard branch offset
+   707 00:F15F: A2 00        	LDX	#0		; reset offset sign extention
+   708 00:F161: 29 0F        	AND	#$0F		; watch low-nibble on opcode
+   709 00:F163: C9 0F        	CMP	#$0F		; is it BBR/BBS?
+   710 00:F165: D0 01        	BNE	po_nobbx		; if not, keep standard offset
+   711                        
+   712 00:F167: C8           	INY			; otherwise needs one more byte!
+   713                        po_nobbx:
+   714 00:F168: 8C 21 ED     	STY	s_value		; store now as will be added later
+   715 00:F16B: AC 20 ED     	LDY	bytes		; retrieve instruction index
+   716 00:F16E: C8           	INY			; point to operand!
+   717 00:F16F: B1 2E        	LDA	(oper),Y	; get offset!
+   718 00:F171: 8C 20 ED     	STY	bytes		; correct index
+   719 00:F174: 10 01        	BPL	po_fwd		; forward jump does not extend sign
+   720 00:F176: CA           	DEX			; puts $FF otherwise
+   721                        
+   722                        po_fwd:
+   723 00:F177: 1A           	inc	a		; plus opcode...
+   724 00:F178: 18           	CLC			; (will this and the above instead of SEC fix the error?)
+   725 00:F179: 6D 21 ED     	ADC	s_value		; ...and displacement...
+   726 00:F17C: 65 2E        	ADC	oper		; ...from current position
+   727 00:F17E: 48           	PHA			; this is the LSB, now check for the MSB
+   728 00:F17F: 8A           	TXA			; get sign extention
+   729 00:F180: 65 2F        	ADC	oper+1		; add current position MSB plus ocassional carry
+   730 00:F182: 20 F4 F0     	JSR	vHEXOUT2	; show as two ciphers
+   731 00:F185: 68           	PLA			; previously computed LSB
+   732 00:F186: 20 F4 F0     	JSR	vHEXOUT2	; another two
+   733 00:F189: 80 2F        	bra	po_done		; update and continue
+   734                        
+   735                        po_nrel:
+   736 00:F18B: C9 40        	CMP	#'@'		; single byte operand
+   737 00:F18D: D0 04        	BNE	po_nbyt		; otherwise check word-sized operand
+   738                        
+   739                        ; *** unified 1 and 2-byte operand management ***
+   740                        
+   741 00:F18F: A0 01        	LDY	#1		; number of bytes minus one
+   742 00:F191: 80 06        	bra	po_disp		; display value
+   743                        
+   744                        po_nbyt:
+   745 00:F193: C9 26        	CMP	#'&'		; word operand
+   746 00:F195: D0 1E        	BNE	po_nwd		; otherwise is normal char
+   747 00:F197: A0 02        	LDY	#2		; number of bytes minus one
+   748                        
+   749                        po_disp:
+   750                        ; could check HERE for undefined references!!!
+   751 00:F199: 5A           	phy			; these are the operand bytes
+   752 00:F19A: 8C 20 ED     	STY	bytes		; set counter
+   753 00:F19D: A9 24        	LDA	#'$'		; hex radix
+   754 00:F19F: 20 E8 F0     	JSR	vPUT_CH
+   755                        
+   756                        po_dloop:
+   757 00:F1A2: AC 20 ED     	LDY	bytes		; retrieve operand index
+   758 00:F1A5: B1 2E        	LDA	(oper),Y		; get whatever byte
+   759 00:F1A7: 20 F4 F0     	JSR	vHEXOUT2	; show in hex
+   760 00:F1AA: CE 20 ED     	DEC	bytes		; go back one byte
+   761 00:F1AD: D0 F3        	BNE	po_dloop
+   762 00:F1AF: 7A           	ply			; restore original operand size
+   763 00:F1B0: 8C 20 ED     	STY	bytes
+   764 00:F1B3: 80 05        	bra	po_adv		; update count (direct from A) and continue
+   765                        
+   766                        po_nwd:
+   767 00:F1B5: 20 E8 F0     	JSR	vPUT_CH		; just print it
+   768 00:F1B8: 80 00        	bra	po_char
+   769                        
+   770                        po_done:
+   771                        po_adv:
+   772                        po_char:
+   773 00:F1BA: AC 1E ED     	LDY	temp		; get scan index
+   774 00:F1BD: B1 30        	LDA	(scan),Y		; get current char again
+   775 00:F1BF: 30 04        	BMI	po_end		; opcode ended, no more to show
+   776 00:F1C1: C8           	INY			; go for next char otherwise
+   777 00:F1C2: 4C 4B F1     	JMP	po_loop		; BNE would work as no opcode string near 256 bytes long, but too far...
+   778                        
+   779                        po_end: ; output binary code
+   780                        
+   781 00:F1C5: AE 25 ED     	ldx	count
+   782 00:F1C8: 9E 26 ED     	stz	vnim_buf,x	; set mnemonic string termination
+   783                        
+   784                        ; print hex dump as a comment!
+   785                        
+   786                        po_dump:
+   787 00:F1CB: A9 09        	lda	#9		; **
+   788 00:F1CD: 8D 25 ED     	sta	count		; **
+   789 00:F1D0: A0 00        	LDY	#0		; reset index
+   790 00:F1D2: 8C 1E ED     	STY	temp		; save index (no longer scan)
+   791                        
+   792                        po_dbyt:
+   793 00:F1D5: A9 20        	LDA	#' '		; leading space
+   794 00:F1D7: 20 8D FF     	JSR	CONOUT
+   795 00:F1DA: AC 1E ED     	LDY	temp		; retrieve index
+   796 00:F1DD: B1 2E        	LDA	(oper),Y	; get current byte in instruction
+   797 00:F1DF: 20 71 FC     	JSR	HEXOUT2		; show as hex
+   798 00:F1E2: AD 25 ED     	lda	count		; **
+   799 00:F1E5: 38           	sec			; **
+   800 00:F1E6: E9 03        	sbc	#3		; **
+   801 00:F1E8: 8D 25 ED     	sta	count		; **
+   802 00:F1EB: EE 1E ED     	INC	temp		; next
+   803 00:F1EE: AE 20 ED     	LDX	bytes		; get limit (-1)
+   804 00:F1F1: E8           	INX			; correct for post-increased
+   805 00:F1F2: EC 1E ED     	CPX	temp		; compare current count
+   806 00:F1F5: D0 DE        	BNE	po_dbyt		; loop until done
+   807                        
+   808                        ; skip all bytes and point to next opcode
+   809                        
+   810                        post_end:			; **
+   811 00:F1F7: A9 20        	LDA	#' '		; **
+   812 00:F1F9: 20 8D FF     	JSR	CONOUT		; **
+   813                        				; **
+   814 00:F1FC: AD 25 ED     	lda	count		; **
+   815 00:F1FF: F0 05        	beq	end_prnt	; **
+   816 00:F201: CE 25 ED     	dec	count		; **
+   817 00:F204: 80 F1        	bra	post_end	; **
+   818                        
+   819                        end_prnt:			; **
+   820                        ;	LDA	#']'		; **
+   821                        ;	JSR	CONOUT		; **
+   822                        
+   823 00:F206: A5 2E        	LDA 	oper		; address LSB
+   824 00:F208: 38           	SEC			; skip current opcode...
+   825 00:F209: 6D 20 ED     	ADC	bytes		; ...plus number of operands
+   826 00:F20C: 85 2E        	STA	oper
+   827 00:F20E: 90 02        	BCC	po_cr		; in case of page crossing
+   828 00:F210: E6 2F        	INC	oper+1
+   829                        po_cr:
+   830                        
+   831 00:F212: A9 26        	LDA	#$FF&vnim_buf
+   832 00:F214: 85 25        	STA	PT0
+   833 00:F216: A9 ED        	LDA	#vnim_buf>>8
+   834 00:F218: 85 26        	STA	PT0+1
+   835 00:F21A: 20 63 FC     	jsr	STROUT		; output mnemonic to console
+   836 00:F21D: 4C B6 FC     	JMP	CRLF		; print it and return
+   837                        
+   838                        ; minimOS opcode list for (dis)assembler modules
+   839                        ; (c) 2015-2022 Carlos J. Santisteban
+   840                        ; last modified 20200222-1341
+   841                        
+   842                        ; Opcode list as bit-7 terminated strings
+   843                        ; @ expects single byte, & expects word
+   844                        ; NEW % expects RELATIVE addressing
+   845                        ; Rockwell 65C02 version (plus STP & WAI)
+   846                        ; will be used by the assembler module too
+   847                        
+   848                        da_oclist
+   849 00:F220: 42 52 4B 20  	db	"BRK #", $80+'@'	; $00=BRK #zp
+       00:F224: 23 C0 
+   850 00:F226: 4F 52 41 20  	db	"ORA (@, X", $80+')'	; $01=ORA (zp,X)
+       00:F22A: 28 40 2C 20 
+       00:F22E: 58 A9 
+   851 00:F230: 3F C0        	db	"?", $80+'@'		; $02=?
+   852 00:F232: BF           	db	$80+'?'			; $03=?
+   853 00:F233: 54 53 42 20  	db	"TSB ", $80+'@'		; $04=TSB zp		CMOS
+       00:F237: C0 
+   854 00:F238: 4F 52 41 20  	db	"ORA ", $80+'@'		; $05=ORA zp
+       00:F23C: C0 
+   855 00:F23D: 41 53 4C 20  	db	"ASL ", $80+'@'		; $06=ASL zp
+       00:F241: C0 
+   856 00:F242: 52 4D 42 30  	db	"RMB0 ", $80+'@'	; $07=RMB0 zp		CMOS Rockwell
+       00:F246: 20 C0 
+   857 00:F248: 50 48 D0     	db	"PH", $80+'P'		; $08=PHP
+   858 00:F24B: 4F 52 41 20  	db	"ORA #", $80+'@'	; $09=ORA #
+       00:F24F: 23 C0 
+   859 00:F251: 41 53 CC     	db	"AS", $80+'L'		; $0A=ASL
+   860 00:F254: BF           	db	$80+'?'			; $0B=?
+   861 00:F255: 54 53 42 20  	db	"TSB ", $80+'&'		; $0C=TSB abs		CMOS
+       00:F259: A6 
+   862 00:F25A: 4F 52 41 20  	db	"ORA ", $80+'&'		; $0D=ORA abs
+       00:F25E: A6 
+   863 00:F25F: 41 53 4C 20  	db	"ASL ", $80+'&'		; $0E=ASL abs
+       00:F263: A6 
+   864 00:F264: 42 42 52 30  	db	"BBR0 @,", $80+'%'	; $0F=BBR0 zp, rel	CMOS Rockwell
+       00:F268: 20 40 2C A5 
+   865 00:F26C: 42 50 4C 20  	db	"BPL ", $80+'%'		; $10=BPL rel
+       00:F270: A5 
+   866 00:F271: 4F 52 41 20  	db	"ORA (@), ", $80+'Y'	; $11=ORA (zp),Y
+       00:F275: 28 40 29 2C 
+       00:F279: 20 D9 
+   867 00:F27B: 4F 52 41 20  	db	"ORA (@", $80+')'	; $12=ORA (zp)		CMOS
+       00:F27F: 28 40 A9 
+   868 00:F282: BF           	db	$80+'?'			; $13=?
+   869 00:F283: 54 52 42 20  	db	"TRB ", $80+'@'		; $14=TRB zp		CMOS
+       00:F287: C0 
+   870 00:F288: 4F 52 41 20  	db	"ORA @, ", $80+'X'	; $15=ORA zp,X
+       00:F28C: 40 2C 20 D8 
+   871 00:F290: 41 53 4C 20  	db	"ASL @, ", $80+'X'	; $16=ASL zp,X
+       00:F294: 40 2C 20 D8 
+   872 00:F298: 52 4D 42 31  	db	"RMB1 ", $80+'@'	; $17=RMB1 zp		CMOS Rockwell
+       00:F29C: 20 C0 
+   873 00:F29E: 43 4C C3     	db	"CL", $80+'C'		; $18=CLC
+   874 00:F2A1: 4F 52 41 20  	db	"ORA &, ", $80+'Y'	; $19=ORA abs,Y
+       00:F2A5: 26 2C 20 D9 
+   875 00:F2A9: 49 4E C3     	db	"IN", $80+'C'		; $1A=INC		CMOS
+   876 00:F2AC: BF           	db	$80+'?'			; $1B=?
+   877 00:F2AD: 54 52 42 20  	db	"TRB ", $80+'&'		; $1C=TRB abs		CMOS
+       00:F2B1: A6 
+   878 00:F2B2: 4F 52 41 20  	db	"ORA &, ", $80+'X'	; $1D=ORA abs,X
+       00:F2B6: 26 2C 20 D8 
+   879 00:F2BA: 41 53 4C 20  	db	"ASL &, ", $80+'X'	; $1E=ASL abs,X
+       00:F2BE: 26 2C 20 D8 
+   880 00:F2C2: 42 42 52 31  	db	"BBR1 @,", $80+'%'	; $1F=BBR1 zp, rel	CMOS Rockwell
+       00:F2C6: 20 40 2C A5 
+   881 00:F2CA: 4A 53 52 20  	db	"JSR ", $80+'&'		; $20=JSR abs
+       00:F2CE: A6 
+   882 00:F2CF: 41 4E 44 20  	db	"AND (@, X", $80+')'	; $21=AND (zp,X)
+       00:F2D3: 28 40 2C 20 
+       00:F2D7: 58 A9 
+   883 00:F2D9: 3F C0        	db	"?", $80+'@'		; $22=?
+   884 00:F2DB: BF           	db	$80+'?'			; $23=?
+   885 00:F2DC: 42 49 54 20  	db	"BIT ", $80+'@'		; $24=BIT zp
+       00:F2E0: C0 
+   886 00:F2E1: 41 4E 44 20  	db	"AND ", $80+'@'		; $25=AND zp
+       00:F2E5: C0 
+   887 00:F2E6: 52 4F 4C 20  	db	"ROL ", $80+'@'		; $26=ROL zp
+       00:F2EA: C0 
+   888 00:F2EB: 52 4D 42 32  	db	"RMB2 ", $80+'@'	; $27=RMB2 zp		CMOS Rockwell
+       00:F2EF: 20 C0 
+   889 00:F2F1: 50 4C D0     	db	"PL", $80+'P'		; $28=PLP
+   890 00:F2F4: 41 4E 44 20  	db	"AND #", $80+'@'	; $29=AND #
+       00:F2F8: 23 C0 
+   891 00:F2FA: 52 4F CC     	db	"RO", $80+'L'		; $2A=ROL
+   892 00:F2FD: BF           	db	$80+'?'			; $2B=?
+   893 00:F2FE: 42 49 54 20  	db	"BIT ", $80+'&'		; $2C=BIT abs
+       00:F302: A6 
+   894 00:F303: 41 4E 44 20  	db	"AND ", $80+'&'		; $2D=AND abs
+       00:F307: A6 
+   895 00:F308: 52 4F 4C 20  	db	"ROL ", $80+'&'		; $2E=ROL abs
+       00:F30C: A6 
+   896 00:F30D: 42 42 52 32  	db	"BBR2 @,", $80+'%'	; $2F=BBR2 zp, rel	CMOS Rockwell
+       00:F311: 20 40 2C A5 
+   897 00:F315: 42 4D 49 20  	db	"BMI ", $80+'%'		; $30=BMI rel
+       00:F319: A5 
+   898 00:F31A: 41 4E 44 20  	db	"AND (@), ", $80+'Y'	; $31=AND (zp),Y
+       00:F31E: 28 40 29 2C 
+       00:F322: 20 D9 
+   899 00:F324: 41 4E 44 20  	db	"AND (@", $80+')'	; $32=AND (zp)		CMOS
+       00:F328: 28 40 A9 
+   900 00:F32B: BF           	db	$80+'?'			; $33=?
+   901 00:F32C: 42 49 54 20  	db	"BIT @, ", $80+'X'	; $34=BIT zp,X		CMOS
+       00:F330: 40 2C 20 D8 
+   902 00:F334: 41 4E 44 20  	db	"AND @, ", $80+'X'	; $35=AND zp,X
+       00:F338: 40 2C 20 D8 
+   903 00:F33C: 52 4F 4C 20  	db	"ROL @, ", $80+'X'	; $36=ROL zp,X
+       00:F340: 40 2C 20 D8 
+   904 00:F344: 52 4D 42 33  	db	"RMB3 ", $80+'@'	; $37=RMB3 zp		CMOS Rockwell
+       00:F348: 20 C0 
+   905 00:F34A: 53 45 C3     	db	"SE", $80+'C'		; $38=SEC
+   906 00:F34D: 41 4E 44 20  	db	"AND &, ", $80+'Y'	; $39=AND abs,Y
+       00:F351: 26 2C 20 D9 
+   907 00:F355: 44 45 C3     	db	"DE", $80+'C'		; $3A=DEC		CMOS
+   908 00:F358: BF           	db	$80+'?'			; $3B=?
+   909 00:F359: 42 49 54 20  	db	"BIT &, ", $80+'X'	; $3C=BIT abs,X		CMOS
+       00:F35D: 26 2C 20 D8 
+   910 00:F361: 41 4E 44 20  	db	"AND &, ", $80+'X'	; $3D=AND abs,X
+       00:F365: 26 2C 20 D8 
+   911 00:F369: 52 4F 4C 20  	db	"ROL &, ", $80+'X'	; $3E=ROL abs,X
+       00:F36D: 26 2C 20 D8 
+   912 00:F371: 42 42 52 33  	db	"BBR3 @,", $80+'%'	; $3F=BBR3 zp, rel	CMOS Rockwell
+       00:F375: 20 40 2C A5 
+   913 00:F379: 52 54 C9     	db	"RT", $80+'I'		; $40=RTI
+   914 00:F37C: 45 4F 52 20  	db	"EOR (@, X", $80+')'	; $41=EOR (zp,X)
+       00:F380: 28 40 2C 20 
+       00:F384: 58 A9 
+   915 00:F386: 3F C0        	db	"?", $80+'@'		; $42=?
+   916 00:F388: BF           	db	$80+'?'			; $43=?
+   917 00:F389: 3F 28 33 29  	db	"?(3)", $80+'@'		; $44=?
+       00:F38D: C0 
+   918 00:F38E: 45 4F 52 20  	db	"EOR ", $80+'@'		; $45=EOR zp
+       00:F392: C0 
+   919 00:F393: 4C 53 52 20  	db	"LSR ", $80+'@'		; $46=LSR zp
+       00:F397: C0 
+   920 00:F398: 52 4D 42 34  	db	"RMB4 ", $80+'@'	; $47=RMB4 zp		CMOS Rockwell
+       00:F39C: 20 C0 
+   921 00:F39E: 50 48 C1     	db	"PH", $80+'A'		; $48=PHA
+   922 00:F3A1: 45 4F 52 20  	db	"EOR #", $80+'@'	; $49=EOR #
+       00:F3A5: 23 C0 
+   923 00:F3A7: 4C 53 D2     	db	"LS", $80+'R'		; $4A=LSR
+   924 00:F3AA: BF           	db	$80+'?'			; $4B=?
+   925 00:F3AB: 4A 4D 50 20  	db	"JMP ", $80+'&'		; $4C=JMP abs
+       00:F3AF: A6 
+   926 00:F3B0: 45 4F 52 20  	db	"EOR ", $80+'&'		; $4D=EOR abs
+       00:F3B4: A6 
+   927 00:F3B5: 4C 53 52 20  	db	"LSR ", $80+'&'		; $4E=LSR abs
+       00:F3B9: A6 
+   928 00:F3BA: 42 42 52 34  	db	"BBR4 @,", $80+'%'	; $4F=BBR4 zp, rel	CMOS Rockwell
+       00:F3BE: 20 40 2C A5 
+   929 00:F3C2: 42 56 43 20  	db	"BVC ", $80+'%'		; $50=BVC rel
+       00:F3C6: A5 
+   930 00:F3C7: 45 4F 52 20  	db	"EOR (@), ", $80+'Y'	; $51=EOR (zp),Y
+       00:F3CB: 28 40 29 2C 
+       00:F3CF: 20 D9 
+   931 00:F3D1: 45 4F 52 20  	db	"EOR (@", $80+')'	; $52=EOR (zp)		CMOS
+       00:F3D5: 28 40 A9 
+   932 00:F3D8: BF           	db	$80+'?'			; $53=?
+   933 00:F3D9: 3F 28 34 29  	db	"?(4)", $80+'@'		; $54=?
+       00:F3DD: C0 
+   934 00:F3DE: 45 4F 52 20  	db	"EOR @, ", $80+'X'	; $55=EOR zp,X
+       00:F3E2: 40 2C 20 D8 
+   935 00:F3E6: 4C 53 52 20  	db	"LSR @, ", $80+'X'	; $56=LSR zp,X
+       00:F3EA: 40 2C 20 D8 
+   936 00:F3EE: 52 4D 42 35  	db	"RMB5 ", $80+'@'	; $57=RMB5 zp		CMOS Rockwell
+       00:F3F2: 20 C0 
+   937 00:F3F4: 43 4C C9     	db	"CL", $80+'I'		; $58=CLI
+   938 00:F3F7: 45 4F 52 20  	db	"EOR &, ", $80+'Y'	; $59=EOR abs,Y
+       00:F3FB: 26 2C 20 D9 
+   939 00:F3FF: 50 48 D9     	db	"PH", $80+'Y'		; $5A=PHY		CMOS
+   940 00:F402: BF           	db	$80+'?'			; $5B=?
+   941 00:F403: 3F 28 38 29  	db	"?(8)", $80+'&'		; $5C=?
+       00:F407: A6 
+   942 00:F408: 45 4F 52 20  	db	"EOR &, ", $80+'X'	; $5D=EOR abs,X
+       00:F40C: 26 2C 20 D8 
+   943 00:F410: 4C 53 52 20  	db	"LSR &, ", $80+'X'	; $5E=LSR abs,X
+       00:F414: 26 2C 20 D8 
+   944 00:F418: 42 42 52 35  	db	"BBR5 @,", $80+'%'	; $5F=BBR5 zp, rel	CMOS Rockwell
+       00:F41C: 20 40 2C A5 
+   945 00:F420: 52 54 D3     	db	"RT", $80+'S'		; $60=RTS
+   946 00:F423: 41 44 43 20  	db	"ADC (@, X", $80+')'	; $61=ADC (zp,X)
+       00:F427: 28 40 2C 20 
+       00:F42B: 58 A9 
+   947 00:F42D: 3F C0        	db	"?", $80+'@'		; $62=?
+   948 00:F42F: BF           	db	$80+'?'			; $63=?
+   949 00:F430: 53 54 5A 20  	db	"STZ ", $80+'@'		; $64=STZ zp		CMOS
+       00:F434: C0 
+   950 00:F435: 41 44 43 20  	db	"ADC ", $80+'@'		; $65=ADC zp
+       00:F439: C0 
+   951 00:F43A: 52 4F 52 20  	db	"ROR ", $80+'@'		; $66=ROR zp
+       00:F43E: C0 
+   952 00:F43F: 52 4D 42 36  	db	"RMB6 ", $80+'@'	; $67=RMB6 zp		CMOS Rockwell
+       00:F443: 20 C0 
+   953 00:F445: 50 4C C1     	db	"PL", $80+'A'		; $68=PLA
+   954 00:F448: 41 44 43 20  	db	"ADC #", $80+'@'	; $69=ADC #
+       00:F44C: 23 C0 
+   955 00:F44E: 52 4F D2     	db	"RO", $80+'R'		; $6A=ROR
+   956 00:F451: BF           	db	$80+'?'			; $6B=?
+   957 00:F452: 4A 4D 50 20  	db	"JMP (&", $80+')'	; $6C=JMP (abs)
+       00:F456: 28 26 A9 
+   958 00:F459: 41 44 43 20  	db	"ADC ", $80+'&'		; $6D=ADC abs
+       00:F45D: A6 
+   959 00:F45E: 52 4F 52 20  	db	"ROR ", $80+'&'		; $6E=ROR abs
+       00:F462: A6 
+   960 00:F463: 42 42 52 36  	db	"BBR6 @,", $80+'%'	; $6F=BBR6 zp, rel	CMOS Rockwell
+       00:F467: 20 40 2C A5 
+   961 00:F46B: 42 56 53 20  	db	"BVS ", $80+'%'		; $70=BVS rel
+       00:F46F: A5 
+   962 00:F470: 41 44 43 20  	db	"ADC (@), ", $80+'Y'	; $71=ADC (zp),Y
+       00:F474: 28 40 29 2C 
+       00:F478: 20 D9 
+   963 00:F47A: 41 44 43 20  	db	"ADC (@", $80+')'	; $72=ADC (zp)		CMOS
+       00:F47E: 28 40 A9 
+   964 00:F481: BF           	db	$80+'?'			; $73=?
+   965 00:F482: 53 54 5A 20  	db	"STZ @, ", $80+'X'	; $74=STZ zp,X		CMOS
+       00:F486: 40 2C 20 D8 
+   966 00:F48A: 41 44 43 20  	db	"ADC @, ", $80+'X'	; $75=ADC zp,X
+       00:F48E: 40 2C 20 D8 
+   967 00:F492: 52 4F 52 20  	db	"ROR @, ", $80+'X'	; $76=ROR zp,X
+       00:F496: 40 2C 20 D8 
+   968 00:F49A: 52 4D 42 37  	db	"RMB7 ", $80+'@'	; $77=RMB7 zp		CMOS Rockwell
+       00:F49E: 20 C0 
+   969 00:F4A0: 53 45 C9     	db	"SE", $80+'I'		; $78=SEI
+   970 00:F4A3: 41 44 43 20  	db	"ADC &, ", $80+'Y'	; $79=ADC abs, Y
+       00:F4A7: 26 2C 20 D9 
+   971 00:F4AB: 50 4C D9     	db	"PL", $80+'Y'		; $7A=PLY		CMOS
+   972 00:F4AE: BF           	db	$80+'?'			; $7B=?
+   973 00:F4AF: 4A 4D 50 20  	db	"JMP (&, X", $80+')'	; $7C=JMP (abs,X)
+       00:F4B3: 28 26 2C 20 
+       00:F4B7: 58 A9 
+   974 00:F4B9: 41 44 43 20  	db	"ADC &, ", $80+'X'	; $7D=ADC abs, X
+       00:F4BD: 26 2C 20 D8 
+   975 00:F4C1: 52 4F 52 20  	db	"ROR &, ", $80+'X'	; $7E=ROR abs, X
+       00:F4C5: 26 2C 20 D8 
+   976 00:F4C9: 42 42 52 37  	db	"BBR7 @,", $80+'%'	; $7F=BBR7 zp, rel	CMOS Rockwell
+       00:F4CD: 20 40 2C A5 
+   977 00:F4D1: 42 52 41 20  	db	"BRA ", $80+'%'		; $80=BRA rel		CMOS
+       00:F4D5: A5 
+   978 00:F4D6: 53 54 41 20  	db	"STA (@, X", $80+')'	; $81=STA (zp,X)
+       00:F4DA: 28 40 2C 20 
+       00:F4DE: 58 A9 
+   979 00:F4E0: 3F C0        	db	"?", $80+'@'		; $82=?
+   980 00:F4E2: BF           	db	$80+'?'			; $83=?
+   981 00:F4E3: 53 54 59 20  	db	"STY ", $80+'@'		; $84=STY zp
+       00:F4E7: C0 
+   982 00:F4E8: 53 54 41 20  	db	"STA ", $80+'@'		; $85=STA zp
+       00:F4EC: C0 
+   983 00:F4ED: 53 54 58 20  	db	"STX ", $80+'@'		; $86=STX zp		CMOS
+       00:F4F1: C0 
+   984 00:F4F2: 53 4D 42 30  	db	"SMB0 ", $80+'@'	; $87=SMB0 zp		CMOS Rockwell
+       00:F4F6: 20 C0 
+   985 00:F4F8: 44 45 D9     	db	"DE", $80+'Y'		; $88=DEY
+   986 00:F4FB: 42 49 54 20  	db	"BIT #", $80+'@'	; $89=BIT #
+       00:F4FF: 23 C0 
+   987 00:F501: 54 58 C1     	db	"TX", $80+'A'		; $8A=TXA
+   988 00:F504: BF           	db	$80+'?'			; $8B=?
+   989 00:F505: 53 54 59 20  	db	"STY ", $80+'&'		; $8C=STY abs
+       00:F509: A6 
+   990 00:F50A: 53 54 41 20  	db	"STA ", $80+'&'		; $8D=STA abs
+       00:F50E: A6 
+   991 00:F50F: 53 54 58 20  	db	"STX ", $80+'&'		; $8E=STX abs
+       00:F513: A6 
+   992 00:F514: 42 42 53 30  	db	"BBS0 @, ", $80+'%'	; $8F=BBS0 zp, rel	CMOS Rockwell
+       00:F518: 20 40 2C 20 
+       00:F51C: A5 
+   993 00:F51D: 42 43 43 20  	db	"BCC ", $80+'%'		; $90=BCC rel
+       00:F521: A5 
+   994 00:F522: 53 54 41 20  	db	"STA (@), ", $80+'Y'	; $91=STA (zp),Y
+       00:F526: 28 40 29 2C 
+       00:F52A: 20 D9 
+   995 00:F52C: 53 54 41 20  	db	"STA (@", $80+')'	; $92=STA (zp)		CMOS
+       00:F530: 28 40 A9 
+   996 00:F533: BF           	db	$80+'?'			; $93=?
+   997 00:F534: 53 54 59 20  	db	"STY @, ", $80+'X'	; $94=STY zp,X
+       00:F538: 40 2C 20 D8 
+   998 00:F53C: 53 54 41 20  	db	"STA @, ", $80+'X'	; $95=STA zp,X
+       00:F540: 40 2C 20 D8 
+   999 00:F544: 53 54 58 20  	db	"STX @, ", $80+'Y'	; $96=STX zp,Y
+       00:F548: 40 2C 20 D9 
+  1000 00:F54C: 53 4D 42 31  	db	"SMB1 ", $80+'@'	; $97=SMB1 zp		CMOS Rockwell
+       00:F550: 20 C0 
+  1001 00:F552: 54 59 C1     	db	"TY", $80+'A'		; $98=TYA
+  1002 00:F555: 53 54 41 20  	db	"STA &, ", $80+'Y'	; $99=STA abs, Y
+       00:F559: 26 2C 20 D9 
+  1003 00:F55D: 54 58 D3     	db	"TX", $80+'S'		; $9A=TXS
+  1004 00:F560: BF           	db	$80+'?'			; $9B=?
+  1005 00:F561: 53 54 5A 20  	db	"STZ ", $80+'&'		; $9C=STZ abs		CMOS
+       00:F565: A6 
+  1006 00:F566: 53 54 41 20  	db	"STA &, ", $80+'X'	; $9D=STA abs,X
+       00:F56A: 26 2C 20 D8 
+  1007 00:F56E: 53 54 5A 20  	db	"STZ &, ", $80+'X'	; $9E=STZ abs,X		CMOS
+       00:F572: 26 2C 20 D8 
+  1008 00:F576: 42 42 53 31  	db	"BBS1 @, ", $80+'%'	; $9F=BBS1 zp, rel	CMOS Rockwell
+       00:F57A: 20 40 2C 20 
+       00:F57E: A5 
+  1009 00:F57F: 4C 44 59 20  	db	"LDY #", $80+'@'	; $A0=LDY #
+       00:F583: 23 C0 
+  1010 00:F585: 4C 44 41 20  	db	"LDA (@, X", $80+')'	; $A1=LDA (zp,X)
+       00:F589: 28 40 2C 20 
+       00:F58D: 58 A9 
+  1011 00:F58F: 4C 44 58 20  	db	"LDX #", $80+'@'	; $A2=LDX #
+       00:F593: 23 C0 
+  1012 00:F595: BF           	db	$80+'?'			; $A3=?
+  1013 00:F596: 4C 44 59 20  	db	"LDY ", $80+'@'		; $A4=LDY zp
+       00:F59A: C0 
+  1014 00:F59B: 4C 44 41 20  	db	"LDA ", $80+'@'		; $A5=LDA zp
+       00:F59F: C0 
+  1015 00:F5A0: 4C 44 58 20  	db	"LDX ", $80+'@'		; $A6=LDX zp
+       00:F5A4: C0 
+  1016 00:F5A5: 53 4D 42 32  	db	"SMB2 ", $80+'@'	; $A7=SMB2 zp		CMOS Rockwell
+       00:F5A9: 20 C0 
+  1017 00:F5AB: 54 41 D9     	db	"TA", $80+'Y'		; $A8=TAY
+  1018 00:F5AE: 4C 44 41 20  	db	"LDA #", $80+'@'	; $A9=LDA #
+       00:F5B2: 23 C0 
+  1019 00:F5B4: 54 41 D8     	db	"TA", $80+'X'		; $AA=TAX
+  1020 00:F5B7: BF           	db	$80+'?'			; $AB=?
+  1021 00:F5B8: 4C 44 59 20  	db	"LDY ", $80+'&'		; $AC=LDY abs
+       00:F5BC: A6 
+  1022 00:F5BD: 4C 44 41 20  	db	"LDA ", $80+'&'		; $AD=LDA abs
+       00:F5C1: A6 
+  1023 00:F5C2: 4C 44 58 20  	db	"LDX ", $80+'&'		; $AE=LDX abs
+       00:F5C6: A6 
+  1024 00:F5C7: 42 42 53 32  	db	"BBS2 @, ", $80+'%'	; $AF=BBS2 zp, rel	CMOS Rockwell
+       00:F5CB: 20 40 2C 20 
+       00:F5CF: A5 
+  1025 00:F5D0: 42 43 53 20  	db	"BCS ", $80+'%'		; $B0=BCS rel
+       00:F5D4: A5 
+  1026 00:F5D5: 4C 44 41 20  	db	"LDA (@), ", $80+'Y'	; $B1=LDA (zp),Y
+       00:F5D9: 28 40 29 2C 
+       00:F5DD: 20 D9 
+  1027 00:F5DF: 4C 44 41 20  	db	"LDA (@", $80+')'	; $B2=LDA (zp)		CMOS
+       00:F5E3: 28 40 A9 
+  1028 00:F5E6: BF           	db	$80+'?'			; $B3=?
+  1029 00:F5E7: 4C 44 59 20  	db	"LDY @, ", $80+'X'	; $B4=LDY zp,X
+       00:F5EB: 40 2C 20 D8 
+  1030 00:F5EF: 4C 44 41 20  	db	"LDA @, ", $80+'X'	; $B5=LDA zp,X
+       00:F5F3: 40 2C 20 D8 
+  1031 00:F5F7: 4C 44 58 20  	db	"LDX @,", $80+'Y'	; $B6=LDX zp,Y
+       00:F5FB: 40 2C D9 
+  1032 00:F5FE: 53 4D 42 33  	db	"SMB3 ", $80+'@'	; $B7=SMB3 zp		CMOS Rockwell
+       00:F602: 20 C0 
+  1033 00:F604: 43 4C D6     	db	"CL", $80+'V'		; $B8=CLV
+  1034 00:F607: 4C 44 41 20  	db	"LDA &, ", $80+'Y'	; $B9=LDA abs, Y
+       00:F60B: 26 2C 20 D9 
+  1035 00:F60F: 54 53 D8     	db	"TS", $80+'X'		; $BA=TSX
+  1036 00:F612: BF           	db	$80+'?'			; $BB=?
+  1037 00:F613: 4C 44 59 20  	db	"LDY &, ", $80+'X'	; $BC=LDY abs,X
+       00:F617: 26 2C 20 D8 
+  1038 00:F61B: 4C 44 41 20  	db	"LDA &, ", $80+'X'	; $BD=LDA abs,X
+       00:F61F: 26 2C 20 D8 
+  1039 00:F623: 4C 44 58 20  	db	"LDX &, ", $80+'Y'	; $BE=LDX abs,Y
+       00:F627: 26 2C 20 D9 
+  1040 00:F62B: 42 42 53 33  	db	"BBS3 @, ", $80+'%'	; $BF=BBS3 zp, rel	CMOS Rockwell
+       00:F62F: 20 40 2C 20 
+       00:F633: A5 
+  1041 00:F634: 43 50 59 20  	db	"CPY #", $80+'@'	; $C0=CPY #
+       00:F638: 23 C0 
+  1042 00:F63A: 43 4D 50 20  	db	"CMP (@, X", $80+')'	; $C1=CMP (zp,X)
+       00:F63E: 28 40 2C 20 
+       00:F642: 58 A9 
+  1043 00:F644: 3F C0        	db	"?", $80+'@'		; $C2=?
+  1044 00:F646: BF           	db	$80+'?'			; $C3=?
+  1045 00:F647: 43 50 59 20  	db	"CPY ", $80+'@'		; $C4=CPY zp
+       00:F64B: C0 
+  1046 00:F64C: 43 4D 50 20  	db	"CMP ", $80+'@'		; $C5=CMP zp
+       00:F650: C0 
+  1047 00:F651: 44 45 43 20  	db	"DEC ", $80+'@'		; $C6=DEC zp
+       00:F655: C0 
+  1048 00:F656: 53 4D 42 34  	db	"SMB4 ", $80+'@'	; $C7=SMB4 zp		CMOS Rockwell
+       00:F65A: 20 C0 
+  1049 00:F65C: 49 4E D9     	db	"IN", $80+'Y'		; $C8=INY
+  1050 00:F65F: 43 4D 50 20  	db	"CMP #", $80+'@'	; $C9=CMP #
+       00:F663: 23 C0 
+  1051 00:F665: 44 45 D8     	db	"DE", $80+'X'		; $CA=DEX
+  1052 00:F668: 57 41 C9     	db	"WA", $80+'I'		; $CB=WAI		CMOS WDC
+  1053 00:F66B: 43 50 59 20  	db	"CPY ", $80+'&'		; $CC=CPY abs
+       00:F66F: A6 
+  1054 00:F670: 43 4D 50 20  	db	"CMP ", $80+'&'		; $CD=CMP abs
+       00:F674: A6 
+  1055 00:F675: 44 45 43 20  	db	"DEC ", $80+'&'		; $CE=DEC abs
+       00:F679: A6 
+  1056 00:F67A: 42 42 53 34  	db	"BBS4 @, ", $80+'%'	; $CF=BBS4 zp, rel	CMOS Rockwell
+       00:F67E: 20 40 2C 20 
+       00:F682: A5 
+  1057 00:F683: 42 4E 45 20  	db	"BNE ", $80+'%'		; $D0=BNE rel
+       00:F687: A5 
+  1058 00:F688: 43 4D 50 20  	db	"CMP (@), ", $80+'Y'	; $D1=CMP (zp),Y
+       00:F68C: 28 40 29 2C 
+       00:F690: 20 D9 
+  1059 00:F692: 43 4D 50 20  	db	"CMP (@", $80+')'	; $D2=CMP (zp)		CMOS
+       00:F696: 28 40 A9 
+  1060 00:F699: BF           	db	$80+'?'			; $D3=?
+  1061 00:F69A: 3F 28 34 29  	db	"?(4)", $80+'@'		; $D4=?
+       00:F69E: C0 
+  1062 00:F69F: 43 4D 50 20  	db	"CMP @, ", $80+'X'	; $D5=CMP zp,X
+       00:F6A3: 40 2C 20 D8 
+  1063 00:F6A7: 44 45 43 20  	db	"DEC @, ", $80+'X'	; $D6=DEC zp,X
+       00:F6AB: 40 2C 20 D8 
+  1064 00:F6AF: 53 4D 42 35  	db	"SMB5 ", $80+'@'	; $D7=SMB5 zp		CMOS Rockwell
+       00:F6B3: 20 C0 
+  1065 00:F6B5: 43 4C C4     	db	"CL", $80+'D'		; $D8=CLD
+  1066 00:F6B8: 43 4D 50 20  	db	"CMP &, ", $80+'Y'	; $D9=CMP abs, Y
+       00:F6BC: 26 2C 20 D9 
+  1067 00:F6C0: 50 48 D8     	db	"PH", $80+'X'		; $DA=PHX		CMOS
+  1068 00:F6C3: 53 54 D0     	db	"ST", $80+'P'		; $DB=STP		CMOS WDC
+  1069 00:F6C6: 3F 28 34 29  	db	"?(4)", $80+'&'		; $DC=?
+       00:F6CA: A6 
+  1070 00:F6CB: 43 4D 50 20  	db	"CMP &, ", $80+'X'	; $DD=CMP abs,X
+       00:F6CF: 26 2C 20 D8 
+  1071 00:F6D3: 44 45 43 20  	db	"DEC &, ", $80+'X'	; $DE=DEC abs,X
+       00:F6D7: 26 2C 20 D8 
+  1072 00:F6DB: 42 42 53 35  	db	"BBS5 @, ", $80+'%'	; $DF=BBS5 zp, rel	CMOS Rockwell
+       00:F6DF: 20 40 2C 20 
+       00:F6E3: A5 
+  1073 00:F6E4: 43 50 58 20  	db	"CPX #", $80+'@'	; $E0=CPX #
+       00:F6E8: 23 C0 
+  1074 00:F6EA: 53 42 43 20  	db	"SBC (@, X", $80+')'	; $E1=SBC (zp,X)
+       00:F6EE: 28 40 2C 20 
+       00:F6F2: 58 A9 
+  1075 00:F6F4: 3F C0        	db	"?", $80+'@'		; $E2=?
+  1076 00:F6F6: BF           	db	$80+'?'			; $E3=?
+  1077 00:F6F7: 43 50 58 20  	db	"CPX ", $80+'@'		; $E4=CPX zp
+       00:F6FB: C0 
+  1078 00:F6FC: 53 42 43 20  	db	"SBC ", $80+'@'		; $E5=SBC zp
+       00:F700: C0 
+  1079 00:F701: 49 4E 43 20  	db	"INC ", $80+'@'		; $E6=INC zp
+       00:F705: C0 
+  1080 00:F706: 53 4D 42 36  	db	"SMB6 ", $80+'@'	; $E7=SMB6 zp		CMOS Rockwell
+       00:F70A: 20 C0 
+  1081 00:F70C: 49 4E D8     	db	"IN", $80+'X'		; $E8=INX
+  1082 00:F70F: 53 42 43 20  	db	"SBC #", $80+'@'	; $E9=SBC #
+       00:F713: 23 C0 
+  1083 00:F715: 4E 4F D0     	db	"NO", $80+'P'		; $EA=NOP
+  1084 00:F718: BF           	db	$80+'?'			; $EB=?
+  1085 00:F719: 43 50 58 20  	db	"CPX ", $80+'&'		; $EC=CPX abs
+       00:F71D: A6 
+  1086 00:F71E: 53 42 43 20  	db	"SBC ", $80+'&'		; $ED=SBC abs
+       00:F722: A6 
+  1087 00:F723: 49 4E 43 20  	db	"INC ", $80+'&'		; $EE=INC abs
+       00:F727: A6 
+  1088 00:F728: 42 42 53 36  	db	"BBS6 @, ", $80+'%'	; $EF=BBS6 zp, rel	CMOS Rockwell
+       00:F72C: 20 40 2C 20 
+       00:F730: A5 
+  1089 00:F731: 42 45 51 20  	db	"BEQ ", $80+'%'		; $F0=BEQ rel
+       00:F735: A5 
+  1090 00:F736: 53 42 43 20  	db	"SBC (@), ", $80+'Y'	; $F1=SBC (zp),Y
+       00:F73A: 28 40 29 2C 
+       00:F73E: 20 D9 
+  1091 00:F740: 53 42 43 20  	db	"SBC (@", $80+')'	; $F2=SBC (zp)		CMOS
+       00:F744: 28 40 A9 
+  1092 00:F747: BF           	db	$80+'?'			; $F3=?
+  1093 00:F748: 3F 28 34 29  	db	"?(4)", $80+'@'		; $F4=?
+       00:F74C: C0 
+  1094 00:F74D: 53 42 43 20  	db	"SBC @, ", $80+'X'	; $F5=SBC zp,X
+       00:F751: 40 2C 20 D8 
+  1095 00:F755: 49 4E 43 20  	db	"INC @, ", $80+'X'	; $F6=INC zp,X
+       00:F759: 40 2C 20 D8 
+  1096 00:F75D: 53 4D 42 37  	db	"SMB7 ", $80+'@'	; $F7=SMB7 zp		CMOS Rockwell
+       00:F761: 20 C0 
+  1097 00:F763: 53 45 C4     	db	"SE", $80+'D'		; $F8=SED
+  1098 00:F766: 53 42 43 20  	db	"SBC &, ", $80+'Y'	; $F9=SBC abs,Y
+       00:F76A: 26 2C 20 D9 
+  1099 00:F76E: 50 4C D8     	db	"PL", $80+'X'		; $FA=PLX		CMOS
+  1100 00:F771: BF           	db	$80+'?'			; $FB=?
+  1101 00:F772: 3F 28 34 29  	db	"?(4)", $80+'&'		; $FC=?
+       00:F776: A6 
+  1102 00:F777: 53 42 43 20  	db	"SBC &, ", $80+'X'	; $FD=SBC abs,X
+       00:F77B: 26 2C 20 D8 
+  1103 00:F77F: 49 4E 43 20  	db	"INC &, ", $80+'X'	; $FE=INC abs,X
+       00:F783: 26 2C 20 D8 
+  1104 00:F787: 42 42 53 37  	db	"BBS7 @, ", $80+'%'	; $FF=BBS7 zp, rel	CMOS Rockwell
+       00:F78B: 20 40 2C 20 
+       00:F78F: A5 
+  1105                        
+  1106                        ;;;
+  1107                        ;;;  Go address
+  1108                        ;;;
+  1109                        GO
+  1110 00:F790: E8           	INX
+  1111 00:F791: 20 0B FD     	JSR	SKIPSP
+  1112 00:F794: 20 22 FD     	JSR	RDHEX
+  1113 00:F797: A5 29        	LDA	CNT
+  1114 00:F799: D0 0D        	BNE	GP0		; jmp if 1st arg. exist
+  1115                        
+  1116 00:F79B: 20 0B FD     	JSR	SKIPSP
+  1117 00:F79E: BD 00 ED     	LDA	INBUF,X
+  1118 00:F7A1: D0 17        	bne	GP01		; jmp if remain strings exist
+  1119                        
+  1120                        	;; No arg.
+  1121                        
+  1122                        G00
+  1123 00:F7A3: 9C 36 ED     	stz	stp_flg		; clear stop flag
+  1124 00:F7A6: 80 47        	bra	G0
+  1125                        
+  1126                        GP0	;; 1st arg. found
+  1127 00:F7A8: A5 27        	LDA	PT1
+  1128 00:F7AA: 85 3A        	STA	REGPC		; set start address(low)
+  1129 00:F7AC: A5 28        	LDA	PT1+1
+  1130 00:F7AE: 85 3B        	STA	REGPC+1		; set start address(high)
+  1131                        
+  1132                        	; check 2nd arg.
+  1133 00:F7B0: 20 0B FD     	JSR	SKIPSP
+  1134 00:F7B3: BD 00 ED     	LDA	INBUF,X
+  1135 00:F7B6: C9 00        	CMP	#0
+  1136 00:F7B8: F0 E9        	BEQ	G00		; jmp if no 2nd arg.
+  1137                        GP01
+  1138 00:F7BA: C9 2C        	CMP	#','
+  1139 00:F7BC: F0 03        	BEQ	GP1		; chk 2nd arg
+  1140                        
+  1141                        G_ERR
+  1142 00:F7BE: 4C EF EE     	JMP	ERR
+  1143                        
+  1144                        GP1	;; check 2nd arg.
+  1145 00:F7C1: E8           	INX
+  1146 00:F7C2: 20 0B FD     	JSR	SKIPSP
+  1147 00:F7C5: 20 22 FD     	JSR	RDHEX
+  1148 00:F7C8: 20 0B FD     	JSR	SKIPSP
+  1149 00:F7CB: A5 29        	LDA	CNT
+  1150 00:F7CD: F0 EF        	BEQ	G_ERR
+  1151                        
+  1152                        	;; set 2nd arg.
+  1153                        
+  1154 00:F7CF: EE 36 ED     	inc	stp_flg		; set stop flag
+  1155                        
+  1156                        	; save original binary at break point
+  1157 00:F7D2: A0 00        	ldy	#0
+  1158 00:F7D4: B1 27        	lda	(PT1),y		; get first binary at stop address
+  1159 00:F7D6: 8D 37 ED     	sta	sav_dat		; save original binary
+  1160 00:F7D9: C8           	iny
+  1161 00:F7DA: B1 27        	lda	(PT1),y		; get second binary at stop address
+  1162 00:F7DC: 8D 38 ED     	sta	sav_dat+1	; save original binary
+  1163                        
+  1164                        	; set break point
+  1165 00:F7DF: A9 00        	lda	#0		; BRK 
+  1166 00:F7E1: A8           	tay
+  1167 00:F7E2: 91 27        	sta	(PT1),y		; set BRK opecode
+  1168 00:F7E4: C8           	iny
+  1169 00:F7E5: 91 27        	sta	(PT1),y		; set BRK operand(#0)
+  1170                        	
+  1171 00:F7E7: A5 27        	lda	PT1
+  1172 00:F7E9: 85 2C        	sta	sav_adr		; save break point addr(L)
+  1173 00:F7EB: A5 28        	lda	PT1+1
+  1174 00:F7ED: 85 2D        	sta	sav_adr+1	; save break point addr(H)
+  1175                        
+  1176                        G0
+  1177 00:F7EF: A6 39        	LDX	REGSP
+  1178 00:F7F1: 9A           	TXS			; SP
+  1179 00:F7F2: A5 3B        	LDA	REGPC+1
+  1180 00:F7F4: 48           	PHA			; PC(H)
+  1181 00:F7F5: A5 3A        	LDA	REGPC
+  1182 00:F7F7: 48           	PHA			; PC(L)
+  1183 00:F7F8: A5 3C        	LDA	REGPSR
+  1184 00:F7FA: 48           	PHA			; PSR
+  1185 00:F7FB: A5 36        	LDA	REGA
+  1186 00:F7FD: A6 37        	LDX	REGX
+  1187 00:F7FF: A4 38        	LDY	REGY
+  1188 00:F801: 40           	RTI
+  1189                        
+  1190                        ;;;
+  1191                        ;;; Set memory
+  1192                        ;;;
+  1193                        SETM
+  1194 00:F802: E8           	INX
+  1195 00:F803: 20 0B FD     	JSR	SKIPSP
+  1196 00:F806: 20 22 FD     	JSR	RDHEX
+  1197 00:F809: 20 0B FD     	JSR	SKIPSP
+  1198 00:F80C: BD 00 ED     	LDA	INBUF,X
+  1199 00:F80F: F0 03        	BEQ	SM0
+  1200 00:F811: 4C EF EE     	JMP	ERR
+  1201                        SM0
+  1202 00:F814: A5 29        	LDA	CNT
+  1203 00:F816: F0 08        	BEQ	SM1
+  1204 00:F818: A5 27        	LDA	PT1
+  1205 00:F81A: 85 32        	STA	SADDR
+  1206 00:F81C: A5 28        	LDA	PT1+1
+  1207 00:F81E: 85 33        	STA	SADDR+1
+  1208                        SM1:
+  1209 00:F820: A5 33        	LDA	SADDR+1
+  1210 00:F822: 20 71 FC     	JSR	HEXOUT2
+  1211 00:F825: A5 32        	LDA	SADDR
+  1212 00:F827: 20 71 FC     	JSR	HEXOUT2
+  1213 00:F82A: A9 B6        	LDA	#$FF&DSEP1
+  1214 00:F82C: 85 25        	STA	PT0
+  1215 00:F82E: A9 FE        	LDA	#DSEP1>>8
+  1216 00:F830: 85 26        	STA	PT0+1
+  1217 00:F832: 20 63 FC     	JSR	STROUT
+  1218 00:F835: A0 00        	LDY	#0
+  1219 00:F837: B1 32        	LDA	(SADDR),Y
+  1220 00:F839: 20 71 FC     	JSR	HEXOUT2
+  1221 00:F83C: A9 20        	LDA	#' '
+  1222 00:F83E: 20 8D FF     	JSR	CONOUT
+  1223 00:F841: 20 C0 FC     	JSR	GETLIN
+  1224 00:F844: A2 00        	LDX	#0
+  1225 00:F846: 20 0B FD     	JSR	SKIPSP
+  1226 00:F849: BD 00 ED     	LDA	INBUF,X
+  1227 00:F84C: D0 10        	BNE	SM2
+  1228                        SM10	
+  1229                        	;; Empty (Increment address)
+  1230 00:F84E: A5 32        	LDA	SADDR
+  1231 00:F850: 18           	CLC
+  1232 00:F851: 69 01        	ADC	#1
+  1233 00:F853: 85 32        	STA	SADDR
+  1234 00:F855: A5 33        	LDA	SADDR+1
+  1235 00:F857: 69 00        	ADC	#0
+  1236 00:F859: 85 33        	STA	SADDR+1
+  1237 00:F85B: 4C 20 F8     	JMP	SM1
+  1238                        SM2
+  1239 00:F85E: C9 2D        	CMP	#'-'
+  1240 00:F860: D0 10        	BNE	SM3
+  1241                        	;; '-' (Decrement address)
+  1242 00:F862: A5 32        	LDA	SADDR
+  1243 00:F864: 38           	SEC
+  1244 00:F865: E9 01        	SBC	#1
+  1245 00:F867: 85 32        	STA	SADDR
+  1246 00:F869: A5 33        	LDA	SADDR+1
+  1247 00:F86B: E9 00        	SBC	#0
+  1248 00:F86D: 85 33        	STA	SADDR+1
+  1249 00:F86F: 4C 20 F8     	JMP	SM1
+  1250                        SM3
+  1251 00:F872: C9 2E        	CMP	#'.'
+  1252 00:F874: D0 03        	BNE	SM4
+  1253                        	;; '.' (Quit)
+  1254 00:F876: 4C 88 EE     	JMP	WSTART
+  1255                        SM4
+  1256 00:F879: 20 22 FD     	JSR	RDHEX
+  1257 00:F87C: A5 29        	LDA	CNT
+  1258 00:F87E: D0 03        	BNE	SM40
+  1259                        SMER
+  1260 00:F880: 4C EF EE     	JMP	ERR
+  1261                        SM40
+  1262                        	; repar original bug -------
+  1263 00:F883: BD 00 ED     	LDA	INBUF,X
+  1264 00:F886: D0 F8        	bne	SMER
+  1265                        	; repar original bug -------
+  1266                        
+  1267 00:F888: A5 27        	LDA	PT1
+  1268 00:F88A: A0 00        	LDY	#0
+  1269 00:F88C: 91 32        	STA	(SADDR),Y
+  1270 00:F88E: 4C 4E F8     	JMP	SM10
+  1271                        
+  1272                        ;;;
+  1273                        ;;; LOAD HEX file
+  1274                        ;;;
+  1275                        LOADH
+  1276 00:F891: E8           	INX
+  1277 00:F892: 20 0B FD     	JSR	SKIPSP
+  1278 00:F895: 20 22 FD     	JSR	RDHEX
+  1279 00:F898: 20 0B FD     	JSR	SKIPSP
+  1280 00:F89B: BD 00 ED     	LDA	INBUF,X
+  1281 00:F89E: D0 E0        	BNE	SMER
+  1282                        LH0
+  1283 00:F8A0: 20 7D FF     	JSR	CONIN
+  1284 00:F8A3: 20 17 FD     	JSR	UPPER
+  1285 00:F8A6: C9 53        	CMP	#'S'
+  1286 00:F8A8: D0 03        	Bne	LH1a
+  1287 00:F8AA: 4C 38 F9     	jmp	LHS0
+  1288                        LH1a
+  1289 00:F8AD: C9 3A        	CMP	#':'
+  1290 00:F8AF: F0 0E        	BEQ	LHI0
+  1291                        LH2
+  1292                        	;; Skip to EOL
+  1293 00:F8B1: C9 0D        	CMP	#CR
+  1294 00:F8B3: F0 EB        	BEQ	LH0
+  1295 00:F8B5: C9 0A        	CMP	#LF
+  1296 00:F8B7: F0 E7        	BEQ	LH0
+  1297                        LH3
+  1298 00:F8B9: 20 7D FF     	JSR	CONIN
+  1299 00:F8BC: 4C B1 F8     	JMP	LH2
+  1300                        
+  1301                        LHI0
+  1302 00:F8BF: 20 89 FC     	JSR	HEXIN
+  1303 00:F8C2: 8D 1C ED     	STA	CKSUM
+  1304 00:F8C5: 85 29        	STA	CNT		; Length
+  1305                        
+  1306 00:F8C7: 20 89 FC     	JSR	HEXIN
+  1307 00:F8CA: 85 35        	STA	DMPPT+1		; Address H
+  1308 00:F8CC: 18           	CLC
+  1309 00:F8CD: 6D 1C ED     	ADC	CKSUM
+  1310 00:F8D0: 8D 1C ED     	STA	CKSUM
+  1311                        
+  1312 00:F8D3: 20 89 FC     	JSR	HEXIN
+  1313 00:F8D6: 85 34        	STA	DMPPT		; Address L
+  1314 00:F8D8: 18           	CLC
+  1315 00:F8D9: 6D 1C ED     	ADC	CKSUM
+  1316 00:F8DC: 8D 1C ED     	STA	CKSUM
+  1317                        
+  1318                        	;; Add offset
+  1319 00:F8DF: A5 34        	LDA	DMPPT
+  1320 00:F8E1: 18           	CLC
+  1321 00:F8E2: 65 27        	ADC	PT1
+  1322 00:F8E4: 85 34        	STA	DMPPT
+  1323 00:F8E6: A5 35        	LDA	DMPPT+1
+  1324 00:F8E8: 65 28        	ADC	PT1+1
+  1325 00:F8EA: 85 35        	STA	DMPPT+1
+  1326 00:F8EC: A0 00        	LDY	#0
+  1327                        	
+  1328 00:F8EE: 20 89 FC     	JSR	HEXIN
+  1329 00:F8F1: 8D 18 ED     	STA	RECTYP		; Record Type
+  1330 00:F8F4: 18           	CLC
+  1331 00:F8F5: 6D 1C ED     	ADC	CKSUM
+  1332 00:F8F8: 8D 1C ED     	STA	CKSUM
+  1333                        
+  1334 00:F8FB: A5 29        	LDA	CNT
+  1335 00:F8FD: F0 1A        	BEQ	LHI3
+  1336                        LHI1
+  1337 00:F8FF: 20 89 FC     	JSR	HEXIN
+  1338 00:F902: 48           	PHA
+  1339 00:F903: 18           	CLC
+  1340 00:F904: 6D 1C ED     	ADC	CKSUM
+  1341 00:F907: 8D 1C ED     	STA	CKSUM
+  1342                        
+  1343 00:F90A: AD 18 ED     	LDA	RECTYP
+  1344 00:F90D: D0 05        	BNE	LHI2
+  1345                        
+  1346 00:F90F: 68           	PLA
+  1347 00:F910: 91 34        	STA	(DMPPT),Y
+  1348 00:F912: C8           	INY
+  1349 00:F913: 48           	PHA			; Dummy, better than JMP to skip next PLA
+  1350                        LHI2
+  1351 00:F914: 68           	PLA
+  1352 00:F915: C6 29        	DEC	CNT
+  1353 00:F917: D0 E6        	BNE	LHI1
+  1354                        LHI3
+  1355 00:F919: 20 89 FC     	JSR	HEXIN
+  1356 00:F91C: 18           	CLC
+  1357 00:F91D: 6D 1C ED     	ADC	CKSUM
+  1358 00:F920: D0 08        	BNE	LHIE		; Checksum error
+  1359 00:F922: AD 18 ED     	LDA	RECTYP
+  1360 00:F925: F0 92        	BEQ	LH3
+  1361 00:F927: 4C 88 EE     	JMP	WSTART
+  1362                        LHIE
+  1363 00:F92A: A9 91        	LDA	#$FF&IHEMSG
+  1364 00:F92C: 85 25        	STA	PT0
+  1365 00:F92E: A9 FE        	LDA	#IHEMSG>>8
+  1366 00:F930: 85 26        	STA	PT0+1
+  1367 00:F932: 20 63 FC     	JSR	STROUT
+  1368 00:F935: 4C 88 EE     	JMP	WSTART
+  1369                        
+  1370                        LHS0
+  1371 00:F938: A9 2E        	lda	#'.'
+  1372 00:F93A: 20 8D FF     	jsr	CONOUT
+  1373                        
+  1374 00:F93D: 20 7D FF     	JSR	CONIN
+  1375 00:F940: 8D 18 ED     	STA	RECTYP		; Record Type
+  1376                        
+  1377 00:F943: 20 89 FC     	JSR	HEXIN
+  1378 00:F946: 85 29        	STA	CNT		; (CNT) = Length+3
+  1379 00:F948: 8D 1C ED     	STA	CKSUM
+  1380                        
+  1381 00:F94B: 20 89 FC     	JSR	HEXIN
+  1382 00:F94E: 85 35        	STA	DMPPT+1		; Address H
+  1383 00:F950: 18           	CLC
+  1384 00:F951: 6D 1C ED     	ADC	CKSUM
+  1385 00:F954: 8D 1C ED     	STA	CKSUM
+  1386                        	
+  1387 00:F957: 20 89 FC     	JSR	HEXIN
+  1388 00:F95A: 85 34        	STA	DMPPT		; Address L
+  1389 00:F95C: 18           	CLC
+  1390 00:F95D: 6D 1C ED     	ADC	CKSUM
+  1391 00:F960: 8D 1C ED     	STA	CKSUM
+  1392                        
+  1393                        	;; Add offset
+  1394 00:F963: A5 34        	LDA	DMPPT
+  1395 00:F965: 18           	CLC
+  1396 00:F966: 65 27        	ADC	PT1
+  1397 00:F968: 85 34        	STA	DMPPT
+  1398 00:F96A: A5 35        	LDA	DMPPT+1
+  1399 00:F96C: 65 28        	ADC	PT1+1
+  1400 00:F96E: 85 35        	STA	DMPPT+1
+  1401 00:F970: A0 00        	LDY	#0
+  1402                        
+  1403 00:F972: C6 29        	DEC	CNT
+  1404 00:F974: C6 29        	DEC	CNT
+  1405 00:F976: C6 29        	DEC	CNT
+  1406 00:F978: F0 1C        	BEQ	LHS3
+  1407                        LHS1
+  1408 00:F97A: 20 89 FC     	JSR	HEXIN
+  1409 00:F97D: 48           	PHA
+  1410 00:F97E: 18           	CLC
+  1411 00:F97F: 6D 1C ED     	ADC	CKSUM
+  1412 00:F982: 8D 1C ED     	STA	CKSUM		; Checksum
+  1413                        
+  1414 00:F985: AD 18 ED     	LDA	RECTYP
+  1415 00:F988: C9 31        	CMP	#'1'
+  1416 00:F98A: D0 05        	BNE	LHS2
+  1417                        
+  1418 00:F98C: 68           	PLA
+  1419 00:F98D: 91 34        	STA	(DMPPT),Y
+  1420 00:F98F: C8           	INY
+  1421 00:F990: 48           	PHA			; Dummy, better than JMP to skip next PLA
+  1422                        LHS2
+  1423 00:F991: 68           	PLA
+  1424 00:F992: C6 29        	DEC	CNT
+  1425 00:F994: D0 E4        	BNE	LHS1
+  1426                        LHS3
+  1427 00:F996: 20 89 FC     	JSR	HEXIN
+  1428 00:F999: 18           	CLC
+  1429 00:F99A: 6D 1C ED     	ADC	CKSUM
+  1430 00:F99D: C9 FF        	CMP	#$FF
+  1431 00:F99F: D0 0A        	BNE	LHSE		; Checksum error
+  1432                        
+  1433 00:F9A1: AD 18 ED     	LDA	RECTYP
+  1434 00:F9A4: C9 39        	CMP	#'9'
+  1435 00:F9A6: F0 0E        	BEQ	LHSR
+  1436 00:F9A8: 4C B9 F8     	JMP	LH3
+  1437                        LHSE
+  1438 00:F9AB: A9 9E        	LDA	#$FF&SHEMSG
+  1439 00:F9AD: 85 25        	STA	PT0
+  1440 00:F9AF: A9 FE        	LDA	#SHEMSG>>8
+  1441 00:F9B1: 85 26        	STA	PT0+1
+  1442 00:F9B3: 20 63 FC     	JSR	STROUT
+  1443                        LHSR	
+  1444 00:F9B6: 4C 88 EE     	JMP	WSTART
+  1445                        
+  1446                        ;;;
+  1447                        ;;; Register
+  1448                        ;;;
+  1449                        REG
+  1450 00:F9B9: E8           	INX
+  1451 00:F9BA: 20 0B FD     	JSR	SKIPSP
+  1452 00:F9BD: 20 17 FD     	JSR	UPPER
+  1453 00:F9C0: C9 00        	CMP	#0
+  1454 00:F9C2: D0 06        	BNE	RG0
+  1455 00:F9C4: 20 7D FA     	JSR	RDUMP
+  1456 00:F9C7: 4C 88 EE     	JMP	WSTART
+  1457                        RG0
+  1458 00:F9CA: A0 14        	LDY	#$FF&RNTAB
+  1459 00:F9CC: 84 27        	STY	PT1
+  1460 00:F9CE: A0 FF        	LDY	#RNTAB>>8
+  1461 00:F9D0: 84 28        	STY	PT1+1
+  1462 00:F9D2: A0 00        	LDY	#0
+  1463                        RG1
+  1464 00:F9D4: D1 27        	CMP	(PT1),Y
+  1465 00:F9D6: F0 13        	BEQ	RG2
+  1466 00:F9D8: C8           	INY
+  1467 00:F9D9: 48           	PHA
+  1468 00:F9DA: B1 27        	LDA	(PT1),Y
+  1469 00:F9DC: F0 09        	BEQ	RGE
+  1470 00:F9DE: 68           	PLA
+  1471 00:F9DF: C8           	INY
+  1472 00:F9E0: C8           	INY
+  1473 00:F9E1: C8           	INY
+  1474 00:F9E2: C8           	INY
+  1475 00:F9E3: C8           	INY
+  1476 00:F9E4: 4C D4 F9     	JMP	RG1
+  1477                        RGE
+  1478 00:F9E7: 68           	PLA
+  1479 00:F9E8: 4C EF EE     	JMP	ERR
+  1480                        RG2
+  1481 00:F9EB: C8           	INY
+  1482 00:F9EC: B1 27        	LDA	(PT1),Y
+  1483 00:F9EE: C9 80        	CMP	#$80
+  1484 00:F9F0: D0 1A        	BNE	RG3
+  1485                        	;; Next table
+  1486 00:F9F2: C8           	INY
+  1487 00:F9F3: B1 27        	LDA	(PT1),Y
+  1488 00:F9F5: 85 29        	STA	CNT		; Temporary
+  1489 00:F9F7: C8           	INY
+  1490 00:F9F8: B1 27        	LDA	(PT1),Y
+  1491 00:F9FA: 85 28        	STA	PT1+1
+  1492 00:F9FC: A5 29        	LDA	CNT
+  1493 00:F9FE: 85 27        	STA	PT1
+  1494 00:FA00: A0 00        	LDY	#0
+  1495 00:FA02: E8           	INX
+  1496 00:FA03: BD 00 ED     	LDA	INBUF,X
+  1497 00:FA06: 20 17 FD     	JSR	UPPER
+  1498 00:FA09: 4C D4 F9     	JMP	RG1
+  1499                        RG3
+  1500 00:FA0C: C9 00        	CMP	#0
+  1501 00:FA0E: F0 6A        	BEQ	RGE0
+  1502                        
+  1503 00:FA10: C8           	INY			; +2
+  1504 00:FA11: B1 27        	LDA	(PT1),Y
+  1505 00:FA13: AA           	TAX
+  1506 00:FA14: C8           	INY
+  1507                        
+  1508 00:FA15: C8           	INY			; +4
+  1509 00:FA16: B1 27        	LDA	(PT1),Y
+  1510 00:FA18: 85 25        	STA	PT0
+  1511 00:FA1A: C8           	INY
+  1512 00:FA1B: B1 27        	LDA	(PT1),Y
+  1513 00:FA1D: 85 26        	STA	PT0+1
+  1514 00:FA1F: 84 29        	STY	CNT		; Save Y (STROUT destroys Y)
+  1515 00:FA21: 20 63 FC     	JSR	STROUT
+  1516 00:FA24: A9 3D        	LDA	#'='
+  1517 00:FA26: 20 8D FF     	JSR	CONOUT
+  1518 00:FA29: A4 29        	LDY	CNT		; Restore Y
+  1519 00:FA2B: 88           	DEY
+  1520 00:FA2C: 88           	DEY
+  1521 00:FA2D: 88           	DEY
+  1522 00:FA2E: 88           	DEY
+  1523 00:FA2F: B1 27        	LDA	(PT1),Y
+  1524 00:FA31: 8D 1B ED     	STA	REGSIZ
+  1525 00:FA34: C9 01        	CMP	#1
+  1526 00:FA36: D0 08        	BNE	RG4
+  1527                        	;; 8 bit register
+  1528 00:FA38: B5 00        	LDA	0,X
+  1529 00:FA3A: 20 71 FC     	JSR	HEXOUT2
+  1530 00:FA3D: 4C 4A FA     	JMP	RG5
+  1531                        RG4
+  1532                        	;; 16 bit register
+  1533 00:FA40: B5 01        	LDA	1,X
+  1534 00:FA42: 20 71 FC     	JSR	HEXOUT2
+  1535 00:FA45: B5 00        	LDA	0,X
+  1536 00:FA47: 20 71 FC     	JSR	HEXOUT2
+  1537                        RG5
+  1538 00:FA4A: A9 20        	LDA	#' '
+  1539 00:FA4C: 20 8D FF     	JSR	CONOUT
+  1540 00:FA4F: 8E 1C ED     	STX	CKSUM		; Save X (GETLIN destroys X)
+  1541 00:FA52: 20 C0 FC     	JSR	GETLIN
+  1542 00:FA55: A2 00        	LDX	#0
+  1543 00:FA57: 20 22 FD     	JSR	RDHEX
+  1544 00:FA5A: A5 29        	LDA	CNT
+  1545 00:FA5C: F0 19        	BEQ	RGR
+  1546 00:FA5E: AE 1C ED     	LDX	CKSUM		; Restore X
+  1547 00:FA61: AD 1B ED     	LDA	REGSIZ
+  1548 00:FA64: C9 01        	CMP	#1
+  1549 00:FA66: D0 07        	BNE	RG6
+  1550                        	;; 8 bit register
+  1551 00:FA68: A5 27        	LDA	PT1
+  1552                        ;	STA	,X
+  1553 00:FA6A: 95 00        	STA	0,X
+  1554 00:FA6C: 4C 77 FA     	JMP	RG7
+  1555                        RG6
+  1556                        	;; 16 bit address
+  1557 00:FA6F: A5 27        	LDA	PT1
+  1558                        ;	STA	,X		; (L)
+  1559 00:FA71: 95 00        	STA	0,X		; (L)
+  1560 00:FA73: A5 28        	LDA	PT1+1
+  1561 00:FA75: 95 01        	STA	1,X		; (H)
+  1562                        RG7	
+  1563                        RGR	
+  1564 00:FA77: 4C 88 EE     	JMP	WSTART
+  1565                        	
+  1566                        RGE0	
+  1567 00:FA7A: 4C EF EE     	JMP	ERR
+  1568                        	
+  1569                        ;
+  1570                        ; print all registers
+  1571                        ;
+  1572                        RDUMP
+  1573 00:FA7D: A0 22        	ldy	#34
+  1574 00:FA7F: A9 20        	lda	#' '
+  1575                        spc_out
+  1576 00:FA81: 20 8D FF     	jsr	CONOUT
+  1577 00:FA84: 88           	dey
+  1578 00:FA85: D0 FA        	bne	spc_out
+  1579                        
+  1580 00:FA87: A9 07        	LDA	#$FF&psr_bm
+  1581 00:FA89: 85 25        	STA	PT0
+  1582 00:FA8B: A9 FF        	LDA	#psr_bm>>8
+  1583 00:FA8D: 85 26        	STA	PT0+1
+  1584 00:FA8F: 20 63 FC     	jsr	STROUT
+  1585                        
+  1586 00:FA92: A9 EA        	LDA	#$FF&RDSA	; A
+  1587 00:FA94: 85 25        	STA	PT0
+  1588 00:FA96: A9 FE        	LDA	#RDSA>>8
+  1589 00:FA98: 85 26        	STA	PT0+1
+  1590 00:FA9A: 20 63 FC     	JSR	STROUT
+  1591 00:FA9D: A5 36        	LDA	REGA
+  1592 00:FA9F: 20 71 FC     	JSR	HEXOUT2
+  1593                        
+  1594 00:FAA2: A9 ED        	LDA	#$FF&RDSX	; X
+  1595 00:FAA4: 85 25        	STA	PT0
+  1596 00:FAA6: A9 FE        	LDA	#RDSX>>8
+  1597 00:FAA8: 85 26        	STA	PT0+1
+  1598 00:FAAA: 20 63 FC     	JSR	STROUT
+  1599 00:FAAD: A5 37        	LDA	REGX
+  1600 00:FAAF: 20 71 FC     	JSR	HEXOUT2
+  1601                        
+  1602 00:FAB2: A9 F1        	LDA	#$FF&RDSY	; Y
+  1603 00:FAB4: 85 25        	STA	PT0
+  1604 00:FAB6: A9 FE        	LDA	#RDSY>>8
+  1605 00:FAB8: 85 26        	STA	PT0+1
+  1606 00:FABA: 20 63 FC     	JSR	STROUT
+  1607 00:FABD: A5 38        	LDA	REGY
+  1608 00:FABF: 20 71 FC     	JSR	HEXOUT2
+  1609                        
+  1610 00:FAC2: A9 F5        	LDA	#$FF&RDSSP	; SP
+  1611 00:FAC4: 85 25        	STA	PT0
+  1612 00:FAC6: A9 FE        	LDA	#RDSSP>>8
+  1613 00:FAC8: 85 26        	STA	PT0+1
+  1614 00:FACA: 20 63 FC     	JSR	STROUT
+  1615 00:FACD: A5 39        	LDA	REGSP
+  1616 00:FACF: 20 71 FC     	JSR	HEXOUT2
+  1617                        
+  1618 00:FAD2: A9 FC        	LDA	#$FF&RDSPC	; PC
+  1619 00:FAD4: 85 25        	STA	PT0
+  1620 00:FAD6: A9 FE        	LDA	#RDSPC>>8
+  1621 00:FAD8: 85 26        	STA	PT0+1
+  1622 00:FADA: 20 63 FC     	JSR	STROUT
+  1623 00:FADD: A5 3B        	LDA	REGPC+1		; PC(H)
+  1624 00:FADF: 20 71 FC     	JSR	HEXOUT2
+  1625 00:FAE2: A5 3A        	LDA	REGPC		; PC(L)
+  1626 00:FAE4: 20 71 FC     	JSR	HEXOUT2
+  1627                        
+  1628 00:FAE7: A9 01        	LDA	#$FF&RDSPSR	; PSR
+  1629 00:FAE9: 85 25        	STA	PT0
+  1630 00:FAEB: A9 FF        	LDA	#RDSPSR>>8
+  1631 00:FAED: 85 26        	STA	PT0+1
+  1632 00:FAEF: 20 63 FC     	JSR	STROUT
+  1633                        
+  1634 00:FAF2: A0 08        	LDY	#8
+  1635 00:FAF4: A5 3C        	LDA	REGPSR
+  1636                        	
+  1637                        psr_bloop
+  1638 00:FAF6: 0A           	asl	a
+  1639 00:FAF7: 90 0D        	bcc	set_31
+  1640 00:FAF9: AA           	tax			; save
+  1641 00:FAFA: A9 31        	lda	#'1'
+  1642 00:FAFC: 20 8D FF     	jsr	CONOUT
+  1643                        set_30
+  1644 00:FAFF: 8A           	txa
+  1645 00:FB00: 88           	dey
+  1646 00:FB01: D0 F3        	bne	psr_bloop
+  1647 00:FB03: 4C B6 FC     	JMP	CRLF
+  1648                        
+  1649                        set_31
+  1650 00:FB06: AA           	tax			; save
+  1651 00:FB07: A9 30        	lda	#'0'
+  1652 00:FB09: 20 8D FF     	jsr	CONOUT
+  1653 00:FB0C: 80 F1        	bra	set_30
+  1654                        
+  1655                        ;
+  1656                        ; command help
+  1657                        ;
+  1658                        prt_help:
+  1659 00:FB0E: E8           	INX
+  1660 00:FB0F: 20 0B FD     	JSR	SKIPSP
+  1661 00:FB12: BD 00 ED     	LDA	INBUF,X
+  1662 00:FB15: F0 03        	BEQ	ph_1	; jmp if string exist
+  1663 00:FB17: 4C EF EE     	JMP	ERR
+  1664                        ph_1
+  1665                        	; must strings <= 255 : Y = 8 bit
+  1666                        
+  1667 00:FB1A: A9 33        	LDA	#$FF&hlp_meg1
+  1668 00:FB1C: 85 25        	STA	PT0
+  1669 00:FB1E: A9 FB        	LDA	#hlp_meg1>>8
+  1670 00:FB20: 85 26        	STA	PT0+1
+  1671 00:FB22: 20 63 FC     	JSR	STROUT
+  1672                        
+  1673 00:FB25: A9 F7        	LDA	#$FF&hlp_meg2
+  1674 00:FB27: 85 25        	STA	PT0
+  1675 00:FB29: A9 FB        	LDA	#hlp_meg2>>8
+  1676 00:FB2B: 85 26        	STA	PT0+1
+  1677 00:FB2D: 20 63 FC     	JSR	STROUT
+  1678 00:FB30: 4C 88 EE     	JMP	WSTART
+  1679                        
+  1680                        hlp_meg1
+  1681 00:FB33: 2D 2D 2D 2D  	db	"--------     Command Summary     --------",CR,LF
+       00:FB37: 2D 2D 2D 2D 
+       00:FB3B: 20 20 20 20 
+       00:FB3F: 20 43 6F 6D 
+       00:FB43: 6D 61 6E 64 
+       00:FB47: 20 53 75 6D 
+       00:FB4B: 6D 61 72 79 
+       00:FB4F: 20 20 20 20 
+       00:FB53: 20 2D 2D 2D 
+       00:FB57: 2D 2D 2D 2D 
+       00:FB5B: 2D 0D 0A 
+  1682 00:FB5E: 3F 20 20 3A  	db	"?  : Command Summary", CR, LF
+       00:FB62: 20 43 6F 6D 
+       00:FB66: 6D 61 6E 64 
+       00:FB6A: 20 53 75 6D 
+       00:FB6E: 6D 61 72 79 
+       00:FB72: 0D 0A 
+  1683 00:FB74: 44 20 20 5B  	db	"D  [start addr][, end addr] : Dump Memory", CR, LF
+       00:FB78: 73 74 61 72 
+       00:FB7C: 74 20 61 64 
+       00:FB80: 64 72 5D 5B 
+       00:FB84: 2C 20 65 6E 
+       00:FB88: 64 20 61 64 
+       00:FB8C: 64 72 5D 20 
+       00:FB90: 3A 20 44 75 
+       00:FB94: 6D 70 20 4D 
+       00:FB98: 65 6D 6F 72 
+       00:FB9C: 79 0D 0A 
+  1684 00:FB9F: 44 49 20 5B  	db	"DI [start addr][, end addr] : Disassembler", CR, LF
+       00:FBA3: 73 74 61 72 
+       00:FBA7: 74 20 61 64 
+       00:FBAB: 64 72 5D 5B 
+       00:FBAF: 2C 20 65 6E 
+       00:FBB3: 64 20 61 64 
+       00:FBB7: 64 72 5D 20 
+       00:FBBB: 3A 20 44 69 
+       00:FBBF: 73 61 73 73 
+       00:FBC3: 65 6D 62 6C 
+       00:FBC7: 65 72 0D 0A 
+  1685 00:FBCB: 47 20 20 5B  	db	"G  [start addr][, end addr] : Go and Stop", CR, LF,0
+       00:FBCF: 73 74 61 72 
+       00:FBD3: 74 20 61 64 
+       00:FBD7: 64 72 5D 5B 
+       00:FBDB: 2C 20 65 6E 
+       00:FBDF: 64 20 61 64 
+       00:FBE3: 64 72 5D 20 
+       00:FBE7: 3A 20 47 6F 
+       00:FBEB: 20 61 6E 64 
+       00:FBEF: 20 53 74 6F 
+       00:FBF3: 70 0D 0A 00 
+  1686                        hlp_meg2
+  1687 00:FBF7: 4C 20 20 5B  	db	"L  [offset] : Load HexFile", CR, LF
+       00:FBFB: 6F 66 66 73 
+       00:FBFF: 65 74 5D 20 
+       00:FC03: 3A 20 4C 6F 
+       00:FC07: 61 64 20 48 
+       00:FC0B: 65 78 46 69 
+       00:FC0F: 6C 65 0D 0A 
+  1688 00:FC13: 52 20 20 5B  	db	"R  [register] : Show or Set register", CR, LF
+       00:FC17: 72 65 67 69 
+       00:FC1B: 73 74 65 72 
+       00:FC1F: 5D 20 3A 20 
+       00:FC23: 53 68 6F 77 
+       00:FC27: 20 6F 72 20 
+       00:FC2B: 53 65 74 20 
+       00:FC2F: 72 65 67 69 
+       00:FC33: 73 74 65 72 
+       00:FC37: 0D 0A 
+  1689 00:FC39: 53 20 20 5B  	db	"S  [addr] : Set Memory", CR, LF
+       00:FC3D: 61 64 64 72 
+       00:FC41: 5D 20 3A 20 
+       00:FC45: 53 65 74 20 
+       00:FC49: 4D 65 6D 6F 
+       00:FC4D: 72 79 0D 0A 
+  1690 00:FC51: 42 59 45 20  	db	"BYE : Terminate",CR,LF,0
+       00:FC55: 3A 20 54 65 
+       00:FC59: 72 6D 69 6E 
+       00:FC5D: 61 74 65 0D 
+       00:FC61: 0A 00 
+  1691                        ;;;
+  1692                        ;;; Other support routines
+  1693                        ;;;
+  1694                        
+  1695                        STROUT
+  1696 00:FC63: A0 00        	LDY	#0
+  1697                        STRO0
+  1698 00:FC65: B1 25        	LDA	(PT0),Y
+  1699 00:FC67: F0 07        	BEQ	STROE
+  1700 00:FC69: 20 8D FF     	JSR	CONOUT
+  1701 00:FC6C: C8           	INY
+  1702 00:FC6D: 4C 65 FC     	JMP	STRO0
+  1703                        STROE
+  1704 00:FC70: 60           	RTS
+  1705                        
+  1706                        HEXOUT2
+  1707 00:FC71: 48           	PHA
+  1708 00:FC72: 4A           	LSR	A
+  1709 00:FC73: 4A           	LSR	A
+  1710 00:FC74: 4A           	LSR	A
+  1711 00:FC75: 4A           	LSR	A
+  1712 00:FC76: 20 7A FC     	JSR	HEXOUT1
+  1713 00:FC79: 68           	PLA
+  1714                        HEXOUT1
+  1715 00:FC7A: 29 0F        	AND	#$0F
+  1716 00:FC7C: 18           	CLC
+  1717 00:FC7D: 69 30        	ADC	#'0'
+  1718 00:FC7F: C9 3A        	CMP	#'9'+1
+  1719 00:FC81: 90 03        	BCC	HEXOUTE
+  1720 00:FC83: 18           	CLC
+  1721 00:FC84: 69 07        	ADC	#'A'-'9'-1
+  1722                        HEXOUTE
+  1723 00:FC86: 4C 8D FF     	JMP	CONOUT
+  1724                        
+  1725                        HEXIN
+  1726 00:FC89: A9 00        	LDA	#0
+  1727 00:FC8B: 20 92 FC     	JSR	HI0
+  1728 00:FC8E: 0A           	ASL
+  1729 00:FC8F: 0A           	ASL
+  1730 00:FC90: 0A           	ASL
+  1731 00:FC91: 0A           	ASL
+  1732                        HI0
+  1733 00:FC92: 8D 1D ED     	STA	HITMP
+  1734 00:FC95: 20 7D FF     	JSR	CONIN
+  1735 00:FC98: 20 17 FD     	JSR	UPPER
+  1736 00:FC9B: C9 30        	CMP	#'0'
+  1737 00:FC9D: 90 16        	BCC	HIR
+  1738 00:FC9F: C9 3A        	CMP	#'9'+1
+  1739 00:FCA1: 90 0B        	BCC	HI1
+  1740 00:FCA3: C9 41        	CMP	#'A'
+  1741 00:FCA5: 90 0E        	BCC	HIR
+  1742 00:FCA7: C9 47        	CMP	#'F'+1
+  1743 00:FCA9: B0 0A        	BCS	HIR
+  1744 00:FCAB: 38           	SEC
+  1745 00:FCAC: E9 07        	SBC	#'A'-'9'-1
+  1746                        HI1
+  1747 00:FCAE: 38           	SEC
+  1748 00:FCAF: E9 30        	SBC	#'0'
+  1749 00:FCB1: 18           	CLC
+  1750 00:FCB2: 6D 1D ED     	ADC	HITMP
+  1751                        HIR
+  1752 00:FCB5: 60           	RTS
+  1753                        	
+  1754                        CRLF
+  1755 00:FCB6: A9 0D        	LDA	#CR
+  1756 00:FCB8: 20 8D FF     	JSR	CONOUT
+  1757 00:FCBB: A9 0A        	LDA	#LF
+  1758 00:FCBD: 4C 8D FF     	JMP	CONOUT
+  1759                        
+  1760                        GETLIN
+  1761 00:FCC0: A2 00        	LDX	#0
+  1762                        GL0
+  1763 00:FCC2: 20 7D FF     	JSR	CONIN
+  1764 00:FCC5: C9 0D        	CMP	#CR
+  1765 00:FCC7: F0 39        	BEQ	GLE
+  1766 00:FCC9: C9 0A        	CMP	#LF
+  1767 00:FCCB: F0 35        	BEQ	GLE
+  1768 00:FCCD: C9 08        	CMP	#BS
+  1769 00:FCCF: F0 1A        	BEQ	GLB
+  1770 00:FCD1: C9 7F        	CMP	#DEL
+  1771 00:FCD3: F0 16        	BEQ	GLB
+  1772 00:FCD5: C9 20        	CMP	#' '
+  1773 00:FCD7: 90 E9        	BCC	GL0
+  1774 00:FCD9: C9 80        	CMP	#$80
+  1775 00:FCDB: B0 E5        	BCS	GL0
+  1776 00:FCDD: E0 0F        	CPX	#BUFLEN-1
+  1777 00:FCDF: B0 E1        	BCS	GL0		; Too long
+  1778 00:FCE1: 9D 00 ED     	STA	INBUF,X
+  1779 00:FCE4: E8           	INX
+  1780 00:FCE5: 20 8D FF     	JSR	CONOUT
+  1781 00:FCE8: 4C C2 FC     	JMP	GL0
+  1782                        GLB
+  1783 00:FCEB: E0 00        	CPX	#0
+  1784 00:FCED: F0 D3        	BEQ	GL0
+  1785 00:FCEF: CA           	DEX
+  1786 00:FCF0: A9 08        	LDA	#BS
+  1787 00:FCF2: 20 8D FF     	JSR	CONOUT
+  1788 00:FCF5: A9 20        	LDA	#' '
+  1789 00:FCF7: 20 8D FF     	JSR	CONOUT
+  1790 00:FCFA: A9 08        	LDA	#BS
+  1791 00:FCFC: 20 8D FF     	JSR	CONOUT
+  1792 00:FCFF: 4C C2 FC     	JMP	GL0
+  1793                        GLE
+  1794 00:FD02: 20 B6 FC     	JSR	CRLF
+  1795 00:FD05: A9 00        	LDA	#0
+  1796 00:FD07: 9D 00 ED     	STA	INBUF,X
+  1797 00:FD0A: 60           	RTS
+  1798                        
+  1799                        SKIPSP
+  1800 00:FD0B: BD 00 ED     	LDA	INBUF,X
+  1801 00:FD0E: C9 20        	CMP	#' '
+  1802 00:FD10: D0 04        	BNE	SSE
+  1803 00:FD12: E8           	INX
+  1804 00:FD13: 4C 0B FD     	JMP	SKIPSP
+  1805                        SSE
+  1806 00:FD16: 60           	RTS
+  1807                        
+  1808                        UPPER
+  1809 00:FD17: C9 61        	CMP	#'a'
+  1810 00:FD19: 90 06        	BCC	UPE
+  1811 00:FD1B: C9 7B        	CMP	#'z'+1
+  1812 00:FD1D: B0 02        	BCS	UPE
+  1813 00:FD1F: 69 E0        	ADC	#'A'-'a'
+  1814                        UPE
+  1815 00:FD21: 60           	RTS
+  1816                        
+  1817                        RDHEX
+  1818 00:FD22: A9 00        	LDA	#0
+  1819 00:FD24: 85 27        	STA	PT1
+  1820 00:FD26: 85 28        	STA	PT1+1
+  1821 00:FD28: 85 29        	STA	CNT
+  1822                        RH0
+  1823 00:FD2A: BD 00 ED     	LDA	INBUF,X
+  1824 00:FD2D: 20 17 FD     	JSR	UPPER
+  1825 00:FD30: C9 30        	CMP	#'0'
+  1826 00:FD32: 90 2D        	BCC	RHE
+  1827 00:FD34: C9 3A        	CMP	#'9'+1
+  1828 00:FD36: 90 0B        	BCC	RH1
+  1829 00:FD38: C9 41        	CMP	#'A'
+  1830 00:FD3A: 90 25        	BCC	RHE
+  1831 00:FD3C: C9 47        	CMP	#'F'+1
+  1832 00:FD3E: B0 21        	BCS	RHE
+  1833 00:FD40: 38           	SEC
+  1834 00:FD41: E9 07        	SBC	#'A'-'9'-1
+  1835                        RH1
+  1836 00:FD43: 38           	SEC
+  1837 00:FD44: E9 30        	SBC	#'0'
+  1838 00:FD46: 06 27        	ASL	PT1
+  1839 00:FD48: 26 28        	ROL	PT1+1
+  1840 00:FD4A: 06 27        	ASL	PT1
+  1841 00:FD4C: 26 28        	ROL	PT1+1
+  1842 00:FD4E: 06 27        	ASL	PT1
+  1843 00:FD50: 26 28        	ROL	PT1+1
+  1844 00:FD52: 06 27        	ASL	PT1
+  1845 00:FD54: 26 28        	ROL	PT1+1
+  1846 00:FD56: 18           	CLC
+  1847 00:FD57: 65 27        	ADC	PT1
+  1848 00:FD59: 85 27        	STA	PT1
+  1849 00:FD5B: E6 29        	INC	CNT
+  1850 00:FD5D: E8           	INX
+  1851 00:FD5E: 4C 2A FD     	JMP	RH0
+  1852                        RHE
+  1853 00:FD61: 60           	RTS
+  1854                        
+  1855                        ;;;
+  1856                        ;;; Interrupt handler
+  1857                        ;;;
+  1858                        
+  1859                        	; NMI
+  1860                        NMI_VEC
+  1861 00:FD62: D8           	CLD
+  1862 00:FD63: 85 36        	STA	REGA
+  1863 00:FD65: 8A           	TXA			; X
+  1864 00:FD66: 85 37        	STA	REGX
+  1865 00:FD68: 98           	TYA			; Y
+  1866 00:FD69: 85 38        	STA	REGY
+  1867 00:FD6B: 68           	PLA			; PSR (Pushed by NMI)
+  1868 00:FD6C: 85 3C        	STA	REGPSR		; save status register
+  1869 00:FD6E: 68           	PLA			; PC(L) (Pushed by NMI)
+  1870 00:FD6F: 85 3A        	STA	REGPC
+  1871 00:FD71: 68           	PLA			; PC(H) (Pushed by NMI)
+  1872 00:FD72: 85 3B        	STA	REGPC+1
+  1873 00:FD74: BA           	TSX			; get SP
+  1874 00:FD75: 86 39        	STX	REGSP
+  1875                        
+  1876 00:FD77: A9 FF        	lda	#$ff		; NMI signal
+  1877 00:FD79: 85 19        	sta	UNI_CHR
+  1878 00:FD7B: 20 97 FF     	jsr	NMI_SIG
+  1879                        
+  1880 00:FD7E: 4C EF F7     	jmp	G0
+  1881                        
+  1882                        ;	    sp->      : sp+0
+  1883                        ;	  push x      : sp+1
+  1884                        ;	  push a      : sp+2
+  1885                        ;	  push P      : sp+3
+  1886                        ;	  push PC(L)  : sp+4
+  1887                        ;	  push PC(H)  : sp+5
+  1888                        ;	which BRK or IRQ?
+  1889                        ;	need status condhition check (SP+3)
+  1890                        
+  1891                        IRQBRK
+  1892 00:FD81: 48           	pha
+  1893 00:FD82: DA           	phx
+  1894                        
+  1895                        ;	php	; check B flag
+  1896                        ;	pla	; this way is NG. B flag allways 1
+  1897                        
+  1898 00:FD83: BA           	tsx
+  1899 00:FD84: E8           	inx			; ($100 + sp +1) : stacked X register
+  1900 00:FD85: E8           	inx			; ($100 + sp + 2): stacked A register
+  1901 00:FD86: E8           	inx			; ($100 + sp + 3): p (status register)
+  1902 00:FD87: BD 00 01     	lda	$100,x		; check status register
+  1903                        
+  1904 00:FD8A: 29 10        	AND	#$10		; Check B flag
+  1905 00:FD8C: D0 03        	bne	code_brk
+  1906 00:FD8E: 4C 4E FE     	jmp	irq_int
+  1907                        
+  1908                        code_brk
+  1909 00:FD91: E8           	inx			; ($100 + sp + 4): pc (L)
+  1910 00:FD92: BD 00 01     	lda	$100,x		; PC(L)
+  1911 00:FD95: 38           	SEC
+  1912 00:FD96: E9 01        	SBC	#1		; Adjust to #n address (BRK #n)
+  1913 00:FD98: 85 2A        	sta	bk_no
+  1914 00:FD9A: E8           	inx			; ($100 + sp + 5): pc (H)
+  1915 00:FD9B: BD 00 01     	lda	$100,x		; PC(H)
+  1916 00:FD9E: E9 00        	SBC	#0
+  1917 00:FDA0: 85 2B        	sta	bk_no+1
+  1918 00:FDA2: B2 2A        	lda	(bk_no)		; get command request #$xx (BRK #$xx)
+  1919                        
+  1920 00:FDA4: C9 FF        	cmp	#$ff		; program end?
+  1921 00:FDA6: D0 03        	bne	bk_n
+  1922 00:FDA8: 4C 6C EE     	jmp	wup		; user program terminate
+  1923                        bk_n
+  1924 00:FDAB: C9 00        	cmp	#0
+  1925 00:FDAD: F0 37        	beq	go_brk
+  1926 00:FDAF: C9 05        	cmp	#5
+  1927 00:FDB1: 10 33        	bpl	go_brk
+  1928                        
+  1929 00:FDB3: 5A           	phy
+  1930                        ;  sp->        : sp+0
+  1931                        ;  push y      : sp+1
+  1932                        ;  push x      : sp+2
+  1933                        ;  push a      : sp+3
+  1934                        ;  push P      : sp+4
+  1935                        ;  push PC(L)  : sp+5
+  1936                        ;  push PC(H)  : sp+6
+  1937                        	
+  1938 00:FDB4: BA           	tsx
+  1939 00:FDB5: DA           	phx
+  1940 00:FDB6: 7A           	ply	; sp -> y
+  1941 00:FDB7: 20 DA FD     	jsr	bios_call
+  1942 00:FDBA: BA           	tsx
+  1943 00:FDBB: E8           	inx	; Y
+  1944 00:FDBC: E8           	inx	; x
+  1945 00:FDBD: E8           	inx	; a
+  1946 00:FDBE: 9D 00 01     	sta	$100, x		; set return code
+  1947 00:FDC1: 7A           	ply
+  1948                        
+  1949 00:FDC2: FA           	plx
+  1950 00:FDC3: 68           	pla
+  1951 00:FDC4: 40           	rti
+  1952                        
+  1953                        creq_p
+  1954 00:FDC5: 7D FF        	dw	CONIN
+  1955 00:FDC7: 8D FF        	dw	CONOUT
+  1956 00:FDC9: 85 FF        	dw	CONST
+  1957 00:FDCB: CD FD        	dw	prt_str
+  1958                        ;
+  1959                        ; input A : string address Low
+  1960                        ;       Y : string address High
+  1961                        ;
+  1962                        prt_str
+  1963 00:FDCD: 85 25        	STA	PT0
+  1964 00:FDCF: 88           	dey
+  1965 00:FDD0: 88           	dey	; Y
+  1966 00:FDD1: B9 00 01     	lda	$100, y		; get Y
+  1967 00:FDD4: 85 26        	sta	PT0+1
+  1968 00:FDD6: 20 63 FC     	jsr	STROUT
+  1969 00:FDD9: 60           	rts
+  1970                        
+  1971                        bios_call
+  1972 00:FDDA: 3A           	dec	A
+  1973 00:FDDB: 0A           	asl	A		; A = A * 2
+  1974 00:FDDC: AA           	tax
+  1975 00:FDDD: C8           	iny	; Y
+  1976 00:FDDE: C8           	iny	; X
+  1977 00:FDDF: C8           	iny	; A
+  1978 00:FDE0: B9 00 01     	lda	$100,y		; get input data to A
+  1979 00:FDE3: 7C C5 FD     	jmp	(creq_p,x)
+  1980                        
+  1981                        	; BRK instruction
+  1982                        go_brk
+  1983 00:FDE6: FA           	plx
+  1984 00:FDE7: D8           	CLD
+  1985 00:FDE8: 68           	PLA			; A
+  1986 00:FDE9: 85 36        	STA	REGA
+  1987 00:FDEB: 8A           	TXA			; X
+  1988 00:FDEC: 85 37        	STA	REGX
+  1989 00:FDEE: 98           	TYA			; Y
+  1990 00:FDEF: 85 38        	STA	REGY
+  1991 00:FDF1: 68           	PLA			; PSR (Pushed by BRK)
+  1992 00:FDF2: 85 3C        	STA	REGPSR		; save status register
+  1993 00:FDF4: 68           	PLA			; PC(L) (Pushed by BRK)
+  1994 00:FDF5: 8D 19 ED     	sta	ILL_PC
+  1995 00:FDF8: 38           	SEC
+  1996 00:FDF9: E9 02        	SBC	#2		; Adjust PC to point BRK instruction
+  1997 00:FDFB: 85 3A        	STA	REGPC
+  1998 00:FDFD: 68           	PLA			; PC(H) (Pushed by BRK)
+  1999 00:FDFE: 8D 1A ED     	sta	ILL_PC+1
+  2000 00:FE01: E9 00        	SBC	#0
+  2001 00:FE03: 85 3B        	STA	REGPC+1
+  2002 00:FE05: BA           	TSX			; get SP
+  2003 00:FE06: 86 39        	STX	REGSP
+  2004                        
+  2005                        	; check break point
+  2006 00:FE08: AD 36 ED     	lda	stp_flg
+  2007 00:FE0B: F0 26        	beq	ill_stop
+  2008                        
+  2009                        	; restore original code
+  2010 00:FE0D: 9C 36 ED     	stz	stp_flg
+  2011 00:FE10: A0 00        	ldy	#0
+  2012 00:FE12: AD 37 ED     	lda	sav_dat
+  2013 00:FE15: 91 2C        	sta	(sav_adr),y
+  2014 00:FE17: C8           	iny
+  2015 00:FE18: AD 38 ED     	lda	sav_dat+1
+  2016 00:FE1B: 91 2C        	sta	(sav_adr),y
+  2017                        	
+  2018 00:FE1D: A5 2C        	lda	sav_adr
+  2019 00:FE1F: C5 3A        	cmp	REGPC
+  2020 00:FE21: D0 10        	bne	ill_stop
+  2021                        	
+  2022 00:FE23: A5 2D        	lda	sav_adr+1
+  2023 00:FE25: C5 3B        	cmp	REGPC+1
+  2024 00:FE27: D0 0A        	bne	ill_stop
+  2025                        
+  2026 00:FE29: A9 D6        	lda	#$FF&stpmsg
+  2027 00:FE2B: 85 25        	STA	PT0
+  2028 00:FE2D: A9 FE        	LDA	#stpmsg>>8
+  2029 00:FE2F: 85 26        	STA	PT0+1
+  2030 00:FE31: 80 12        	bra	b_outmsg
+  2031                        
+  2032                        ill_stop
+  2033                        	; re-adjust PC
+  2034 00:FE33: AD 19 ED     	lda	ILL_PC
+  2035 00:FE36: 85 3A        	sta	REGPC
+  2036 00:FE38: AD 1A ED     	lda	ILL_PC+1
+  2037 00:FE3B: 85 3B        	sta	REGPC+1
+  2038                        	
+  2039 00:FE3D: A9 BA        	LDA	#$FF&BRKMSG
+  2040 00:FE3F: 85 25        	STA	PT0
+  2041 00:FE41: A9 FE        	LDA	#BRKMSG>>8
+  2042 00:FE43: 85 26        	STA	PT0+1
+  2043                        b_outmsg
+  2044 00:FE45: 20 63 FC     	JSR	STROUT
+  2045 00:FE48: 20 7D FA     	JSR	RDUMP
+  2046 00:FE4B: 4C 88 EE     	JMP	WSTART
+  2047                        
+  2048                        ;--------------------------------------
+  2049                        ; IRQ interrupt driver
+  2050                        ;--------------------------------------
+  2051                        irq_int
+  2052 00:FE4E: FA           	plx
+  2053 00:FE4F: D8           	CLD
+  2054 00:FE50: 68           	PLA			; A
+  2055 00:FE51: 85 36        	STA	REGA
+  2056 00:FE53: 8A           	TXA			; X
+  2057 00:FE54: 85 37        	STA	REGX
+  2058 00:FE56: 98           	TYA			; Y
+  2059 00:FE57: 85 38        	STA	REGY
+  2060 00:FE59: 68           	PLA			; PSR (Pushed by BRK)
+  2061 00:FE5A: 85 3C        	STA	REGPSR		; save status register
+  2062 00:FE5C: 68           	PLA			; PC(L) (Pushed by BRK)
+  2063 00:FE5D: 85 3A        	sta	REGPC
+  2064 00:FE5F: 68           	PLA			; PC(H) (Pushed by BRK)
+  2065 00:FE60: 85 3B        	sta	REGPC+1
+  2066 00:FE62: BA           	TSX			; get SP
+  2067 00:FE63: 86 39        	STX	REGSP
+  2068                        
+  2069 00:FE65: A9 C8        	LDA	#$FF&IRQMSG
+  2070 00:FE67: 85 25        	STA	PT0
+  2071 00:FE69: A9 FE        	LDA	#IRQMSG>>8
+  2072 00:FE6B: 85 26        	STA	PT0+1
+  2073 00:FE6D: 80 D6        	bra	b_outmsg
+  2074                        
+  2075                        ;---------- unimon message data ---------------
+  2076                        OPNMSG
+  2077 00:FE6F: 0D 0A 4D 45  	FCB	CR,LF,"MEZW65C_RAM Monitor W65C02",CR,LF,$00
+       00:FE73: 5A 57 36 35 
+       00:FE77: 43 5F 52 41 
+       00:FE7B: 4D 20 4D 6F 
+       00:FE7F: 6E 69 74 6F 
+       00:FE83: 72 20 57 36 
+       00:FE87: 35 43 30 32 
+       00:FE8B: 0D 0A 00 
+  2078                        PROMPT
+  2079 00:FE8E: 5D 20 00     	FCB	"] ",$00
+  2080                        IHEMSG
+  2081 00:FE91: 45 72 72 6F  	FCB	"Error ihex",CR,LF,$00
+       00:FE95: 72 20 69 68 
+       00:FE99: 65 78 0D 0A 
+       00:FE9D: 00 
+  2082                        
+  2083                        SHEMSG
+  2084 00:FE9E: 45 72 72 6F  	FCB	"Error srec",CR,LF,$00
+       00:FEA2: 72 20 73 72 
+       00:FEA6: 65 63 0D 0A 
+       00:FEAA: 00 
+  2085                        
+  2086                        ERRMSG
+  2087 00:FEAB: 45 72 72 6F  	FCB	"Error",CR,LF,$00
+       00:FEAF: 72 0D 0A 00 
+  2088                        
+  2089                        DSEP0
+  2090 00:FEB3: 20 3A 00     	FCB	" :",$00
+  2091                        DSEP1
+  2092 00:FEB6: 20 3A 20 00  	FCB	" : ",$00
+  2093                        ;IHEXER
+  2094                        ;        FCB	":00000001FF",CR,LF,$00
+  2095                        ;SRECER
+  2096                        ;        FCB	"S9030000FC",CR,LF,$00
+  2097                        
+  2098 00:FEBA: 44 65 74 65  BRKMSG	FCB	"Detect BRK!",CR,LF,$00
+       00:FEBE: 63 74 20 42 
+       00:FEC2: 52 4B 21 0D 
+       00:FEC6: 0A 00 
+  2099 00:FEC8: 44 65 74 65  IRQMSG	FCB	"Detect IRQ!",CR,LF,$00
+       00:FECC: 63 74 20 49 
+       00:FED0: 52 51 21 0D 
+       00:FED4: 0A 00 
+  2100 00:FED6: 53 54 4F 50  stpmsg	FCB	"STOP!(User break)",CR,LF,$00
+       00:FEDA: 21 28 55 73 
+       00:FEDE: 65 72 20 62 
+       00:FEE2: 72 65 61 6B 
+       00:FEE6: 29 0D 0A 00 
+  2101                        
+  2102 00:FEEA: 41 3D 00     RDSA	FCB	"A=",$00
+  2103 00:FEED: 20 58 3D 00  RDSX	FCB	" X=",$00
+  2104 00:FEF1: 20 59 3D 00  RDSY	FCB	" Y=",$00
+  2105 00:FEF5: 20 53 50 3D  RDSSP	FCB	" SP=01",$00
+       00:FEF9: 30 31 00 
+  2106 00:FEFC: 20 50 43 3D  RDSPC	FCB	" PC=",$00
+       00:FF00: 00 
+  2107 00:FF01: 20 50 53 52  RDSPSR	FCB	" PSR=",$00
+       00:FF05: 3D 00 
+  2108 00:FF07: 28 4E 56 31  psr_bm	fcb	"(NV1BDIZC)",CR,LF,0
+       00:FF0B: 42 44 49 5A 
+       00:FF0F: 43 29 0D 0A 
+       00:FF13: 00 
+  2109                        
+  2110                        RNTAB
+  2111 00:FF14: 41 01        	FCB	'A',1
+  2112 00:FF16: 36 00 62 FF  	FDB	REGA,RNA
+  2113 00:FF1A: 58 01        	FCB	'X',1
+  2114 00:FF1C: 37 00 64 FF  	FDB	REGX,RNX
+  2115 00:FF20: 59 01        	FCB	'Y',1
+  2116 00:FF22: 38 00 66 FF  	FDB	REGY,RNY
+  2117 00:FF26: 53 80        	FCB	'S',$80
+  2118 00:FF28: 38 FF 00 00  	FDB	RNTABS,0
+  2119 00:FF2C: 50 80        	FCB	'P',$80
+  2120 00:FF2E: 44 FF 00 00  	FDB	RNTABP,0
+  2121                        	
+  2122 00:FF32: 00 00        	FCB	$00,0		; End mark
+  2123 00:FF34: 00 00 00 00  	FDB	0,0
+  2124                        
+  2125                        RNTABS
+  2126 00:FF38: 50 01        	FCB	'P',1
+  2127 00:FF3A: 39 00 68 FF  	FDB	REGSP,RNSP
+  2128                        	
+  2129 00:FF3E: 00 00        	FCB	$00,0		; End mark
+  2130 00:FF40: 00 00 00 00  	FDB	0,0
+  2131                        
+  2132                        RNTABP
+  2133 00:FF44: 43 02        	FCB	'C',2
+  2134 00:FF46: 3A 00 6B FF  	FDB	REGPC,RNPC
+  2135 00:FF4A: 53 80        	FCB	'S',$80
+  2136 00:FF4C: 56 FF 00 00  	FDB	RNTABPS,0
+  2137                        
+  2138 00:FF50: 00 00        	FCB	$00,0		; End mark
+  2139 00:FF52: 00 00 00 00  	FDB	0,0
+  2140                        
+  2141                        RNTABPS
+  2142 00:FF56: 52 01        	FCB	'R',1
+  2143 00:FF58: 3C 00 6E FF  	FDB	REGPSR,RNPSR
+  2144                        
+  2145 00:FF5C: 00 00        	FCB	$00,0		; End mark
+  2146 00:FF5E: 00 00 00 00  	FDB	0,0
+  2147                        	
+  2148 00:FF62: 41 00        RNA	FCB	"A",$00
+  2149 00:FF64: 58 00        RNX	FCB	"X",$00
+  2150 00:FF66: 59 00        RNY	FCB	"Y",$00
+  2151 00:FF68: 53 50 00     RNSP	FCB	"SP",$00
+  2152 00:FF6B: 50 43 00     RNPC	FCB	"PC",$00
+  2153 00:FF6E: 50 53 52 00  RNPSR	FCB	"PSR",$00
+  2154                        	
+  2155                        ;;;
+  2156                        ;;;	Console Driver
+  2157                        ;;;
+  2158                        
+  2159                        ;CONIN_REQ	EQU	0x01
+  2160                        ;CONOUT_REQ	EQU	0x02
+  2161                        ;CONST_REQ	EQU	0x03
+  2162                        ;STROUT_REQ	equ	$04
+  2163                        ;WUP_REQ	equ	$ff
+  2164                        ;  ---- request command to PIC
+  2165                        ; UREQ_COM = 1   ; CONIN  : return char in UNI_CHR
+  2166                        ;          = 2   ; CONOUT : UNI_CHR = output char
+  2167                        ;          = 3   ; CONST  : return status in UNI_CHR
+  2168                        ;                       : ( 0: no key, 1 : key exist )
+  2169                        ;          = 4   ; STROUT : string address = (PTRSAV, PTRSAV_SEG)
+  2170                        ;          = $FF ; wakeup firmware ( NMI interrupt )
+  2171                        ;
+  2172                        ;UREQ_COM	rmb	1	; unimon CONIN/CONOUT request command
+  2173                        ;UNI_CHR	rmb	1	; charcter (CONIN/CONOUT) or number of strings
+  2174                        
+  2175                        INIT
+  2176                        	; clear Reqest Parameter Block
+  2177 00:FF72: A9 00        	lda	#0
+  2178 00:FF74: 85 18        	sta	UREQ_COM
+  2179 00:FF76: 85 1A        	sta	CREQ_COM
+  2180 00:FF78: 85 23        	sta	bank
+  2181 00:FF7A: 85 24        	sta	reserve
+  2182 00:FF7C: 60           	RTS
+  2183                        
+  2184                        ;
+  2185                        ; request CONIN, CONST CONOUT to PIC18F47QXX
+  2186                        ;
+  2187                        
+  2188                        CONIN
+  2189 00:FF7D: A9 01        	lda	#CONIN_REQ
+  2190                        
+  2191                        wup_pic
+  2192 00:FF7F: 85 18        	sta	UREQ_COM
+  2193                        ;wait_again
+  2194 00:FF81: CB           	wai			; RDY = 0, wait /IRQ detect	
+  2195                        	
+  2196 00:FF82: A5 19        	lda	UNI_CHR
+  2197 00:FF84: 60           	RTS
+  2198                        
+  2199                        CONST
+  2200 00:FF85: A9 03        	lda	#CONST_REQ
+  2201 00:FF87: 20 7F FF     	jsr	wup_pic
+  2202 00:FF8A: 29 01        	AND	#$01
+  2203 00:FF8C: 60           	RTS
+  2204                        
+  2205                        CONOUT
+  2206 00:FF8D: 48           	pha
+  2207 00:FF8E: 85 19        	sta	UNI_CHR		; set char
+  2208 00:FF90: A9 02        	lda	#CONOUT_REQ
+  2209 00:FF92: 20 7F FF     	jsr	wup_pic
+  2210 00:FF95: 68           	pla
+  2211 00:FF96: 60           	rts
+  2212                        
+  2213                        NMI_SIG
+  2214 00:FF97: A9 FF        	lda	#WUP_REQ
+  2215 00:FF99: 80 E4        	bra	wup_pic
+  2216                        
+  2217                        	;;
+  2218                        	;; Vector area
+  2219                        	;; 
+  2220                        
+  2221                        	ORG	$FFFA
+  2222                        
+  2223 00:FFFA: 62 FD        	FDB	NMI_VEC		; NMI
+  2224                        
+  2225 00:FFFC: 00 EE        	FDB	CSTART		; RESET
+  2226                        
+  2227 00:FFFE: 81 FD        	FDB	IRQBRK		; IRQ/BRK
+  2228                        
+  2229                        	END
+
+
+      Lines assembled: 2229
+      Errors: 0

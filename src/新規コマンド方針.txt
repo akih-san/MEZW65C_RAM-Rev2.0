@@ -1,0 +1,17 @@
+(char *)arg[n]で、文字列から、引数を作る
+nは、１０程度用意する
+
+load L=1000 filename
+
+arg[0] = "L=1000"へのポインタ。L=1000の後のスペースにはNNULLが入る
+arg[1] = "filename"へのポインタ
+arg[2] = NULL
+
+コマンド
+restart
+wstart
+return
+
+ロードアドレスを覚えておく
+
+NMIの実験

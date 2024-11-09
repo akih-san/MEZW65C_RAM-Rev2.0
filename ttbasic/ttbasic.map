@@ -1,0 +1,652 @@
+Modules list:
+-------------
+ttb_stup.o:
+    CODE              Offs=000000  Size=000054  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000020  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000002  Align=00001  Fill=0000
+ttbasic.o:
+    CODE              Offs=000054  Size=001E4E  Align=00001  Fill=0000
+    RODATA            Offs=000020  Size=0002D5  Align=00001  Fill=0000
+    BSS               Offs=000002  Size=007BE3  Align=00001  Fill=0000
+crt0.o:
+    STARTUP           Offs=000000  Size=000017  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(addeqsp.o):
+    CODE              Offs=001EA2  Size=000011  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(addysp.o):
+    CODE              Offs=001EB3  Size=00000E  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(aslax1.o):
+    CODE              Offs=001EC1  Size=000008  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(condes.o):
+    CODE              Offs=001EC9  Size=00000C  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000025  Align=00001  Fill=0000
+    ONCE              Offs=000000  Size=00000C  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax1.o):
+    CODE              Offs=001ED5  Size=000007  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax2.o):
+    CODE              Offs=001EDC  Size=000007  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax3.o):
+    CODE              Offs=001EE3  Size=000007  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax4.o):
+    CODE              Offs=001EEA  Size=000007  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax5.o):
+    CODE              Offs=001EF1  Size=000007  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decaxy.o):
+    CODE              Offs=001EF8  Size=000009  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp1.o):
+    CODE              Offs=001F01  Size=000009  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp2.o):
+    CODE              Offs=001F0A  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp4.o):
+    CODE              Offs=001F17  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp5.o):
+    CODE              Offs=001F24  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp6.o):
+    CODE              Offs=001F31  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp7.o):
+    CODE              Offs=001F3E  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp8.o):
+    CODE              Offs=001F4B  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(div.o):
+    CODE              Offs=001F58  Size=000015  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(gt.o):
+    CODE              Offs=001F6D  Size=00000A  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(icmp.o):
+    CODE              Offs=001F77  Size=00002E  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incax2.o):
+    CODE              Offs=001FA5  Size=000007  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incax3.o):
+    CODE              Offs=001FAC  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incaxy.o):
+    CODE              Offs=001FB1  Size=00000B  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp1.o):
+    CODE              Offs=001FBC  Size=000007  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp2.o):
+    CODE              Offs=001FC3  Size=000016  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp3.o):
+    CODE              Offs=001FD9  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp4.o):
+    CODE              Offs=001FDE  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp5.o):
+    CODE              Offs=001FE3  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp6.o):
+    CODE              Offs=001FE8  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp7.o):
+    CODE              Offs=001FED  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp8.o):
+    CODE              Offs=001FF2  Size=000005  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(ldaxi.o):
+    CODE              Offs=001FF7  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(ldaxsp.o):
+    CODE              Offs=002004  Size=000009  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(le.o):
+    CODE              Offs=00200D  Size=00000A  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(makebool.o):
+    CODE              Offs=002017  Size=00002C  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(mod.o):
+    CODE              Offs=002043  Size=000011  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(mul.o):
+    CODE              Offs=002054  Size=000045  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(mul8.o):
+    CODE              Offs=002099  Size=00003A  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(mulax10.o):
+    CODE              Offs=0020D3  Size=000019  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(negabs.o):
+    CODE              Offs=0020EC  Size=000012  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(popptr1.o):
+    CODE              Offs=0020FE  Size=00000E  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(pusha.o):
+    CODE              Offs=00210C  Size=000016  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(pushax.o):
+    CODE              Offs=002122  Size=00001A  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(pushw.o):
+    CODE              Offs=00213C  Size=00000F  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(pushwsp.o):
+    CODE              Offs=00214B  Size=00001C  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(shelp.o):
+    CODE              Offs=002167  Size=000020  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(staspidx.o):
+    CODE              Offs=002187  Size=000016  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(staxsp.o):
+    CODE              Offs=00219D  Size=00000B  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(sub.o):
+    CODE              Offs=0021A8  Size=000015  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(subeqsp.o):
+    CODE              Offs=0021BD  Size=000015  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(subysp.o):
+    CODE              Offs=0021D2  Size=00000D  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(udiv.o):
+    CODE              Offs=0021DF  Size=00004F  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(zerobss.o):
+    CODE              Offs=00222E  Size=000023  Align=00001  Fill=0000
+C:\Users\akihito\bin\cc65-win64\lib/none.lib(zeropage.o):
+    ZEROPAGE          Offs=000000  Size=00001A  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+ZEROPAGE              000050  000069  00001A  00001
+BSS                   000200  007DE4  007BE5  00001
+RODATA                00C400  00C6F4  0002F5  00001
+CODE                  00C6F5  00E945  002251  00001
+STARTUP               00E946  00E95C  000017  00001
+ONCE                  00E95D  00E968  00000C  00001
+DATA                  00E969  00E98D  000025  00001
+
+
+Exports list by name:
+---------------------
+COLD_START                00C73F RLA    __BSS_RUN__               000200 RLA    
+__BSS_SIZE__              007BE5 REA    __CONSTRUCTOR_COUNT__     000000 REA    
+__CONSTRUCTOR_TABLE__     00E969 RLA    __DESTRUCTOR_COUNT__      000000 REA    
+__DESTRUCTOR_TABLE__      00C6F5 RLA    __FILETOP__               00C400 REA    
+__STACKSIZE__             000100 REA    __STACKSTART__            00EAF0 REA    
+__STARTUP__               000001 REA    __ZPSTART__               000050 REA    
+_c_getch                  00C6F5 RLA    _c_kbhit                  00C6F8 RLA    
+_c_putch                  00C6FB RLA    _err                      000202 RLA    
+_error                    00E50A RLA    _main                     00C770 RLA    
+_newline                  00C77E RLA    _rand                     00C6FE RLA    
+_srand                    00C723 RLA    _startup                  00E946 RLA    
+_warm_start               00C9C8 RLA    addeq0sp                  00E597 RLA    
+addeqysp                  00E599 RLA    addysp                    00E5A9 RLA    
+addysp1                   00E5A8 RLA    aslax1                    00E5B6 RLA    
+booleq                    00E712 RLA    boolgt                    00E721 RLA    
+boolle                    00E719 RLA    boolne                    00E70C RLA    
+decax1                    00E5CA RLA    decax2                    00E5D1 RLA    
+decax3                    00E5D8 RLA    decax4                    00E5DF RLA    
+decax5                    00E5E6 RLA    decaxy                    00E5ED RLA    
+decsp1                    00E5F6 RLA    decsp2                    00E5FF RLA    
+decsp4                    00E60C RLA    decsp5                    00E619 RLA    
+decsp6                    00E626 RLA    decsp7                    00E633 RLA    
+decsp8                    00E640 RLA    donelib                   00E5BE RLA    
+incax2                    00E69A RLA    incax3                    00E6A1 RLA    
+incaxy                    00E6A8 RLA    incsp1                    00E6B1 RLA    
+incsp2                    00E6C0 RLA    incsp3                    00E6CE RLA    
+incsp4                    00E6D3 RLA    incsp5                    00E6D8 RLA    
+incsp6                    00E6DD RLA    incsp7                    00E6E2 RLA    
+incsp8                    00E6E7 RLA    initlib                   00E95D RLA    
+ldax0sp                   00E6F9 RLA    ldaxi                     00E6EC RLA    
+ldaxysp                   00E6FB RLA    mul8x16                   00E790 RLA    
+mul8x16a                  00E79A RLA    mulax10                   00E7C8 RLA    
+negax                     00E7E5 RLA    popax                     00E6B8 RLA    
+popptr1                   00E7F3 RLA    popsargsudiv16            00E85C RLA    
+ptr1                      000058 RLZ    ptr4                      00005E RLZ    
+push0                     00E817 RLA    pusha                     00E805 RLA    
+pusha0                    00E819 RLA    pushax                    00E81B RLA    
+pushw                     00E831 RLA    pushwysp                  00E842 RLA    
+sp                        000050 RLZ    sreg                      000052 RLZ    
+staspidx                  00E87C RLA    stax0sp                   00E892 RLA    
+staxysp                   00E894 RLA    subeq0sp                  00E8B2 RLA    
+subeqysp                  00E8B4 RLA    subysp                    00E8C7 RLA    
+tmp1                      000060 RLZ    tmp2                      000061 RLZ    
+tosdiva0                  00E64D RLA    tosdivax                  00E64F RLA    
+tosgtax                   00E666 RLA    tosicmp                   00E66E RLA    
+tosleax                   00E706 RLA    tosmoda0                  00E738 RLA    
+tosmodax                  00E73A RLA    tosmulax                  00E749 RLA    
+tossubax                  00E89F RLA    udiv16                    00E8E5 RLA    
+zerobss                   00E923 RLA    
+
+
+Exports list by value:
+----------------------
+__CONSTRUCTOR_COUNT__     000000 REA    __DESTRUCTOR_COUNT__      000000 REA    
+__STARTUP__               000001 REA    sp                        000050 RLZ    
+__ZPSTART__               000050 REA    sreg                      000052 RLZ    
+ptr1                      000058 RLZ    ptr4                      00005E RLZ    
+tmp1                      000060 RLZ    tmp2                      000061 RLZ    
+__STACKSIZE__             000100 REA    __BSS_RUN__               000200 RLA    
+_err                      000202 RLA    __BSS_SIZE__              007BE5 REA    
+__FILETOP__               00C400 REA    _c_getch                  00C6F5 RLA    
+__DESTRUCTOR_TABLE__      00C6F5 RLA    _c_kbhit                  00C6F8 RLA    
+_c_putch                  00C6FB RLA    _rand                     00C6FE RLA    
+_srand                    00C723 RLA    COLD_START                00C73F RLA    
+_main                     00C770 RLA    _newline                  00C77E RLA    
+_warm_start               00C9C8 RLA    _error                    00E50A RLA    
+addeq0sp                  00E597 RLA    addeqysp                  00E599 RLA    
+addysp1                   00E5A8 RLA    addysp                    00E5A9 RLA    
+aslax1                    00E5B6 RLA    donelib                   00E5BE RLA    
+decax1                    00E5CA RLA    decax2                    00E5D1 RLA    
+decax3                    00E5D8 RLA    decax4                    00E5DF RLA    
+decax5                    00E5E6 RLA    decaxy                    00E5ED RLA    
+decsp1                    00E5F6 RLA    decsp2                    00E5FF RLA    
+decsp4                    00E60C RLA    decsp5                    00E619 RLA    
+decsp6                    00E626 RLA    decsp7                    00E633 RLA    
+decsp8                    00E640 RLA    tosdiva0                  00E64D RLA    
+tosdivax                  00E64F RLA    tosgtax                   00E666 RLA    
+tosicmp                   00E66E RLA    incax2                    00E69A RLA    
+incax3                    00E6A1 RLA    incaxy                    00E6A8 RLA    
+incsp1                    00E6B1 RLA    popax                     00E6B8 RLA    
+incsp2                    00E6C0 RLA    incsp3                    00E6CE RLA    
+incsp4                    00E6D3 RLA    incsp5                    00E6D8 RLA    
+incsp6                    00E6DD RLA    incsp7                    00E6E2 RLA    
+incsp8                    00E6E7 RLA    ldaxi                     00E6EC RLA    
+ldax0sp                   00E6F9 RLA    ldaxysp                   00E6FB RLA    
+tosleax                   00E706 RLA    boolne                    00E70C RLA    
+booleq                    00E712 RLA    boolle                    00E719 RLA    
+boolgt                    00E721 RLA    tosmoda0                  00E738 RLA    
+tosmodax                  00E73A RLA    tosmulax                  00E749 RLA    
+mul8x16                   00E790 RLA    mul8x16a                  00E79A RLA    
+mulax10                   00E7C8 RLA    negax                     00E7E5 RLA    
+popptr1                   00E7F3 RLA    pusha                     00E805 RLA    
+push0                     00E817 RLA    pusha0                    00E819 RLA    
+pushax                    00E81B RLA    pushw                     00E831 RLA    
+pushwysp                  00E842 RLA    popsargsudiv16            00E85C RLA    
+staspidx                  00E87C RLA    stax0sp                   00E892 RLA    
+staxysp                   00E894 RLA    tossubax                  00E89F RLA    
+subeq0sp                  00E8B2 RLA    subeqysp                  00E8B4 RLA    
+subysp                    00E8C7 RLA    udiv16                    00E8E5 RLA    
+zerobss                   00E923 RLA    _startup                  00E946 RLA    
+initlib                   00E95D RLA    __CONSTRUCTOR_TABLE__     00E969 RLA    
+__STACKSTART__            00EAF0 REA    
+
+
+Imports list:
+-------------
+COLD_START (ttb_stup.o):
+    crt0.o                    .\crt0.s:7
+__BSS_RUN__ ([linker generated]):
+    zerobss.o                 common/zerobss.s:8
+__BSS_SIZE__ ([linker generated]):
+    zerobss.o                 common/zerobss.s:8
+__CONSTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s:18
+__CONSTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s:18
+__DESTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s:19
+__DESTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s:19
+__FILETOP__ ([linker generated]):
+    ttb_stup.o                .\ttb_stup.s:63
+__STACKSIZE__ ([linker generated]):
+    [linker generated]        .\mezw65c_ram.cfg:12
+__STACKSTART__ ([linker generated]):
+    crt0.o                    .\crt0.s:6
+    [linker generated]        .\mezw65c_ram.cfg:12
+__STARTUP__ (crt0.o):
+    ttbasic.o                 .\ttbasic_refine.s:13
+__ZPSTART__ ([linker generated]):
+    [linker generated]        .\mezw65c_ram.cfg:11
+_c_getch (ttb_stup.o):
+    ttbasic.o                 .\ttbasic_refine.s:15
+_c_kbhit (ttb_stup.o):
+    ttbasic.o                 .\ttbasic_refine.s:14
+_c_putch (ttb_stup.o):
+    ttbasic.o                 .\ttbasic_refine.s:16
+_err (ttbasic.o):
+    ttb_stup.o                .\ttb_stup.s:60
+_error (ttbasic.o):
+    ttb_stup.o                .\ttb_stup.s:59
+_main (ttbasic.o):
+    ttb_stup.o                .\ttb_stup.s:58
+_newline (ttbasic.o):
+    ttb_stup.o                .\ttb_stup.s:61
+_rand (ttb_stup.o):
+    ttbasic.o                 .\ttbasic_refine.s:18
+_srand (ttb_stup.o):
+    ttbasic.o                 .\ttbasic_refine.s:17
+_startup (crt0.o):
+    ttb_stup.o                .\ttb_stup.s:64
+_warm_start (ttbasic.o):
+    ttb_stup.o                .\ttb_stup.s:57
+addeq0sp (addeqsp.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+addeqysp (addeqsp.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+addysp (addysp.o):
+    incsp8.o                  runtime/incsp8.s:8
+    incsp7.o                  runtime/incsp7.s:8
+    incsp6.o                  runtime/incsp6.s:8
+    incsp5.o                  runtime/incsp5.s:8
+    incsp4.o                  runtime/incsp4.s:8
+    incsp3.o                  runtime/incsp3.s:8
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+addysp1 (addysp.o):
+    sub.o                     runtime/sub.s:8
+aslax1 (aslax1.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+booleq (makebool.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+boolgt (makebool.o):
+    gt.o                      runtime/gt.s:8
+boolle (makebool.o):
+    le.o                      runtime/le.s:8
+boolne (makebool.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decax1 (decax1.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decax2 (decax2.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decax3 (decax3.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decax4 (decax4.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decax5 (decax5.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decaxy (decaxy.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decsp1 (decsp1.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decsp2 (decsp2.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decsp4 (decsp4.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decsp5 (decsp5.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decsp6 (decsp6.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decsp7 (decsp7.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+decsp8 (decsp8.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+donelib (condes.o):
+    crt0.o                    .\crt0.s:5
+incax2 (incax2.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+incax3 (incax3.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+incaxy (incaxy.o):
+    incax3.o                  runtime/incax3.s:8
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+incsp1 (incsp1.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+incsp2 (incsp2.o):
+    staspidx.o                runtime/staspidx.s:8
+    popptr1.o                 runtime/popptr1.s:8
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+incsp3 (incsp3.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+incsp4 (incsp4.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+incsp5 (incsp5.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+incsp6 (incsp6.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+incsp7 (incsp7.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+incsp8 (incsp8.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+initlib (condes.o):
+    crt0.o                    .\crt0.s:5
+ldax0sp (ldaxsp.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+ldaxi (ldaxi.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+ldaxysp (ldaxsp.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+mul8x16 (mul8.o):
+    mul.o                     runtime/mul.s:8
+mul8x16a (mul8.o):
+    mul.o                     runtime/mul.s:8
+mulax10 (mulax10.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+negax (negabs.o):
+    shelp.o                   runtime/shelp.s:11
+    mod.o                     runtime/mod.s:11
+    div.o                     runtime/div.s:11
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+popax (incsp2.o):
+    shelp.o                   runtime/shelp.s:11
+popptr1 (popptr1.o):
+    udiv.o                    runtime/udiv.s:9
+    mul8.o                    runtime/mul8.s:9
+    mul.o                     runtime/mul.s:9
+popsargsudiv16 (shelp.o):
+    mod.o                     runtime/mod.s:11
+    div.o                     runtime/div.s:11
+ptr1 (zeropage.o):
+    zerobss.o                 common/zerobss.s:9
+    udiv.o                    runtime/udiv.s:10
+    staspidx.o                runtime/staspidx.s:9
+    shelp.o                   runtime/shelp.s:12
+    pushw.o                   runtime/pushw.s:9
+    popptr1.o                 runtime/popptr1.s:9
+    mulax10.o                 runtime/mulax10.s:9
+    mul8.o                    runtime/mul8.s:10
+    mul.o                     runtime/mul.s:10
+    ldaxi.o                   runtime/ldaxi.s:8
+    div.o                     runtime/div.s:12
+    ttbasic.o                 .\ttbasic_refine.s:11
+ptr4 (zeropage.o):
+    udiv.o                    runtime/udiv.s:10
+    shelp.o                   runtime/shelp.s:12
+    mul8.o                    runtime/mul8.s:10
+    mul.o                     runtime/mul.s:10
+push0 (pushax.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+pusha (pusha.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+pusha0 (pushax.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+pushax (pushax.o):
+    pushw.o                   runtime/pushw.s:8
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+pushw (pushw.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+pushwysp (pushwsp.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+sp (zeropage.o):
+    subysp.o                  runtime/subysp.s:9
+    subeqsp.o                 runtime/subeqsp.s:8
+    sub.o                     runtime/sub.s:9
+    staxsp.o                  runtime/staxsp.s:8
+    staspidx.o                runtime/staspidx.s:9
+    pushwsp.o                 runtime/pushwsp.s:8
+    pushax.o                  runtime/pushax.s:8
+    pusha.o                   runtime/pusha.s:8
+    popptr1.o                 runtime/popptr1.s:9
+    ldaxsp.o                  runtime/ldaxsp.s:8
+    incsp2.o                  runtime/incsp2.s:8
+    incsp1.o                  runtime/incsp1.s:8
+    icmp.o                    runtime/icmp.s:9
+    decsp8.o                  runtime/decsp8.s:8
+    decsp7.o                  runtime/decsp7.s:8
+    decsp6.o                  runtime/decsp6.s:8
+    decsp5.o                  runtime/decsp5.s:8
+    decsp4.o                  runtime/decsp4.s:8
+    decsp2.o                  runtime/decsp2.s:8
+    decsp1.o                  runtime/decsp1.s:8
+    addysp.o                  runtime/addysp.s:8
+    addeqsp.o                 runtime/addeqsp.s:8
+    crt0.o                    C:\Users\akihito\bin\cc65-win64\asminc/zeropage.inc:11
+    ttbasic.o                 .\ttbasic_refine.s:10
+sreg (zeropage.o):
+    udiv.o                    runtime/udiv.s:10
+    mod.o                     runtime/mod.s:12
+    icmp.o                    runtime/icmp.s:9
+    ttbasic.o                 .\ttbasic_refine.s:10
+staspidx (staspidx.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+stax0sp (staxsp.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+staxysp (staxsp.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+subeq0sp (subeqsp.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+subeqysp (subeqsp.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+subysp (subysp.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+tmp1 (zeropage.o):
+    staspidx.o                runtime/staspidx.s:9
+    shelp.o                   runtime/shelp.s:12
+    mul.o                     runtime/mul.s:10
+    mod.o                     runtime/mod.s:12
+    incaxy.o                  runtime/incaxy.s:8
+    div.o                     runtime/div.s:12
+    decaxy.o                  runtime/decaxy.s:8
+    aslax1.o                  runtime/aslax1.s:8
+tmp2 (zeropage.o):
+    shelp.o                   runtime/shelp.s:12
+    div.o                     runtime/div.s:12
+tosdiva0 (div.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+tosdivax (div.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+tosgtax (gt.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+tosicmp (icmp.o):
+    le.o                      runtime/le.s:8
+    gt.o                      runtime/gt.s:8
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+    ttbasic.o                 .\ttbasic_refine.s:4266
+tosleax (le.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+tosmoda0 (mod.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+tosmodax (mod.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+tosmulax (mul.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+tossubax (sub.o):
+    ttbasic.o                 .\ttbasic_refine.s:4266
+udiv16 (udiv.o):
+    shelp.o                   runtime/shelp.s:11
+zerobss (zerobss.o):
+    crt0.o                    .\crt0.s:4
+

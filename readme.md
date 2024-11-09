@@ -2,6 +2,15 @@
 # MEZW65C_RAM ファームウェア Rev2.0
 ![photo 1](photo/Rev2.0_Opening.png)
 
+・ファームウェアRev2.0コマンド<br>
+・W65C816モニターコマンド<br>
+・W65C02モニターコマンド<br>
+・EhBASIC<br>
+・VTL2<br>
+・豊四季タイニーベーシック<br>
+・GAMEインタープリタ<br>
+<br>
+
 # Rev2.0を作成した経緯
 
 2024年8月にRev1.2を公開しましたが、ソフトウェアがW65C02用のユニバーサルモニタと<br>

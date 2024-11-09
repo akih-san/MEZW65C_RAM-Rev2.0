@@ -1,0 +1,85 @@
+     1                        	pl	0
+     2                        	pw      132
+     3                        	chip    65C02
+     4                        ;                inclist on
+     5                        
+     6             00000001   CONIN	equ	1
+     7             00000002   CONOUT	equ	2
+     8             00000003   CONST	equ	3
+     9             00000004   STROUT	equ	4
+    10                        
+    11                        	.code
+    12                        	ORG	$200
+    13                        	
+    14                        ;-----------
+    15                        ; conput
+    16                        ;-----------
+    17                        
+    18 00:0200: A9 00        	lda	#0
+    19 00:0202: AA           	tax
+    20                        	
+    21                        msg_loop
+    22 00:0203: BD 2B 02     	lda	msg,x
+    23 00:0206: F0 05        	beq	prt_end
+    24 00:0208: 00 02        	BRK	CONOUT		; 2 : conout A = char
+    25 00:020A: E8           	inx
+    26 00:020B: 80 F6        	bra	msg_loop
+    27                        	
+    28                        prt_end
+    29                        
+    30                        ;-----------
+    31                        ;strout
+    32                        ;-----------
+    33                        
+    34 00:020D: A9 42        	lda	#$FF&msg1
+    35 00:020F: A0 02        	ldy	#msg1>>8
+    36 00:0211: 00 04        	BRK	STROUT		; 4 : strings out A = strings addr(Low)
+    37                        				; Y = strings addr(High)
+    38                        
+    39                        ;-----------
+    40                        ; conin
+    41                        ;-----------
+    42                        ;
+    43                        	; console out "echo back"
+    44 00:0213: A9 51        	lda	#$FF&msg2
+    45 00:0215: A0 02        	ldy	#msg2>>8
+    46 00:0217: 00 04        	BRK	STROUT
+    47                        	; echo back.  (terminate : assert NMI)
+    48                        lpback
+    49                        
+    50 00:0219: 00 03        	BRK	CONST
+    51 00:021B: 29 01        	and	#1
+    52 00:021D: F0 06        	beq	beee
+    53                        	
+    54 00:021F: 00 01        	BRK	CONIN		; 1 : conin  A : get char
+    55                        
+    56 00:0221: 00 02        	BRK	CONOUT		; ECHO BACK
+    57 00:0223: 80 F4        	bra	lpback
+    58                        
+    59                        beee
+    60 00:0225: A9 20        	lda	#' '
+    61 00:0227: 00 02        	BRK	CONOUT
+    62 00:0229: 80 EE        	bra	lpback
+    63                        	
+    64                        
+    65 00:022B: 47 6F 6F 64  msg	db	"Good morning! master",13,10,00
+       00:022F: 20 6D 6F 72 
+       00:0233: 6E 69 6E 67 
+       00:0237: 21 20 6D 61 
+       00:023B: 73 74 65 72 
+       00:023F: 0D 0A 00 
+    66 00:0242: 48 65 6C 6C  msg1	db	"Hello World!",13,10,0
+       00:0246: 6F 20 57 6F 
+       00:024A: 72 6C 64 21 
+       00:024E: 0D 0A 00 
+    67 00:0251: 45 63 68 6F  msg2	db	"Echo back test.",13,10,0
+       00:0255: 20 62 61 63 
+       00:0259: 6B 20 74 65 
+       00:025D: 73 74 2E 0D 
+       00:0261: 0A 00 
+    68                        
+    69                        	end
+
+
+      Lines assembled: 69
+      Errors: 0

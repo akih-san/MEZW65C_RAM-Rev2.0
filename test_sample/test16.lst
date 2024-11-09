@@ -1,0 +1,142 @@
+     1                        	pl	0
+     2                        	pw      132
+     3                        	chip    65816
+     4                        ;                inclist on
+     5                        
+     6                        	include "w65c816.inc"
+     7                        
+     8                        ;;;
+     9                        ;;; File header template (BIOS CALL version)
+    10                        ;;;	
+    11                        
+    12             00000400   PRG_B	EQU	$400
+    13             00000200   WORK_B	EQU	PRG_B-$200	; $200
+    14                        
+    15             00000003   USER_PB	equ	3	; 0 - 7
+    16             00000003   USER_DB	equ	3	; 0 - 7
+    17             00000000   USER_DP	equ	0	; $0000 - $D800
+    18                        
+    19                        
+    20             00000000   ZERO_B	EQU	$00
+    21                        
+    22                        ;-----------------------------------------------------
+    23                        ;ZERO page
+    24                        ; NOTE
+    25                        ;  Since ZERO page is shared with the monitor program,
+    26                        ;  you must use a free area.
+    27                        ;  See the monitor program.
+    28                        ;-----------------------------------------------------
+    29                        
+    30                        	.page0
+    31                        	ORG	ZERO_B
+    32                        
+    33                        
+    34                        ;--------------------------------------
+    35                        ; Data area
+    36                        ;--------------------------------------
+    37                        	.data
+    38                        	org	WORK_B
+    39                        
+    40                        
+    41                        
+    42                        
+    43                        	.code
+    44                        	ORG	PRG_B
+    45                        
+    46                        ;--------- MEZW65C_RAM file header --------------------------
+    47 00:0400: 03           	db	USER_PB		; program bank:W65C816, 0:W65C02
+    48 00:0401: 20 04        	dw	COLD_START
+    49 00:0403: 03           	db	USER_DB		; data bank:W65C816, 0:W65C02
+    50 00:0404: 20 04        	dw	WSTART
+    51                        
+    52 00:0406: 00 00        	dw	USER_DP		; DP
+    53                        
+    54 00:0408: 4D 45 5A 57  mezID:	db	"MEZW65C",0	; Unique ID
+       00:040C: 36 35 43 00 
+    55                        
+    56                        start_p:	;file load address
+    57 00:0410: 00 04        	dw	PRG_B		; load address (Low)
+    58 00:0412: 03           	db	USER_PB		; PBR : program bank(W65C816)
+    59 00:0413: 00           	db	0		; reserve
+    60                        
+    61                        	; define Common memory address
+    62 00:0414: 00 00        PIC_IF:	dw	0	; reserve
+    63 00:0416: 00 00        	dw	0	; reserve
+    64                        
+    65 00:0418: 01           SW_816:	db	1	; 0 : W65C02
+    66                        			; 1 : W65C816 native mode 
+    67                        			; 2 : works in both modes
+    68 00:0419: 00           irq_sw	db	0	; 0 : no use IRQ console I/O
+    69                        			; 1 : use IRQ timer interrupt driven console I/O
+    70 00:041A: 00 00        reg_tp	dw	0	; monitor reserve (register save pointer)
+    71 00:041C: 00 00        reg_ts	dw	0	; monitor reserve (register table size)
+    72 00:041E: 00           nmi_sw	db	0	; 0 : No NMI support, 1: NMI support
+    73 00:041F: 01           bios_sw	db	1	; 0 : standalone program
+    74                        			; 1 : program call bios command
+    75                        			; 2 : monitor program (.SYS)
+    76                        ;--------- MEZW65C_RAM file header --------------------------
+    77                        
+    78                        COLD_START:
+    79                        WSTART:
+    80                        
+    81                        ;-----------
+    82                        ; conput
+    83                        ;-----------
+    84             00000001   CONIN	equ	1
+    85             00000002   CONOUT	equ	2
+    86             00000003   CONST	equ	3
+    87             00000004   STROUT	equ	4
+    88             000000FF   PEND	equ	$FF
+    89                        
+    90                        	long_i
++   90 00:0420: C2 10                        rep     #X_FLAG
++   90                                        longi   on
+    91                        	short_a
++   91 00:0422: E2 20                        sep     #M_FLAG
++   91                                        longa   off
+    92                        
+    93 00:0424: A2 3F 04     	ldx	#msg
+    94                        	
+    95                        msg_loop
+    96 00:0427: BD 00 00     	lda	0,x
+    97 00:042A: F0 07        	beq	prt_end
+    98 00:042C: 00 02        	BRK	CONOUT		; 2 : conout A = char
+    99                        	long_i
++   99 00:042E: C2 10                        rep     #X_FLAG
++   99                                        longi   on
+   100 00:0430: E8           	inx
+   101 00:0431: 80 F4        	bra	msg_loop
+   102                        	
+   103                        prt_end
+   104                        	short_i
++  104 00:0433: E2 10                        sep     #X_FLAG
++  104                                        longi   off
+   105 00:0435: A9 56        	lda	#$FF&endm
+   106 00:0437: A0 04        	ldy	#endm>>8
+   107 00:0439: 00 04        	BRK	STROUT
+   108 00:043B: 00 01        	BRK	CONIN
+   109                        
+   110                        ;-----------
+   111                        ;program end
+   112                        ;-----------
+   113                        
+   114 00:043D: 00 FF        	BRK	PEND
+   115                        
+   116 00:043F: 47 6F 6F 64  msg	db	"Good morning! master",13,10,00
+       00:0443: 20 6D 6F 72 
+       00:0447: 6E 69 6E 67 
+       00:044B: 21 20 6D 61 
+       00:044F: 73 74 65 72 
+       00:0453: 0D 0A 00 
+   117 00:0456: 50 72 65 73  endm	db	"Press Key to end. ",13,10,0
+       00:045A: 73 20 4B 65 
+       00:045E: 79 20 74 6F 
+       00:0462: 20 65 6E 64 
+       00:0466: 2E 20 0D 0A 
+       00:046A: 00 
+   118                        
+   119                        	end
+
+
+      Lines assembled: 241
+      Errors: 0

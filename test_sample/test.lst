@@ -1,0 +1,48 @@
+     1                        	pl	0
+     2                        	pw      132
+     3                        	chip    65C02
+     4                        ;                inclist on
+     5                        
+     6                        ;	include "w65c816.inc"
+     7                        
+     8             00000001   CONIN	equ	1
+     9             00000002   CONOUT	equ	2
+    10             00000003   CONST	equ	3
+    11             00000004   STROUT	equ	4
+    12                        
+    13                        	.code
+    14                        	ORG	$200
+    15                        	
+    16                        	; echo back.  (terminate : assert NMI)
+    17                        
+    18                        lp00
+    19 00:0200: A2 41        	ldx	#'A'
+    20                        lp0
+    21 00:0202: A0 00        	ldy	#0
+    22                        lpback
+    23 00:0204: 00 03        	brk	CONST
+    24 00:0206: 29 01        	and	#1
+    25 00:0208: F0 02        	beq	no_key
+    26 00:020A: 00 01        	brk	CONIN
+    27                        no_key
+    28 00:020C: 8A           	txa
+    29 00:020D: 00 02        	BRK	CONOUT		; ECHO BACK
+    30 00:020F: C8           	iny
+    31 00:0210: 98           	tya
+    32 00:0211: C9 50        	cmp	#80
+    33 00:0213: D0 EF        	bne	lpback
+    34 00:0215: A9 0D        	lda	#13
+    35 00:0217: 00 02        	BRK	CONOUT		; ECHO BACK
+    36 00:0219: A9 0A        	lda	#10
+    37 00:021B: 00 02        	BRK	CONOUT		; ECHO BACK
+    38 00:021D: E8           	inx
+    39 00:021E: 8A           	txa
+    40 00:021F: C9 5B        	cmp	#'Z'+1
+    41 00:0221: F0 DD        	beq	lp00
+    42 00:0223: 80 DD        	bra	lp0
+    43                        
+    44                        	end
+
+
+      Lines assembled: 44
+      Errors: 0

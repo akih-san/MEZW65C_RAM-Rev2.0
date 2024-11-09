@@ -9,8 +9,8 @@
 - [VTL2](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/vtl2)<br>
 - [豊四季タイニーベーシック](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/ttbasic)<br>
 - [GAMEインタープリタ](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/GAME-C)<br>
-<br>
-
+- [MEZW65C_RAMピンアサイン](https://github.com/akih-san/MEZW65C_RAM/blob/main/MEZW65C_RAM%E3%83%94%E3%83%B3%E3%82%A2%E3%82%B5%E3%82%A4%E3%83%B3.pdf)
+  
 # Rev2.0を作成した経緯
 
 2024年8月にRev1.2を公開しましたが、ソフトウェアがW65C02用のユニバーサルモニタと<br>

@@ -3,6 +3,8 @@
 以前、SBCV20/8088ボードに移植したものを、MEZW65C_RAMで動作するようにしました。<br>
 エミュレーションモードと、ネイティブモードで動作するバイナリを用意しました。<br>
 
+![photo 1](../photo/ttbasic_op.png)
+
 [SBCV20_8088版豊四季タイニーBASIC](https://github.com/akih-san/SBCV20_8088)
 
 タイニーBASICについては、以下のサイトをご覧になってください。

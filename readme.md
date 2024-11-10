@@ -182,7 +182,7 @@ BASICはW65C02用のみです。（ネイティブモードで動作するBASIC�
 <br>
 
 - PICkitminus書き込みソフトを用いて、書き込むことが出来ます。以下で入手できます。
-  - [PICkit3](http://kair.us/projects/pickitminus/)
+  - [PICkitminus](http://kair.us/projects/pickitminus/)
 <br>
 
 PICへの書き込みツールを用いて、ヘキサファイルを書き込みます。<br>

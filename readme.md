@@ -21,8 +21,7 @@
 2024年8月にRev1.2を公開しましたが、ソフトウェアがW65C02用のユニバーサルモニタと<br>
 Eh-BASIC、それから、W65C816用のネイティブモニタの３つしかありませんでした。<br>
 そして、各ソフトを切り替えるには、リセットが必要でした。<br>
-https://github.com/akih-san/MEZW65C_RAM<br>
-<br>
+- [MWZW65C_RAM Rev1.2](https://github.com/akih-san/MEZW65C_RAM)<br>
 
 ![photo 2](photo/Rev1.2.png)
 
@@ -149,65 +148,57 @@ BASICはW65C02用のみです。（ネイティブモードで動作するBASIC�
 <br>
 
 # 開発環境
-- Rev2.0のソースのコンパイルは、マイクロチップ社のMPLAB X IDE v6.20を使用しています。<br>
+- Rev2.0のソースのコンパイルは、マイクロチップ社のMPLAB X IDE v6.20を使用しています。
   - [MPLAB® X Integrated Development Environment (IDE)](https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide)
 <br>
-・WDCTools<br>
-The Western Design Center, Inc.が提供しているアセンブラ、cコンパイラを含む統合開発環境<br>
-https://wdc65xx.com/WDCTools<br>
-<br>
-・CC65<br>
-フリーで現役の6502用Cコンパイラです。<br>
-https://cc65.github.io/<br>
-<br>
-・bin2mot.exe、mot2bin.exe<br>
-モトローラフォーマットのヘキサファイルとバイナリファイル相互変換ツール<br>
-ソースとバイナリファイルは、ここから入手できます。<br>
-https://sourceforge.net/projects/bin2mot/files/<br>
-<br>
-・xa (xa65) Version 2.4.1 <br>
-6502用の2 パス ポータブル クロス アセンブラです。<br>
-https://www.floodgap.com/retrotech/xa/<br>
-<br>
-・ASW,ASL<br>
-沢山のCPUに対応したマクロアセンブラ<br>
-http://john.ccac.rwth-aachen.de:8000/as/<br>
-<br>
-・FatFsはR0.15を使用しています。<br>
-　＜FatFs - Generic FAT Filesystem Module＞<br>
-　http://elm-chan.org/fsw/ff/00index_e.html<br>
+
+- The Western Design Center, Inc.が提供しているアセンブラ、cコンパイラを含む統合開発環境
+  - [WDCTools](https://wdc65xx.com/WDCTools)
 <br>
 
-# PIC18F47Q43/Q84への書き込み
-・snap<br>
-マイクロチップ社の書き込みツールです。<br>
+- フリーで現役の6502用Cコンパイラです。
+  - [CC65](https://cc65.github.io/)
 <br>
-・PICkit3<br>
-PICkitminus書き込みソフトを用いて、書き込むことが出来ます。以下で入手できます。<br>
-http://kair.us/projects/pickitminus/<br>
+
+- モトローラフォーマットのヘキサファイルとバイナリファイル相互変換ツール
+  - [bin2mot.exe、mot2bin.exe](https://sourceforge.net/projects/bin2mot/files/)
 <br>
+
+- 6502用の2 パス ポータブル クロス アセンブラ
+  - [xa (xa65) Version 2.4.1](https://www.floodgap.com/retrotech/xa/)
 <br>
+
+- 数多くののCPUに対応したマクロアセンブラ
+  - [ASW,ASL](http://john.ccac.rwth-aachen.de:8000/as/)
+<br>
+
+- FatFsはR0.15を使用しています。
+  - [FatFs - Generic FAT Filesystem Module](http://elm-chan.org/fsw/ff/00index_e.html)
+<br>
+
+# PIC18F47Q43/Q84/Q83への書き込み
+- マイクロチップ社の書き込みツールです。
+  - [snap](https://www.microchip.com/en-us/development-tool/PG164100)
+<br>
+
+- PICkitminus書き込みソフトを用いて、書き込むことが出来ます。以下で入手できます。
+  - [PICkit3](http://kair.us/projects/pickitminus/)
+<br>
+
 PICへの書き込みツールを用いて、ヘキサファイルを書き込みます。<br>
-書き込み用のデータは8MHz用と、4MHz用の2種類用意しました。<br>
 <br>
-・PIC18F47Q43<br>
-　　- R1.2q43_8MHz.hex<br>
-　　- R1.2q43_4MHz.hex<br>
+- PIC18F47Q43 - R2.0q43.hex
+- PIC18F47Q84 - R2.0q84.hex
+- PIC18F47Q83 - R2.0q83.hex
 <br>
-・PIC18F47Q84<br>
-　　- R1.2q84_8MHz.hex<br>
-　　- R1.2q84_4MHz.hex<br>
-<br>
-<br>
+
 # 動作周波数
-<br>
-動作周波数の設定は、src/boardsにあるソースファイルw65_bd.cで修正できます。<br>
+DISKSフォルダ内のMEZW16.CFG, MEZW02.CFG（テキストファイル）で周波数を<br>
+設定できます。<br>
 9MHz以上の設定も出来ますが、動作が不安定です。11MHz以上は動作しません。<br>
 <br>
 （注意事項）<br>
 アクセスタイム55nsのメモリを使用しているため、10MHz付近が限界のようです。<br>
-W65C02Sでは、10MHzで動作しています。<br>
-W65C816Sでは、エミュレーションモードでは10MHzで動作していますが、ネイティブ<br>
-モードに切り替えた場合、BANK0以外では10MHzで動作しませんでした。<br>
+W65C02Sでは、10MHzでの動作していますが、連続試験はしていません。<br>
+W65C816Sでは、BANK0以外では8MHzで動作が不安定な時があります。<br>
 <br>
-

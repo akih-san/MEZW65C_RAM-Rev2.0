@@ -22,6 +22,8 @@
 
 - DIR
   ファイルの一覧を表示します。
+  ![photo 2](../photo/dir.png)
+
   
   
 - LS

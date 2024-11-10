@@ -18,7 +18,6 @@
 |FLASH      |ＮＭＩ割込みしたプログラムの終了                    |
 |HELP ｜ ?  | コマンド一覧の表示                                |
 
-  ![photo 1](../photo/comlist.png)
 
 - DIR<br>
   ファイルの一覧を表示します。
@@ -78,9 +77,8 @@
 - FLASH<br>
   Ctrl+Qキーで、動作中断したプログラムを終了します。このコマンドを実行後は、<br>
   CSTART,　WSTARTコマンドでプログラムを起動出来なくなります。<br>
-![photo 13](../photo/cd.png)
+![photo 13](../photo/flash.png)
 
 - HELP | ?<br>
-  チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 14](../photo/cd.png)
-
+  コマンド一覧を表示します。
+  ![photo 1](../photo/comlist.png)

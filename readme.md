@@ -14,6 +14,7 @@
 - [MEZW65C_RAM部品表](https://github.com/akih-san/MEZW65C_RAM/blob/main/MEZW65C_RAM%E9%83%A8%E5%93%81%E8%A1%A8.pdf)
 - [W65c02 W65c816比較](https://github.com/akih-san/MEZW65C_RAM/blob/main/65c02%2065c816%E6%AF%94%E8%BC%83.pdf)
 - [ガーバーデータ](https://github.com/akih-san/MEZW65C_RAM/tree/main/w65c_Rev1.2_Gerber)
+- [μＳＤカードの作成](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/DISKS)
   
 # Rev2.0を作成した経緯
 
@@ -147,7 +148,10 @@ BASICはW65C02用のみです。（ネイティブモードで動作するBASIC�
 詳細については、各インタプリタのディレクトリを参照してください。<br>
 <br>
 
-# クロス開発環境
+# 開発環境
+- Rev2.0のソースのコンパイルは、マイクロチップ社のMPLAB X IDE v6.20を使用しています。<br>
+  - [MPLAB® X Integrated Development Environment (IDE)](https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide)
+<br>
 ・WDCTools<br>
 The Western Design Center, Inc.が提供しているアセンブラ、cコンパイラを含む統合開発環境<br>
 https://wdc65xx.com/WDCTools<br>
@@ -168,5 +172,42 @@ https://www.floodgap.com/retrotech/xa/<br>
 ・ASW,ASL<br>
 沢山のCPUに対応したマクロアセンブラ<br>
 http://john.ccac.rwth-aachen.de:8000/as/<br>
+<br>
+・FatFsはR0.15を使用しています。<br>
+　＜FatFs - Generic FAT Filesystem Module＞<br>
+　http://elm-chan.org/fsw/ff/00index_e.html<br>
+<br>
+
+# PIC18F47Q43/Q84への書き込み
+・snap<br>
+マイクロチップ社の書き込みツールです。<br>
+<br>
+・PICkit3<br>
+PICkitminus書き込みソフトを用いて、書き込むことが出来ます。以下で入手できます。<br>
+http://kair.us/projects/pickitminus/<br>
+<br>
+<br>
+PICへの書き込みツールを用いて、ヘキサファイルを書き込みます。<br>
+書き込み用のデータは8MHz用と、4MHz用の2種類用意しました。<br>
+<br>
+・PIC18F47Q43<br>
+　　- R1.2q43_8MHz.hex<br>
+　　- R1.2q43_4MHz.hex<br>
+<br>
+・PIC18F47Q84<br>
+　　- R1.2q84_8MHz.hex<br>
+　　- R1.2q84_4MHz.hex<br>
+<br>
+<br>
+# 動作周波数
+<br>
+動作周波数の設定は、src/boardsにあるソースファイルw65_bd.cで修正できます。<br>
+9MHz以上の設定も出来ますが、動作が不安定です。11MHz以上は動作しません。<br>
+<br>
+（注意事項）<br>
+アクセスタイム55nsのメモリを使用しているため、10MHz付近が限界のようです。<br>
+W65C02Sでは、10MHzで動作しています。<br>
+W65C816Sでは、エミュレーションモードでは10MHzで動作していますが、ネイティブ<br>
+モードに切り替えた場合、BANK0以外では10MHzで動作しませんでした。<br>
 <br>
 

@@ -30,48 +30,54 @@
 
 - CD<br>
   チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 3](../photo/cd.png)
+![photo 4](../photo/cd.png)
 
 - LOAD<br>
   ファイルのロード。ファイルヘッダ情報に従ってファイルをロードします。<br>
   「Ｌ＝ロードアドレス」を指定することで、Lowファイルをメモリ上に<br>
   ロードすることが出来ます。この指定を行うと、ファイルヘッダ情報は<br>
   無視されて、指定したアドレスにファイルがロードされます。<br>
-![photo 3](../photo/load.png)
+![photo 5](../photo/load.png)
 
 - MDUMP<br>
   チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 3](../photo/cd.png)
+![photo 6](../photo/cd.png)
 
 - MONITOR<br>
-  チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 3](../photo/cd.png)
+  モニタを起動します。ネイティブモード時は、W65C816用のモニタが起動します。<br>
+  エミュレーションモード時は、W65C02用のモニタが起動します。<br>
+![photo 7](../photo/monitor.png)
 
 - CSTART<br>
-  チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 3](../photo/cd.png)
+  起動したプロフラムのコールドスタートを行います。<br>
+  このコマンドは、BIOSコール使用のプログラムをCtrl+Qキーで、動作中断して<br>
+  Rev2.0ファームウェアに制御が戻っている状態で、プログラムの再起動を行う<br>
+  ことが出来ます。プログラムは初期起動されます。<br>
+![photo 8](../photo/cstart.png)
 
 - WSTART<br>
-  チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 3](../photo/cd.png)
+  起動したプロフラムのウォームスタートを行います。<br>
+  CSTARTコマンドと同様ですが、プログラムの初期化は行われません。<br>
+  （BASICインタプリタ等のプログラムがクリアされない）<br>
+![photo 9](../photo/wstart.png)
 
 - RETI<br>
   チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 3](../photo/cd.png)
+![photo 10](../photo/reti.png)
 
 - REG<br>
   チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 3](../photo/cd.png)
+![photo 11](../photo/cd.png)
 
 - SHOW<br>
   チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 3](../photo/cd.png)
+![photo 12](../photo/cd.png)
 
 - FLASH<br>
   チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 3](../photo/cd.png)
+![photo 13](../photo/cd.png)
 
 - HELP | ?<br>
   チェンジディレクトリ。カレントディレクトリを移動します。
-![photo 3](../photo/cd.png)
+![photo 14](../photo/cd.png)
 

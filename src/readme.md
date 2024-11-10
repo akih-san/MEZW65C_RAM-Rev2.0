@@ -22,11 +22,12 @@
 
 - DIR
   ファイルの一覧を表示します。
-  ![photo 2](../photo/dir.png)
+![photo 2](../photo/dir.png)
 
-  
-  
 - LS
+  ファイルとファイルサイズの一覧を表示します。
+![photo 3](../photo/ls.png)
+
 - CD
 - LOAD
 - MDUMP

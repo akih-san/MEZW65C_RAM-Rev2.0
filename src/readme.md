@@ -20,22 +20,58 @@
 
   ![photo 1](../photo/comlist.png)
 
-- DIR
+- DIR<br>
   ファイルの一覧を表示します。
 ![photo 2](../photo/dir.png)
 
-- LS
+- LS<br>
   ファイルとファイルサイズの一覧を表示します。
 ![photo 3](../photo/ls.png)
 
-- CD
-- LOAD
-- MDUMP
-- MONITOR
-- CSTART
-- WSTART
-- RETI
-- REG
-- SHOW
-- FLASH
-- HELP | ?
+- CD<br>
+  チェンジディレクトリ。カレントディレクトリを移動します。
+![photo 3](../photo/cd.png)
+
+- LOAD<br>
+  ファイルのロード。ファイルヘッダ情報に従ってファイルをロードします。<br>
+  「Ｌ＝ロードアドレス」を指定することで、Lowファイルをメモリ上に<br>
+  ロードすることが出来ます。この指定を行うと、ファイルヘッダ情報は<br>
+  無視されて、指定したアドレスにファイルがロードされます。<br>
+![photo 3](../photo/load.png)
+
+- MDUMP<br>
+  チェンジディレクトリ。カレントディレクトリを移動します。
+![photo 3](../photo/cd.png)
+
+- MONITOR<br>
+  チェンジディレクトリ。カレントディレクトリを移動します。
+![photo 3](../photo/cd.png)
+
+- CSTART<br>
+  チェンジディレクトリ。カレントディレクトリを移動します。
+![photo 3](../photo/cd.png)
+
+- WSTART<br>
+  チェンジディレクトリ。カレントディレクトリを移動します。
+![photo 3](../photo/cd.png)
+
+- RETI<br>
+  チェンジディレクトリ。カレントディレクトリを移動します。
+![photo 3](../photo/cd.png)
+
+- REG<br>
+  チェンジディレクトリ。カレントディレクトリを移動します。
+![photo 3](../photo/cd.png)
+
+- SHOW<br>
+  チェンジディレクトリ。カレントディレクトリを移動します。
+![photo 3](../photo/cd.png)
+
+- FLASH<br>
+  チェンジディレクトリ。カレントディレクトリを移動します。
+![photo 3](../photo/cd.png)
+
+- HELP | ?<br>
+  チェンジディレクトリ。カレントディレクトリを移動します。
+![photo 3](../photo/cd.png)
+

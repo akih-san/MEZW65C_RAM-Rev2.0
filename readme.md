@@ -1,4 +1,9 @@
-工事中＜Under construction＞
+# <メザニンボードMEZW65C_RAM photo>
+![](https://github.com/akih-san/MEZW65C_RAM/blob/main/photo/p2.JPG)
+<br>
+<br>
+<br>
+
 # MEZW65C_RAM ファームウェア Rev2.0
 ![photo 1](photo/Rev2.0_Opening.png)
 

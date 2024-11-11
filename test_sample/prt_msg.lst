@@ -3,83 +3,175 @@
      3                        	chip    65C02
      4                        ;                inclist on
      5                        
-     6             00000001   CONIN	equ	1
-     7             00000002   CONOUT	equ	2
-     8             00000003   CONST	equ	3
-     9             00000004   STROUT	equ	4
-    10                        
-    11                        	.code
-    12                        	ORG	$200
-    13                        	
-    14                        ;-----------
-    15                        ; conput
-    16                        ;-----------
-    17                        
-    18 00:0200: A9 00        	lda	#0
-    19 00:0202: AA           	tax
-    20                        	
-    21                        msg_loop
-    22 00:0203: BD 2B 02     	lda	msg,x
-    23 00:0206: F0 05        	beq	prt_end
-    24 00:0208: 00 02        	BRK	CONOUT		; 2 : conout A = char
-    25 00:020A: E8           	inx
-    26 00:020B: 80 F6        	bra	msg_loop
-    27                        	
-    28                        prt_end
-    29                        
-    30                        ;-----------
-    31                        ;strout
-    32                        ;-----------
+     6                        ;;;
+     7                        ;;; File header template (BIOS CALL version)
+     8                        ;;;	
+     9                        
+    10             00000400   PRG_B	EQU	$400
+    11             00000200   WORK_B	EQU	PRG_B-$200	; $200
+    12                        
+    13             00000000   ZERO_B	EQU	$00
+    14                        
+    15                        ;-----------------------------------------------------
+    16                        ;ZERO page
+    17                        ; NOTE
+    18                        ;  Since ZERO page is shared with the monitor program,
+    19                        ;  you must use a free area.
+    20                        ;  See the monitor program.
+    21                        ;-----------------------------------------------------
+    22                        
+    23                        	.page0
+    24                        	ORG	ZERO_B
+    25                        
+    26                        
+    27                        ;--------------------------------------
+    28                        ; Data area
+    29                        ;--------------------------------------
+    30                        	.data
+    31                        	org	WORK_B
+    32                        
     33                        
-    34 00:020D: A9 42        	lda	#$FF&msg1
-    35 00:020F: A0 02        	ldy	#msg1>>8
-    36 00:0211: 00 04        	BRK	STROUT		; 4 : strings out A = strings addr(Low)
-    37                        				; Y = strings addr(High)
+    34                        
+    35                        
+    36                        	.code
+    37                        	ORG	PRG_B
     38                        
-    39                        ;-----------
-    40                        ; conin
-    41                        ;-----------
-    42                        ;
-    43                        	; console out "echo back"
-    44 00:0213: A9 51        	lda	#$FF&msg2
-    45 00:0215: A0 02        	ldy	#msg2>>8
-    46 00:0217: 00 04        	BRK	STROUT
-    47                        	; echo back.  (terminate : assert NMI)
-    48                        lpback
-    49                        
-    50 00:0219: 00 03        	BRK	CONST
-    51 00:021B: 29 01        	and	#1
-    52 00:021D: F0 06        	beq	beee
-    53                        	
-    54 00:021F: 00 01        	BRK	CONIN		; 1 : conin  A : get char
-    55                        
-    56 00:0221: 00 02        	BRK	CONOUT		; ECHO BACK
-    57 00:0223: 80 F4        	bra	lpback
-    58                        
-    59                        beee
-    60 00:0225: A9 20        	lda	#' '
-    61 00:0227: 00 02        	BRK	CONOUT
-    62 00:0229: 80 EE        	bra	lpback
-    63                        	
-    64                        
-    65 00:022B: 47 6F 6F 64  msg	db	"Good morning! master",13,10,00
-       00:022F: 20 6D 6F 72 
-       00:0233: 6E 69 6E 67 
-       00:0237: 21 20 6D 61 
-       00:023B: 73 74 65 72 
-       00:023F: 0D 0A 00 
-    66 00:0242: 48 65 6C 6C  msg1	db	"Hello World!",13,10,0
-       00:0246: 6F 20 57 6F 
-       00:024A: 72 6C 64 21 
-       00:024E: 0D 0A 00 
-    67 00:0251: 45 63 68 6F  msg2	db	"Echo back test.",13,10,0
-       00:0255: 20 62 61 63 
-       00:0259: 6B 20 74 65 
-       00:025D: 73 74 2E 0D 
-       00:0261: 0A 00 
-    68                        
-    69                        	end
+    39                        ;--------- MEZW65C_RAM file header --------------------------
+    40 00:0400: 00           	db	0		; program bank:W65C816, 0:W65C02
+    41 00:0401: 20 04        	dw	COLD_START
+    42 00:0403: 00           	db	0		; data bank:W65C816, 0:W65C02
+    43 00:0404: 20 04        	dw	WSTART
+    44                        
+    45 00:0406: 00 00        	dw	0		; DP
+    46                        
+    47 00:0408: 4D 45 5A 57  mezID:	db	"MEZW65C",0	; Unique ID
+       00:040C: 36 35 43 00 
+    48                        
+    49                        start_p:	;file load address
+    50 00:0410: 00 04        	dw	PRG_B		; load address (Low)
+    51 00:0412: 00           	db	0		; PBR : program bank(W65C816)
+    52 00:0413: 00           	db	0		; reserve
+    53                        
+    54                        	; define Common memory address
+    55 00:0414: 00 00        PIC_IF:	dw	0	; reserve
+    56 00:0416: 00 00        	dw	0	; reserve
+    57                        
+    58 00:0418: 00           SW_816:	db	0	; 0 : W65C02
+    59                        			; 1 : W65C816 native mode 
+    60                        			; 2 : works in both modes
+    61 00:0419: 00           irq_sw	db	0	; 0 : no use IRQ console I/O
+    62                        			; 1 : use IRQ timer interrupt driven console I/O
+    63 00:041A: 00 00        reg_tp	dw	0	; monitor reserve (register save pointer)
+    64 00:041C: 00 00        reg_ts	dw	0	; monitor reserve (register table size)
+    65 00:041E: 00           nmi_sw	db	0	; 0 : No NMI support, 1: NMI support
+    66 00:041F: 01           bios_sw	db	1	; 0 : standalone program
+    67                        			; 1 : program call bios command
+    68                        			; 2 : monitor program (.SYS)
+    69                        ;--------- MEZW65C_RAM file header --------------------------
+    70                        
+    71                        COLD_START:
+    72                        WSTART:
+    73                        
+    74             00000001   CONIN	equ	1
+    75             00000002   CONOUT	equ	2
+    76             00000003   CONST	equ	3
+    77             00000004   STROUT	equ	4
+    78             000000FF   PEND	equ	$FF
+    79                        
+    80                        ;-----------
+    81                        ; TEST CONOUT
+    82                        ;-----------
+    83                        
+    84 00:0420: A9 00        	lda	#0
+    85 00:0422: AA           	tax
+    86                        	
+    87                        
+    88                        msg_loop
+    89 00:0423: BD 59 04     	lda	msg,x
+    90 00:0426: F0 05        	beq	prt_end
+    91 00:0428: 00 02        	BRK	CONOUT		; 2 : conout A = char
+    92 00:042A: E8           	inx
+    93 00:042B: 80 F6        	bra	msg_loop
+    94                        	
+    95                        prt_end
+    96                        
+    97                        ;-----------
+    98                        ; TEST STROUT
+    99                        ;-----------
+   100                        
+   101 00:042D: A9 70        	lda	#$FF&msg1
+   102 00:042F: A0 04        	ldy	#msg1>>8
+   103 00:0431: 00 04        	BRK	STROUT		; 4 : strings out A = strings addr(Low)
+   104                        				; Y = strings addr(High)
+   105                        ;
+   106                        ;--------------------
+   107                        ; TEST CONST, CONIN
+   108                        ;--------------------
+   109                        
+   110 00:0433: A9 7F        	lda	#$FF&msg2
+   111 00:0435: A0 04        	ldy	#msg2>>8
+   112 00:0437: 00 04        	BRK	STROUT
+   113 00:0439: 00 01        	BRK	CONIN		; 1 : conin  A : get char
+   114                        
+   115                        lpback
+   116 00:043B: 00 03        	BRK	CONST
+   117 00:043D: 29 01        	and	#1
+   118 00:043F: F0 0C        	beq	beee
+   119                        	
+   120 00:0441: 00 01        	BRK	CONIN		; 1 : conin  A : get char
+   121                        
+   122 00:0443: 48           	pha
+   123 00:0444: 00 02        	BRK	CONOUT		; ECHO BACK
+   124 00:0446: 68           	pla
+   125 00:0447: C9 03        	cmp	#3		; CTL-C
+   126 00:0449: F0 0C        	beq	end_prg
+   127 00:044B: 80 EE        	bra	lpback
+   128                        
+   129                        beee
+   130 00:044D: A9 2A        	lda	#'*'
+   131 00:044F: 00 02        	BRK	CONOUT
+   132 00:0451: A9 08        	lda	#8		; BS
+   133 00:0453: 00 02        	BRK	CONOUT
+   134 00:0455: 80 E4        	bra	lpback
+   135                        
+   136                        ;-----------
+   137                        ;program end
+   138                        ;-----------
+   139                        
+   140                        end_prg
+   141 00:0457: 00 FF        	BRK	PEND
+   142                        
+   143                        
+   144                        
+   145 00:0459: 47 6F 6F 64  msg	db	"Good morning! master",13,10,00
+       00:045D: 20 6D 6F 72 
+       00:0461: 6E 69 6E 67 
+       00:0465: 21 20 6D 61 
+       00:0469: 73 74 65 72 
+       00:046D: 0D 0A 00 
+   146 00:0470: 48 65 6C 6C  msg1	db	"Hello World!",13,10,0
+       00:0474: 6F 20 57 6F 
+       00:0478: 72 6C 64 21 
+       00:047C: 0D 0A 00 
+   147 00:047F: 45 63 68 6F  msg2	db	"Echo back test.",13,10,"Press any key to start.(CTL+C : terminate)",13,10,0
+       00:0483: 20 62 61 63 
+       00:0487: 6B 20 74 65 
+       00:048B: 73 74 2E 0D 
+       00:048F: 0A 50 72 65 
+       00:0493: 73 73 20 61 
+       00:0497: 6E 79 20 6B 
+       00:049B: 65 79 20 74 
+       00:049F: 6F 20 73 74 
+       00:04A3: 61 72 74 2E 
+       00:04A7: 28 43 54 4C 
+       00:04AB: 2B 43 20 3A 
+       00:04AF: 20 74 65 72 
+       00:04B3: 6D 69 6E 61 
+       00:04B7: 74 65 29 0D 
+       00:04BB: 0A 00 
+   148                        
+   149                        	end
 
 
-      Lines assembled: 69
+      Lines assembled: 149
       Errors: 0

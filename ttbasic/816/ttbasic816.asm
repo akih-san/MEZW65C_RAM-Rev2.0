@@ -258,7 +258,6 @@ div2:
 	dey
 	bne	div1		; loop 16 times
 
-	lda	remn
 	lda	div_y		; A = quotient
 
 	ply
@@ -466,8 +465,9 @@ getrnd:
 	tcd
 value_0	set	3
 	jsr	rand
-	lda	<R0
+;	lda	<R0
 	ldx	<L8+value_0
+
 	jsr	mod
 	sta	<R0
 	lda	<R0

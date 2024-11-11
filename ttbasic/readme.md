@@ -2,6 +2,9 @@
 豊四季タイニーBASICは、「タイニーBASICをCで書く」の著者である鈴木哲哉さんがC言語で作成された、TinyBASICです。<br>
 以前、SBCV20/8088ボードに移植したものを、MEZW65C_RAMで動作するようにしました。<br>
 エミュレーションモードと、ネイティブモードで動作するバイナリを用意しました。<br>
+サンプルプログラムとして、Hit and Blow（3桁の数当てゲーム）を添付しています。<br><br>
+このゲームのオリジナルソースは、[@iiguraさん](https://qiita.com/iigura)の[397 行で tiny basic のインタプリタを作る](https://qiita.com/iigura/items/3cad19fd38def582c342)
+から、拝借し、<br>豊四季タイニーBASIC用にアレンジしました。<br><Br>
 
 ![photo 1](../photo/ttbasic_op.png)
 

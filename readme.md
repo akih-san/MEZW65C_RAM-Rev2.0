@@ -1,5 +1,5 @@
-# <メザニンボードMEZW65C_RAM photo>
-![](https://github.com/akih-san/MEZW65C_RAM/blob/main/photo/p2.JPG)
+# <メザニンボードMEZW65C_RAM Photo>
+![](photo/p2.JPG)
 <br>
 <br>
 <br>

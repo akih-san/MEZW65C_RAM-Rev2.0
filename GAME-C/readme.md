@@ -31,3 +31,11 @@ GAME-Cは、「たけおか ぼちぼち日記」さんがＣ言語で記述さ�
 
 - [GAMEインタプリタ文法](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/GAME-C/GMAE%20syntax.txt)<br>
 
+
+- サンプルプログラム
+  <br>
+  サンプルプログラムとして、ライフゲーム、迷路、オセロゲームがあります。<br>
+  ライフゲームは、動作が重くてインタプリタで実行するには向いてないかもしれません。<br>
+  8080のGAMEではコンパイラがあり、高速でライフゲームを実行することが出来ます。<br>
+  [迷路](https://piclabo.blog.ss-blog.jp/CPM80GameCompiler)は、[skyriver](https://x.com/wcinp)さんのを拝借しています。<br>
+

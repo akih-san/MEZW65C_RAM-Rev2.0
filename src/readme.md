@@ -1,3 +1,11 @@
+# ファイルの実行
+Rev2.0では、ファイル管理用の[ファイルヘッダ](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/file_header/fileheader.pdf)を持ったファイルを使用します。<br>
+ファイルヘッダ情報は32バイトで、ファイルの先頭にあります。<br>
+Rev2.0対応のファイルであれば、ファイル名を入力するだけで、プログラムを<br>
+実行することが出来ます。<br>
+
+![](../photo/run_program.png)
+
 # ファームウェアRev2.0のコマンド
 
 - コマンド一覧

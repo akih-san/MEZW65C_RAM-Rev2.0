@@ -3,6 +3,7 @@
 W65C816モニターは、[@electrelic](https://x.com/electrelic)さんの[Universal Monitor](https://electrelic.com/electrelic/node/1317)がベースとなっています。<br>
 6502用のをW65C816用に改修しました。基本的な操作は変わりません。<br>
 逆アセンブルコマンドを追加し、Ｇコマンドにストプパラメータを追加しました。<br>
+Lコマンドの詳細は、[L(oad) コマンド](https://electrelic.com/electrelic/node/1332)を参照してください。<br>
 
 | コマンド | パラメータ | 内容 |補足|
 |---------|-----------|------|----|
@@ -17,5 +18,6 @@ R | [register] | レジスタ一覧表示（パラメータ無しのとき）
 S | [bank:][addr] | 指定アドレスのメモリ内容変更|バンクは０～７
 　||ー、＋キーでアドレスの進退
 BYE || モニターを終了する
+<br>
 
 ![](../photo/mon16cmd.png)

@@ -4,6 +4,9 @@ W65C816モニターは、[@electrelic](https://x.com/electrelic)さんの[Univer
 6502用のをW65C816用に改修しました。基本的な操作は変わりません。<br>
 逆アセンブルコマンドを追加し、Ｇコマンドにストプパラメータを追加しました。<br>
 Lコマンドの詳細は、[L(oad) コマンド](https://electrelic.com/electrelic/node/1332)を参照してください。<br>
+<br>
+逆アセンブラのソースは[andrew-jacobs](https://github.com/andrew-jacobs)さんの[w65c816sxb-hacker](https://github.com/andrew-jacobs/w65c816sxb-hacker)から逆アセンブル部分を利用しています。<br>
+スタック操作命令のPEI, PEA, PER が正しく表示されなかったので、修正してあります。<br>
 
 | コマンド | パラメータ | 内容 |補足|
 |---------|-----------|------|----|

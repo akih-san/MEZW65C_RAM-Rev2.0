@@ -4,6 +4,10 @@ W65C02モニターは、[@electrelic](https://x.com/electrelic)さんの[Univers
 6502用のを改修しました。基本的な操作は変わりません。<br>
 逆アセンブルコマンドを追加し、Ｇコマンドにストプパラメータを追加しました。<br>
 Lコマンドの詳細は、[L(oad) コマンド](https://electrelic.com/electrelic/node/1332)を参照してください。<br>
+<br>
+逆アセンブラのソースは[zuiko21](https://github.com/zuiko21)さんの[minios](https://github.com/zuiko21/minimOS/blob/master/OS/shell/disasm.s)を利用しています。<br>
+表示形式を、W65C816モニターの逆アセンブラに合わせています。<br>
+<br>
 
 | コマンド | パラメータ | 内容 |補足|
 |---------|-----------|------|----|

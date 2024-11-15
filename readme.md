@@ -14,7 +14,7 @@
 - [W65C816モニターコマンド](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/mon16)<br>
 - [W65C02モニターコマンド](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/mon02)<br>
 - [BIOS CALL](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/BIOS%20CALL.pdf)<br>
-- [EhBASIC](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/basic/BIOSCALL)<br>
+- [EhBASIC](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/basic/)<br>
 - [VTL2](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/vtl2)<br>
 - [豊四季タイニーベーシック](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/ttbasic)<br>
 - [GAMEインタープリタ](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/tree/main/GAME-C)<br>

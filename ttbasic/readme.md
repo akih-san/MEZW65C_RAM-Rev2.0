@@ -13,12 +13,15 @@ STARSHOOTERを添付しました。<br><br>
   このゲームのオリジナルソースは、[@iiguraさん](https://qiita.com/iigura)の[397 行で tiny basic のインタプリタを作る](https://qiita.com/iigura/items/3cad19fd38def582c342)
   から、拝借し、<br>豊四季タイニーBASIC用にアレンジしました。<br><Br>
 
-- STARSHOOTER<br>br>
-  ttbasicは、数字しか入力できないので、VTLのオリジナルと入力方法が異なります。<br>
-  ５×５のマスの中に星（＊）が「3-3」にあります。これに星をぶつける（「C3」と入力）と<br>
-    爆発して、四方に飛び散ります。飛び散った先に星があればぶつかって消滅するといったゲームです。<br>
-    最終的に、下記のようにマスの淵に星を並べることが求められていますが、ゲームの終了判定はして<br>
-    いないので、終了はCtrl+Cで行います。単純ですが、結構ハマります（笑）。<br><br>
+- STARSHOOTER<br><br>
+  豊四季タイニーBASICは、数字しか入力できないので、VTLのオリジナルと入力方法が異なります。<br>
+  ５×５のマスの中に星（＊）が「33」にあります。これに星をぶつける（「33」と入力）と<br>
+  爆発して、四方に飛び散ります。飛び散った先に星があればぶつかって消滅するといったゲームです。<br>
+  最終的に、下記のようにマスの淵に星を並べることが求められていますが、ゲームの終了判定はして<br>
+  いないので、終了は99を入力します。単純ですが、結構ハマります（笑）。<br>
+  [VTL2](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/vtl2/STAR_SHT.VTL)と
+  [ttbasic](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/ttbasic/STR_SHTR.TBC)のプログラムを見比べて、
+  処理系の違いを理解するのも一考かもしれませんね。<br><br>
     ![](../photo/starshot.png)
     
 

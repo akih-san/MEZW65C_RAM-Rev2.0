@@ -1,12 +1,27 @@
 # 豊四季タイニーBASIC
+
+![photo 1](../photo/ttbasic_op.png)
+
 豊四季タイニーBASICは、「タイニーBASICをCで書く」の著者である鈴木哲哉さんがC言語で作成された、TinyBASICです。<br>
 以前、SBCV20/8088ボードに移植したものを、MEZW65C_RAMで動作するようにしました。<br>
 エミュレーションモードと、ネイティブモードで動作するバイナリを用意しました。<br>
-サンプルプログラムとして、Hit and Blow（3桁の数当てゲーム）を添付しています。<br><br>
-このゲームのオリジナルソースは、[@iiguraさん](https://qiita.com/iigura)の[397 行で tiny basic のインタプリタを作る](https://qiita.com/iigura/items/3cad19fd38def582c342)
-から、拝借し、<br>豊四季タイニーBASIC用にアレンジしました。<br><Br>
+サンプルプログラムとして、Hit and Blow（3桁の数当てゲーム）と、
+[VTL2リファレンスマニュアル](https://github.com/akih-san/MEZW65C_RAM-Rev2.0/blob/main/vtl2/Altair_680-VTL-2%20Manual-05-Beta_1-Searchable.pdf)
+に載っていた<br>
+STARSHOOTERを添付しました。<br><br>
+- Hit and Blow（3桁の数当てゲーム）<br><br>
+  このゲームのオリジナルソースは、[@iiguraさん](https://qiita.com/iigura)の[397 行で tiny basic のインタプリタを作る](https://qiita.com/iigura/items/3cad19fd38def582c342)
+  から、拝借し、<br>豊四季タイニーBASIC用にアレンジしました。<br><Br>
 
-![photo 1](../photo/ttbasic_op.png)
+- STARSHOOTER<br>br>
+  ttbasicは、数字しか入力できないので、VTLのオリジナルと入力方法が異なります。<br>
+  ５×５のマスの中に星（＊）が「3-3」にあります。これに星をぶつける（「C3」と入力）と<br>
+    爆発して、四方に飛び散ります。飛び散った先に星があればぶつかって消滅するといったゲームです。<br>
+    最終的に、下記のようにマスの淵に星を並べることが求められていますが、ゲームの終了判定はして<br>
+    いないので、終了はCtrl+Cで行います。単純ですが、結構ハマります（笑）。<br><br>
+    ![](../photo/starshot.png)
+    
+
 
 [SBCV20_8088版豊四季タイニーBASIC](https://github.com/akih-san/SBCV20_8088)
 

@@ -2,7 +2,7 @@
 
 W65C816モニターは、[@electrelic](https://x.com/electrelic)さんの[Universal Monitor](https://electrelic.com/electrelic/node/1317)がベースとなっています。<br>
 6502用のをW65C816用に改修しました。基本的な操作は変わりません。<br>
-逆アセンブルコマンドを追加し、Ｇコマンドにストプパラメータを追加しました。<br>
+逆アセンブルコマンドを追加し、Ｇコマンドにsutoppuストップパラメータを追加しました。<br>
 Lコマンドの詳細は、[L(oad) コマンド](https://electrelic.com/electrelic/node/1332)を参照してください。<br>
 <br>
 逆アセンブラのソースは[andrew-jacobs](https://github.com/andrew-jacobs)さんの[w65c816sxb-hacker](https://github.com/andrew-jacobs/w65c816sxb-hacker)から逆アセンブル部分を利用しています。<br>

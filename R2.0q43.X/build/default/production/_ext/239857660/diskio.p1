@@ -3050,31 +3050,6 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../drivers/diskio.c: 169: }
 [e :UE 2466 ]
 }
-"171
-[; ;../drivers/diskio.c: 171: int fatdisk_debug(int newval)
-[v _fatdisk_debug `(i ~T0 @X0 1 ef1`i ]
-"172
-[; ;../drivers/diskio.c: 172: {
-{
-[e :U _fatdisk_debug ]
-"171
-[; ;../drivers/diskio.c: 171: int fatdisk_debug(int newval)
-[v _newval `i ~T0 @X0 1 r1 ]
-"172
-[; ;../drivers/diskio.c: 172: {
-[f ]
-"173
-[; ;../drivers/diskio.c: 173:     int res = debug_flags;
-[v _res `i ~T0 @X0 1 a ]
-[e = _res _debug_flags ]
-"177
-[; ;../drivers/diskio.c: 177:     return res;
-[e ) _res ]
-[e $UE 2479  ]
-"178
-[; ;../drivers/diskio.c: 178: }
-[e :UE 2479 ]
-}
 [p f _printf 12583056 ]
 [a 13C 102 97 116 58 32 0 ]
 [a 16C 102 97 116 58 32 0 ]

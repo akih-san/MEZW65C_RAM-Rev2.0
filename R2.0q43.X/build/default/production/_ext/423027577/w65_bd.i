@@ -29539,11 +29539,6 @@ void port_init(void)
  TRISE1 = 0;
 
 
- WPUE2 = 1;
- LATE2 = 1;
- TRISE2 = 0;
-
-
  WPUA0 = 0;
  LATA0 = 0;
  TRISA0 = 0;
@@ -29564,22 +29559,22 @@ void port_init(void)
 
  WPUA1 = 0;
  LATA1 = 0;
- TRISA1 = 1;
+ TRISA1 = 0;
 
 
  WPUA4 = 1;
  LATA4 = 1;
- TRISA4 = 1;
+ TRISA4 = 0;
 
 
     WPUC = 0xff;
     LATC = 0x00;
-    TRISC = 0xff;
+    TRISC = 0x00;
 
 
  WPUD = 0xff;
  LATD = 0x00;
- TRISD = 0xff;
+ TRISD = 0x00;
 
 
  WPUB = 0xff;
@@ -29591,6 +29586,12 @@ void port_init(void)
  SLRCONBbits.SLRB0 = 0;
  SLRCONBbits.SLRB1 = 0;
  SLRCONBbits.SLRB2 = 0;
+
+
+ WPUE2 = 1;
+ LATE2 = 1;
+ TRISE2 = 0;
+
 }
 
 void uart_init(void)
@@ -29938,7 +29939,8 @@ void setup_sd(void) {
 
 
     static int retry;
-    for (retry = 0; 1; retry++) {
+
+ for (retry = 0; 1; retry++) {
         if (20 <= retry) {
             printf("No SD Card?\n\r");
             while(1);
@@ -30210,25 +30212,7 @@ void SPI_SD_end_transaction(struct SPI *ctx_)
     SPI_SD_select(ctx_, 0);
     release_bus(ctx_);
 }
-
-uint8_t SPI_SD_transfer_byte(struct SPI *ctx_, uint8_t output)
-{
-    SPI1TCNTH = 0;
-    SPI1TCNTL = 1;
-    SPI1TXB = output;
-    while(!SPI1RXIF);
-    return SPI1RXB;
-}
-
-void SPI_SD_transfer(struct SPI *ctx_, void *buf, unsigned int count)
-{
-    uint8_t *p = (uint8_t*)buf;
-    for (int i = 0; i < count; i++) {
-        *p = SPI_SD_transfer_byte(ctx_, *p);
-        p++;
-    }
-}
-
+# 164 "../src/boards/../../drivers/pic18f57q43_spi.c"
 void SPI_SD_send(struct SPI *ctx_, const void *buf, unsigned int count)
 {
     uint8_t *p = (uint8_t*)buf;
@@ -30345,7 +30329,7 @@ void SPI_SD_select(struct SPI *ctx_, int select)
 {
     LATE2 = select ? 0 : 1;
 }
-# 399 "../src/boards/w65_bd.c" 2
+# 400 "../src/boards/w65_bd.c" 2
 
 # 1 "../src/boards/../../drivers/SDCard.c" 1
 # 27 "../src/boards/../../drivers/SDCard.c"
@@ -30695,19 +30679,5 @@ uint16_t __SDCard_crc16(uint16_t crc, const void *buf, unsigned int count)
 
     return crc;
 }
-
-uint16_t SDCard_crc16(const void *buf, unsigned int count)
-{
-    return __SDCard_crc16(0, buf, count);
-}
-
-int SDCard_debug(int newval)
-{
-    int res = debug_flags;
-
-
-
-    return res;
-}
-# 400 "../src/boards/w65_bd.c" 2
+# 401 "../src/boards/w65_bd.c" 2
 

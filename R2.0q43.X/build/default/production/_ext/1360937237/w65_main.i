@@ -29523,11 +29523,11 @@ void main(void)
  uart_init();
  wait_for_programmer();
 
- clk_init();
- reset_cpu();
-
  setup_sd();
  if (disk_init() < 0) while (1);
+
+ clk_init();
+ reset_cpu();
 
 
  cpu_flg = 1;

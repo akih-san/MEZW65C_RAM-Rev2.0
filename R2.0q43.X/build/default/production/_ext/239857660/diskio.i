@@ -29128,12 +29128,3 @@ DRESULT disk_ioctl(BYTE pdrv, BYTE cmd, void* buff)
     do { if (debug_flags) printf ("disk_ioctl: pdrv=%d, cmd=%d, buff=0x%lx: res=%d\n\r", pdrv, cmd, (long)buff, res); } while(0);
     return res;
 }
-
-int fatdisk_debug(int newval)
-{
-    int res = debug_flags;
-
-
-
-    return res;
-}

@@ -197,12 +197,12 @@ void main(void)
 	port_init();
 	uart_init();
 	wait_for_programmer();
-	
-	clk_init();		// initial CLK = 2MHz
-	reset_cpu();
 
 	setup_sd();
 	if (disk_init() < 0) while (1);
+
+	clk_init();		// initial CLK = 2MHz
+	reset_cpu();
 
 	// memory test
 	cpu_flg = 1;	// need cpu_flg = 1 to test memory

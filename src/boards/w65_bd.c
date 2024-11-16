@@ -243,7 +243,8 @@ void setup_sd(void) {
     // Initialize SD Card
     //
     static int retry;
-    for (retry = 0; 1; retry++) {
+
+	for (retry = 0; 1; retry++) {
         if (20 <= retry) {
             printf("No SD Card?\n\r");
             while(1);

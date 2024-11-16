@@ -230,11 +230,6 @@ void port_init(void)
 	LAT(W65_NMI) = 1;		// disable NMI
 	TRIS(W65_NMI) = 0;		// Set as output
 
-	// SPI_SS
-	WPU(SPI_SS) = 1;		// SPI_SS Week pull up
-	LAT(SPI_SS) = 1;		// set SPI disable
-	TRIS(SPI_SS) = 0;		// Set as onput
-
 	// /BE output pin
 	WPU(W65_BE) = 0;		// disable pull up
 	LAT(W65_BE) = 0;		// BUS Hi-z
@@ -256,22 +251,22 @@ void port_init(void)
 	// DCK (RA1)
 	WPU(W65_DCK) = 0;	// disable pull up
 	LAT(W65_DCK) = 0;	// BANK REG CLK = 0
-	TRIS(W65_DCK) = 1;	// Set as input
+	TRIS(W65_DCK) = 0;	// Set as output
 
 	// SRAM_R/(/W) (RA4)
 	WPU(W65_RW) = 1;	// week pull up
 	LAT(W65_RW) = 1;		// SRAM R/(/W) disactive
-	TRIS(W65_RW) = 1;		// Set as input
+	TRIS(W65_RW) = 0;		// Set as output
 
 	// Address bus A7-A0 pin
     WPU(W65_ADR_L) = 0xff;	// Week pull up
     LAT(W65_ADR_L) = 0x00;
-    TRIS(W65_ADR_L) = 0xff;	// Set as input
+    TRIS(W65_ADR_L) = 0x00;	// Set as output
 
 	// Address bus A15-A8 pin
 	WPU(W65_ADR_H) = 0xff;	// Week pull up
 	LAT(W65_ADR_H) = 0x00;
-	TRIS(W65_ADR_H) = 0xff;	// Set as input
+	TRIS(W65_ADR_H) = 0x00;	// Set as output
 
 	// Data bus D7-D0 pin
 	WPU(W65_ADBUS) = 0xff;	// Week pull up
@@ -283,12 +278,21 @@ void port_init(void)
 	SLRCON(SPI_SD_PICO) = 0;
 	SLRCON(SPI_SD_CLK) = 0;
 	SLRCON(SPI_SD_POCI) = 0;
+
+	// SPI_SS
+	WPU(SPI_SS) = 1;		// SPI_SS Week pull up
+	LAT(SPI_SS) = 1;		// set SPI enable for SD card init
+	TRIS(SPI_SS) = 0;		// Set as onput
+
 }
 
 void uart_init(void)
 {
 	// UART3 initialize
-	U3BRG = 416;			// 9600bps @ 64MHz
+//	U3BRG = 416;	// 9600bps @ 64MHz
+//	U3BRG = 208;	// 19200bps @ 64MHz
+//	U3BRG = 104;	// 38400bps @ 64MHz
+	U3BRG = 34;		// 115200bps @ 64MHz
 	U3RXEN = 1;			// Receiver enable
 	U3TXEN = 1;			// Transmitter enable
 

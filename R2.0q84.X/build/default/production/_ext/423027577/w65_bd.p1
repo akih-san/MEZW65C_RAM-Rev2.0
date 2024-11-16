@@ -113,12 +113,6 @@ Version 4.0 HI-TECH Software Intermediate Code
 "17891
 [; ;C:/Users/akihito/.mchp_packs/Microchip/PIC18F-Q_DFP/1.25.433/xc8\pic\include\proc\pic18f47q84.h: 17891: extern volatile C1MASK1Ubits_t C1MASK1Ubits __attribute__((address(0x19A)));
 [v _TRISE1 `Vb ~T0 @X0 0 e@9809 ]
-"20489
-[v _WPUE2 `Vb ~T0 @X0 0 e@8458 ]
-"11648
-[v _LATE2 `Vb ~T0 @X0 0 e@9746 ]
-"17894
-[v _TRISE2 `Vb ~T0 @X0 0 e@9810 ]
 "20387
 [; ;C:/Users/akihito/.mchp_packs/Microchip/PIC18F-Q_DFP/1.25.433/xc8\pic\include\proc\pic18f47q84.h: 20387:     };
 [v _WPUA0 `Vb ~T0 @X0 0 e@8200 ]
@@ -195,6 +189,12 @@ Version 4.0 HI-TECH Software Intermediate Code
 "60458
 [; ;C:/Users/akihito/.mchp_packs/Microchip/PIC18F-Q_DFP/1.25.433/xc8\pic\include\proc\pic18f47q84.h: 60458: extern volatile SLRCONBbits_t SLRCONBbits __attribute__((address(0x40B)));
 [v _SLRCONBbits `VS2763 ~T0 @X0 0 e@1035 ]
+"20489
+[v _WPUE2 `Vb ~T0 @X0 0 e@8458 ]
+"11648
+[v _LATE2 `Vb ~T0 @X0 0 e@9746 ]
+"17894
+[v _TRISE2 `Vb ~T0 @X0 0 e@9810 ]
 "34505
 [; ;C:/Users/akihito/.mchp_packs/Microchip/PIC18F-Q_DFP/1.25.433/xc8\pic\include\proc\pic18f47q84.h: 34505: extern volatile unsigned short U3BRG __attribute__((address(0x2D4)));
 [v _U3BRG `Vus ~T0 @X0 0 e@724 ]
@@ -285,8 +285,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [v _RA2PPS `Vuc ~T0 @X0 0 e@515 ]
 "46 ../src/boards/../../drivers/../drivers/SDCard.h
 [v _SDCard_init `(i ~T0 @X0 0 ef3`i`i`us ]
-"252 ../src/boards/w65_bd.c
-[; ;../src/boards/w65_bd.c: 252:         if (SDCard_init(SPI_CLOCK_100KHZ, SPI_CLOCK_4MHZ, 100) == 0)
+"253 ../src/boards/w65_bd.c
+[; ;../src/boards/w65_bd.c: 253:         if (SDCard_init(SPI_CLOCK_100KHZ, SPI_CLOCK_4MHZ, 100) == 0)
 [c E23864 0 1 2 3 4 5 6 .. ]
 [n E23864 . SPI_CLOCK_100KHZ SPI_CLOCK_2MHZ SPI_CLOCK_4MHZ SPI_CLOCK_5MHZ SPI_CLOCK_6MHZ SPI_CLOCK_8MHZ SPI_CLOCK_10MHZ  ]
 "64512 C:/Users/akihito/.mchp_packs/Microchip/PIC18F-Q_DFP/1.25.433/xc8\pic\include\proc\pic18f47q84.h
@@ -423,8 +423,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [v _SPI1RXB `Vuc ~T0 @X0 0 e@128 ]
 "40 ../src/boards/../../drivers/SDCard.c
 [; ;../src/boards/../../drivers/SDCard.c: 40: static struct SDCard {
-[s S3525 `*S3301 1 `us 1 :1 `uc 1 ]
-[n S3525 SDCard spi timeout calc_read_crc ]
+[s S3516 `*S3301 1 `us 1 :1 `uc 1 ]
+[n S3516 SDCard spi timeout calc_read_crc ]
 "47 ../src/boards/../../drivers/../drivers/SDCard.h
 [v _SDCard_command `(i ~T0 @X0 0 ef4`uc`ul`*v`ui ]
 "50
@@ -4521,528 +4521,528 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../src/boards/w65_cmn.c: 231:  TRISE1 = 0;
 [e = _TRISE1 -> -> 0 `i `b ]
 "234
-[; ;../src/boards/w65_cmn.c: 234:  WPUE2 = 1;
-[e = _WPUE2 -> -> 1 `i `b ]
-"235
-[; ;../src/boards/w65_cmn.c: 235:  LATE2 = 1;
-[e = _LATE2 -> -> 1 `i `b ]
-"236
-[; ;../src/boards/w65_cmn.c: 236:  TRISE2 = 0;
-[e = _TRISE2 -> -> 0 `i `b ]
-"239
-[; ;../src/boards/w65_cmn.c: 239:  WPUA0 = 0;
+[; ;../src/boards/w65_cmn.c: 234:  WPUA0 = 0;
 [e = _WPUA0 -> -> 0 `i `b ]
-"240
-[; ;../src/boards/w65_cmn.c: 240:  LATA0 = 0;
+"235
+[; ;../src/boards/w65_cmn.c: 235:  LATA0 = 0;
 [e = _LATA0 -> -> 0 `i `b ]
-"241
-[; ;../src/boards/w65_cmn.c: 241:  TRISA0 = 0;
+"236
+[; ;../src/boards/w65_cmn.c: 236:  TRISA0 = 0;
 [e = _TRISA0 -> -> 0 `i `b ]
-"243
-[; ;../src/boards/w65_cmn.c: 243:  WPUA3 = 0;
+"238
+[; ;../src/boards/w65_cmn.c: 238:  WPUA3 = 0;
 [e = _WPUA3 -> -> 0 `i `b ]
-"244
-[; ;../src/boards/w65_cmn.c: 244:  LATA3 = 1;
+"239
+[; ;../src/boards/w65_cmn.c: 239:  LATA3 = 1;
 [e = _LATA3 -> -> 1 `i `b ]
-"245
-[; ;../src/boards/w65_cmn.c: 245:  TRISA3 = 0;
+"240
+[; ;../src/boards/w65_cmn.c: 240:  TRISA3 = 0;
 [e = _TRISA3 -> -> 0 `i `b ]
-"248
-[; ;../src/boards/w65_cmn.c: 248:  WPUA2 = 1;
+"243
+[; ;../src/boards/w65_cmn.c: 243:  WPUA2 = 1;
 [e = _WPUA2 -> -> 1 `i `b ]
-"249
-[; ;../src/boards/w65_cmn.c: 249:  TRISA2 = 0;
+"244
+[; ;../src/boards/w65_cmn.c: 244:  TRISA2 = 0;
 [e = _TRISA2 -> -> 0 `i `b ]
-"250
-[; ;../src/boards/w65_cmn.c: 250:  LATA2 = 1;
+"245
+[; ;../src/boards/w65_cmn.c: 245:  LATA2 = 1;
 [e = _LATA2 -> -> 1 `i `b ]
-"253
-[; ;../src/boards/w65_cmn.c: 253:  WPUA5 = 0;
+"248
+[; ;../src/boards/w65_cmn.c: 248:  WPUA5 = 0;
 [e = _WPUA5 -> -> 0 `i `b ]
-"254
-[; ;../src/boards/w65_cmn.c: 254:  TRISA5 = 1;
+"249
+[; ;../src/boards/w65_cmn.c: 249:  TRISA5 = 1;
 [e = _TRISA5 -> -> 1 `i `b ]
-"257
-[; ;../src/boards/w65_cmn.c: 257:  WPUA1 = 0;
+"252
+[; ;../src/boards/w65_cmn.c: 252:  WPUA1 = 0;
 [e = _WPUA1 -> -> 0 `i `b ]
-"258
-[; ;../src/boards/w65_cmn.c: 258:  LATA1 = 0;
+"253
+[; ;../src/boards/w65_cmn.c: 253:  LATA1 = 0;
 [e = _LATA1 -> -> 0 `i `b ]
-"259
-[; ;../src/boards/w65_cmn.c: 259:  TRISA1 = 1;
-[e = _TRISA1 -> -> 1 `i `b ]
-"262
-[; ;../src/boards/w65_cmn.c: 262:  WPUA4 = 1;
+"254
+[; ;../src/boards/w65_cmn.c: 254:  TRISA1 = 0;
+[e = _TRISA1 -> -> 0 `i `b ]
+"257
+[; ;../src/boards/w65_cmn.c: 257:  WPUA4 = 1;
 [e = _WPUA4 -> -> 1 `i `b ]
-"263
-[; ;../src/boards/w65_cmn.c: 263:  LATA4 = 1;
+"258
+[; ;../src/boards/w65_cmn.c: 258:  LATA4 = 1;
 [e = _LATA4 -> -> 1 `i `b ]
-"264
-[; ;../src/boards/w65_cmn.c: 264:  TRISA4 = 1;
-[e = _TRISA4 -> -> 1 `i `b ]
-"267
-[; ;../src/boards/w65_cmn.c: 267:     WPUC = 0xff;
+"259
+[; ;../src/boards/w65_cmn.c: 259:  TRISA4 = 0;
+[e = _TRISA4 -> -> 0 `i `b ]
+"262
+[; ;../src/boards/w65_cmn.c: 262:     WPUC = 0xff;
 [e = _WPUC -> -> 255 `i `uc ]
-"268
-[; ;../src/boards/w65_cmn.c: 268:     LATC = 0x00;
+"263
+[; ;../src/boards/w65_cmn.c: 263:     LATC = 0x00;
 [e = _LATC -> -> 0 `i `uc ]
-"269
-[; ;../src/boards/w65_cmn.c: 269:     TRISC = 0xff;
-[e = _TRISC -> -> 255 `i `uc ]
-"272
-[; ;../src/boards/w65_cmn.c: 272:  WPUD = 0xff;
+"264
+[; ;../src/boards/w65_cmn.c: 264:     TRISC = 0x00;
+[e = _TRISC -> -> 0 `i `uc ]
+"267
+[; ;../src/boards/w65_cmn.c: 267:  WPUD = 0xff;
 [e = _WPUD -> -> 255 `i `uc ]
-"273
-[; ;../src/boards/w65_cmn.c: 273:  LATD = 0x00;
+"268
+[; ;../src/boards/w65_cmn.c: 268:  LATD = 0x00;
 [e = _LATD -> -> 0 `i `uc ]
-"274
-[; ;../src/boards/w65_cmn.c: 274:  TRISD = 0xff;
-[e = _TRISD -> -> 255 `i `uc ]
-"277
-[; ;../src/boards/w65_cmn.c: 277:  WPUB = 0xff;
+"269
+[; ;../src/boards/w65_cmn.c: 269:  TRISD = 0x00;
+[e = _TRISD -> -> 0 `i `uc ]
+"272
+[; ;../src/boards/w65_cmn.c: 272:  WPUB = 0xff;
 [e = _WPUB -> -> 255 `i `uc ]
-"278
-[; ;../src/boards/w65_cmn.c: 278:  LATB = 0x00;
+"273
+[; ;../src/boards/w65_cmn.c: 273:  LATB = 0x00;
 [e = _LATB -> -> 0 `i `uc ]
-"279
-[; ;../src/boards/w65_cmn.c: 279:  TRISB = 0xff;
+"274
+[; ;../src/boards/w65_cmn.c: 274:  TRISB = 0xff;
 [e = _TRISB -> -> 255 `i `uc ]
-"283
-[; ;../src/boards/w65_cmn.c: 283:  SLRCONBbits.SLRB0 = 0;
+"278
+[; ;../src/boards/w65_cmn.c: 278:  SLRCONBbits.SLRB0 = 0;
 [e = . . _SLRCONBbits 0 0 -> -> 0 `i `uc ]
-"284
-[; ;../src/boards/w65_cmn.c: 284:  SLRCONBbits.SLRB1 = 0;
+"279
+[; ;../src/boards/w65_cmn.c: 279:  SLRCONBbits.SLRB1 = 0;
 [e = . . _SLRCONBbits 0 1 -> -> 0 `i `uc ]
-"285
-[; ;../src/boards/w65_cmn.c: 285:  SLRCONBbits.SLRB2 = 0;
+"280
+[; ;../src/boards/w65_cmn.c: 280:  SLRCONBbits.SLRB2 = 0;
 [e = . . _SLRCONBbits 0 2 -> -> 0 `i `uc ]
-"286
-[; ;../src/boards/w65_cmn.c: 286: }
+"283
+[; ;../src/boards/w65_cmn.c: 283:  WPUE2 = 1;
+[e = _WPUE2 -> -> 1 `i `b ]
+"284
+[; ;../src/boards/w65_cmn.c: 284:  LATE2 = 1;
+[e = _LATE2 -> -> 1 `i `b ]
+"285
+[; ;../src/boards/w65_cmn.c: 285:  TRISE2 = 0;
+[e = _TRISE2 -> -> 0 `i `b ]
+"287
+[; ;../src/boards/w65_cmn.c: 287: }
 [e :UE 3336 ]
 }
-"288
-[; ;../src/boards/w65_cmn.c: 288: void uart_init(void)
-[v _uart_init `(v ~T0 @X0 1 ef ]
 "289
-[; ;../src/boards/w65_cmn.c: 289: {
+[; ;../src/boards/w65_cmn.c: 289: void uart_init(void)
+[v _uart_init `(v ~T0 @X0 1 ef ]
+"290
+[; ;../src/boards/w65_cmn.c: 290: {
 {
 [e :U _uart_init ]
 [f ]
-"294
-[; ;../src/boards/w65_cmn.c: 294:  U3BRG = 34;
-[e = _U3BRG -> -> 34 `i `us ]
 "295
-[; ;../src/boards/w65_cmn.c: 295:  U3RXEN = 1;
-[e = _U3RXEN -> -> 1 `i `b ]
+[; ;../src/boards/w65_cmn.c: 295:  U3BRG = 34;
+[e = _U3BRG -> -> 34 `i `us ]
 "296
-[; ;../src/boards/w65_cmn.c: 296:  U3TXEN = 1;
+[; ;../src/boards/w65_cmn.c: 296:  U3RXEN = 1;
+[e = _U3RXEN -> -> 1 `i `b ]
+"297
+[; ;../src/boards/w65_cmn.c: 297:  U3TXEN = 1;
 [e = _U3TXEN -> -> 1 `i `b ]
-"299
-[; ;../src/boards/w65_cmn.c: 299:  TRISA7 = 1;
-[e = _TRISA7 -> -> 1 `i `b ]
 "300
-[; ;../src/boards/w65_cmn.c: 300:  U3RXPPS = 0x07;
+[; ;../src/boards/w65_cmn.c: 300:  TRISA7 = 1;
+[e = _TRISA7 -> -> 1 `i `b ]
+"301
+[; ;../src/boards/w65_cmn.c: 301:  U3RXPPS = 0x07;
 [e = _U3RXPPS -> -> 7 `i `uc ]
-"303
-[; ;../src/boards/w65_cmn.c: 303:  LATA6 = 1;
-[e = _LATA6 -> -> 1 `i `b ]
 "304
-[; ;../src/boards/w65_cmn.c: 304:  TRISA6 = 0;
-[e = _TRISA6 -> -> 0 `i `b ]
+[; ;../src/boards/w65_cmn.c: 304:  LATA6 = 1;
+[e = _LATA6 -> -> 1 `i `b ]
 "305
-[; ;../src/boards/w65_cmn.c: 305:  RA6PPS = 0x26;
+[; ;../src/boards/w65_cmn.c: 305:  TRISA6 = 0;
+[e = _TRISA6 -> -> 0 `i `b ]
+"306
+[; ;../src/boards/w65_cmn.c: 306:  RA6PPS = 0x26;
 [e = _RA6PPS -> -> 38 `i `uc ]
-"307
-[; ;../src/boards/w65_cmn.c: 307:  U3ON = 1;
+"308
+[; ;../src/boards/w65_cmn.c: 308:  U3ON = 1;
 [e = _U3ON -> -> 1 `i `b ]
-"309
-[; ;../src/boards/w65_cmn.c: 309:  rx_wp = 0;
-[e = _rx_wp -> -> 0 `i `ui ]
 "310
-[; ;../src/boards/w65_cmn.c: 310:  rx_rp = 0;
-[e = _rx_rp -> -> 0 `i `ui ]
+[; ;../src/boards/w65_cmn.c: 310:  rx_wp = 0;
+[e = _rx_wp -> -> 0 `i `ui ]
 "311
-[; ;../src/boards/w65_cmn.c: 311:  rx_cnt = 0;
-[e = _rx_cnt -> -> 0 `i `ui ]
+[; ;../src/boards/w65_cmn.c: 311:  rx_rp = 0;
+[e = _rx_rp -> -> 0 `i `ui ]
 "312
-[; ;../src/boards/w65_cmn.c: 312:  U3RXIE = 1;
-[e = _U3RXIE -> -> 1 `i `b ]
+[; ;../src/boards/w65_cmn.c: 312:  rx_cnt = 0;
+[e = _rx_cnt -> -> 0 `i `ui ]
 "313
-[; ;../src/boards/w65_cmn.c: 313: }
+[; ;../src/boards/w65_cmn.c: 313:  U3RXIE = 1;
+[e = _U3RXIE -> -> 1 `i `b ]
+"314
+[; ;../src/boards/w65_cmn.c: 314: }
 [e :UE 3337 ]
 }
-"315
-[; ;../src/boards/w65_cmn.c: 315: void clk_init(void)
-[v _clk_init `(v ~T0 @X0 1 ef ]
 "316
-[; ;../src/boards/w65_cmn.c: 316: {
+[; ;../src/boards/w65_cmn.c: 316: void clk_init(void)
+[v _clk_init `(v ~T0 @X0 1 ef ]
+"317
+[; ;../src/boards/w65_cmn.c: 317: {
 {
 [e :U _clk_init ]
 [f ]
-"319
-[; ;../src/boards/w65_cmn.c: 319:  NCO1INC = 65536;
-[e = _NCO1INC -> -> 65536 `l `um ]
 "320
-[; ;../src/boards/w65_cmn.c: 320:  NCO1CLK = 0x00;
-[e = _NCO1CLK -> -> 0 `i `uc ]
+[; ;../src/boards/w65_cmn.c: 320:  NCO1INC = 65536;
+[e = _NCO1INC -> -> 65536 `l `um ]
 "321
-[; ;../src/boards/w65_cmn.c: 321:  NCO1PFM = 0;
-[e = _NCO1PFM -> -> 0 `i `b ]
+[; ;../src/boards/w65_cmn.c: 321:  NCO1CLK = 0x00;
+[e = _NCO1CLK -> -> 0 `i `uc ]
 "322
-[; ;../src/boards/w65_cmn.c: 322:  NCO1OUT = 1;
+[; ;../src/boards/w65_cmn.c: 322:  NCO1PFM = 0;
+[e = _NCO1PFM -> -> 0 `i `b ]
+"323
+[; ;../src/boards/w65_cmn.c: 323:  NCO1OUT = 1;
 [e = _NCO1OUT -> -> 1 `i `b ]
-"324
-[; ;../src/boards/w65_cmn.c: 324:  NCO1EN = 1;
-[e = _NCO1EN -> -> 1 `i `b ]
 "325
-[; ;../src/boards/w65_cmn.c: 325:  RA3PPS = 0x3f;
-[e = _RA3PPS -> -> 63 `i `uc ]
+[; ;../src/boards/w65_cmn.c: 325:  NCO1EN = 1;
+[e = _NCO1EN -> -> 1 `i `b ]
 "326
-[; ;../src/boards/w65_cmn.c: 326: }
+[; ;../src/boards/w65_cmn.c: 326:  RA3PPS = 0x3f;
+[e = _RA3PPS -> -> 63 `i `uc ]
+"327
+[; ;../src/boards/w65_cmn.c: 327: }
 [e :UE 3338 ]
 }
-"328
-[; ;../src/boards/w65_cmn.c: 328: void reset_clk(void)
-[v _reset_clk `(v ~T0 @X0 1 ef ]
 "329
-[; ;../src/boards/w65_cmn.c: 329: {
+[; ;../src/boards/w65_cmn.c: 329: void reset_clk(void)
+[v _reset_clk `(v ~T0 @X0 1 ef ]
+"330
+[; ;../src/boards/w65_cmn.c: 330: {
 {
 [e :U _reset_clk ]
 [f ]
-"330
-[; ;../src/boards/w65_cmn.c: 330:  NCO1EN = 0;
-[e = _NCO1EN -> -> 0 `i `b ]
 "331
-[; ;../src/boards/w65_cmn.c: 331:  NCO1OUT = 0;
-[e = _NCO1OUT -> -> 0 `i `b ]
+[; ;../src/boards/w65_cmn.c: 331:  NCO1EN = 0;
+[e = _NCO1EN -> -> 0 `i `b ]
 "332
-[; ;../src/boards/w65_cmn.c: 332:  NCO1INC = (__uint24)clk_fs;
-[e = _NCO1INC -> _clk_fs `um ]
+[; ;../src/boards/w65_cmn.c: 332:  NCO1OUT = 0;
+[e = _NCO1OUT -> -> 0 `i `b ]
 "333
-[; ;../src/boards/w65_cmn.c: 333:  NCO1OUT = 1;
-[e = _NCO1OUT -> -> 1 `i `b ]
+[; ;../src/boards/w65_cmn.c: 333:  NCO1INC = (__uint24)clk_fs;
+[e = _NCO1INC -> _clk_fs `um ]
 "334
-[; ;../src/boards/w65_cmn.c: 334:  NCO1EN = 1;
-[e = _NCO1EN -> -> 1 `i `b ]
+[; ;../src/boards/w65_cmn.c: 334:  NCO1OUT = 1;
+[e = _NCO1OUT -> -> 1 `i `b ]
 "335
-[; ;../src/boards/w65_cmn.c: 335: }
+[; ;../src/boards/w65_cmn.c: 335:  NCO1EN = 1;
+[e = _NCO1EN -> -> 1 `i `b ]
+"336
+[; ;../src/boards/w65_cmn.c: 336: }
 [e :UE 3339 ]
 }
-"337
-[; ;../src/boards/w65_cmn.c: 337: void write_sram(uint32_t addr, uint8_t *buf, unsigned int len)
-[v _write_sram `(v ~T0 @X0 1 ef3`ul`*uc`ui ]
 "338
-[; ;../src/boards/w65_cmn.c: 338: {
+[; ;../src/boards/w65_cmn.c: 338: void write_sram(uint32_t addr, uint8_t *buf, unsigned int len)
+[v _write_sram `(v ~T0 @X0 1 ef3`ul`*uc`ui ]
+"339
+[; ;../src/boards/w65_cmn.c: 339: {
 {
 [e :U _write_sram ]
-"337
-[; ;../src/boards/w65_cmn.c: 337: void write_sram(uint32_t addr, uint8_t *buf, unsigned int len)
+"338
+[; ;../src/boards/w65_cmn.c: 338: void write_sram(uint32_t addr, uint8_t *buf, unsigned int len)
 [v _addr `ul ~T0 @X0 1 r1 ]
 [v _buf `*uc ~T0 @X0 1 r2 ]
 [v _len `ui ~T0 @X0 1 r3 ]
-"338
-[; ;../src/boards/w65_cmn.c: 338: {
-[f ]
 "339
-[; ;../src/boards/w65_cmn.c: 339:     union address_bus_u ab;
-[v _ab `S3285 ~T0 @X0 1 a ]
+[; ;../src/boards/w65_cmn.c: 339: {
+[f ]
 "340
-[; ;../src/boards/w65_cmn.c: 340:     unsigned int i;
+[; ;../src/boards/w65_cmn.c: 340:     union address_bus_u ab;
+[v _ab `S3285 ~T0 @X0 1 a ]
+"341
+[; ;../src/boards/w65_cmn.c: 341:     unsigned int i;
 [v _i `ui ~T0 @X0 1 a ]
-"342
-[; ;../src/boards/w65_cmn.c: 342:  ab.w = addr;
-[e = . _ab 0 _addr ]
 "343
-[; ;../src/boards/w65_cmn.c: 343:  i = 0;
+[; ;../src/boards/w65_cmn.c: 343:  ab.w = addr;
+[e = . _ab 0 _addr ]
+"344
+[; ;../src/boards/w65_cmn.c: 344:  i = 0;
 [e = _i -> -> 0 `i `ui ]
-"345
-[; ;../src/boards/w65_cmn.c: 345:  TRISB = 0x00;
-[e = _TRISB -> -> 0 `i `uc ]
 "346
-[; ;../src/boards/w65_cmn.c: 346:  if (cpu_flg) {
+[; ;../src/boards/w65_cmn.c: 346:  TRISB = 0x00;
+[e = _TRISB -> -> 0 `i `uc ]
+"347
+[; ;../src/boards/w65_cmn.c: 347:  if (cpu_flg) {
 [e $ ! != -> _cpu_flg `i -> 0 `i 3341  ]
 {
-"348
-[; ;../src/boards/w65_cmn.c: 348:   while( i < len ) {
+"349
+[; ;../src/boards/w65_cmn.c: 349:   while( i < len ) {
 [e $U 3342  ]
 [e :U 3343 ]
 {
-"349
-[; ;../src/boards/w65_cmn.c: 349:       LATC = ab.ll;
-[e = _LATC . . _ab 1 0 ]
 "350
-[; ;../src/boards/w65_cmn.c: 350:    LATD = ab.lh;
+[; ;../src/boards/w65_cmn.c: 350:       LATC = ab.ll;
+[e = _LATC . . _ab 1 0 ]
+"351
+[; ;../src/boards/w65_cmn.c: 351:    LATD = ab.lh;
 [e = _LATD . . _ab 1 1 ]
-"352
-[; ;../src/boards/w65_cmn.c: 352:       LATB = ab.hl;
-[e = _LATB . . _ab 1 2 ]
 "353
-[; ;../src/boards/w65_cmn.c: 353:    LATA1 = 1;
-[e = _LATA1 -> -> 1 `i `b ]
+[; ;../src/boards/w65_cmn.c: 353:       LATB = ab.hl;
+[e = _LATB . . _ab 1 2 ]
 "354
-[; ;../src/boards/w65_cmn.c: 354:    LATA1 = 0;
+[; ;../src/boards/w65_cmn.c: 354:    LATA1 = 1;
+[e = _LATA1 -> -> 1 `i `b ]
+"355
+[; ;../src/boards/w65_cmn.c: 355:    LATA1 = 0;
 [e = _LATA1 -> -> 0 `i `b ]
-"356
-[; ;../src/boards/w65_cmn.c: 356:          LATA4 = 0;
-[e = _LATA4 -> -> 0 `i `b ]
 "357
-[; ;../src/boards/w65_cmn.c: 357:          LATB = ((uint8_t*)buf)[i];
-[e = _LATB *U + _buf * -> _i `ux -> -> # *U _buf `ui `ux ]
+[; ;../src/boards/w65_cmn.c: 357:          LATA4 = 0;
+[e = _LATA4 -> -> 0 `i `b ]
 "358
-[; ;../src/boards/w65_cmn.c: 358:          LATA4 = 1;
+[; ;../src/boards/w65_cmn.c: 358:          LATB = ((uint8_t*)buf)[i];
+[e = _LATB *U + _buf * -> _i `ux -> -> # *U _buf `ui `ux ]
+"359
+[; ;../src/boards/w65_cmn.c: 359:          LATA4 = 1;
 [e = _LATA4 -> -> 1 `i `b ]
-"360
-[; ;../src/boards/w65_cmn.c: 360:    i++;
-[e ++ _i -> -> 1 `i `ui ]
 "361
-[; ;../src/boards/w65_cmn.c: 361:    ab.w++;
-[e ++ . _ab 0 -> -> -> 1 `i `l `ul ]
+[; ;../src/boards/w65_cmn.c: 361:    i++;
+[e ++ _i -> -> 1 `i `ui ]
 "362
-[; ;../src/boards/w65_cmn.c: 362:   }
+[; ;../src/boards/w65_cmn.c: 362:    ab.w++;
+[e ++ . _ab 0 -> -> -> 1 `i `l `ul ]
+"363
+[; ;../src/boards/w65_cmn.c: 363:   }
 }
 [e :U 3342 ]
-"348
-[; ;../src/boards/w65_cmn.c: 348:   while( i < len ) {
+"349
+[; ;../src/boards/w65_cmn.c: 349:   while( i < len ) {
 [e $ < _i _len 3343  ]
 [e :U 3344 ]
-"363
-[; ;../src/boards/w65_cmn.c: 363:  }
+"364
+[; ;../src/boards/w65_cmn.c: 364:  }
 }
 [e $U 3345  ]
-"364
-[; ;../src/boards/w65_cmn.c: 364:  else {
+"365
+[; ;../src/boards/w65_cmn.c: 365:  else {
 [e :U 3341 ]
 {
-"366
-[; ;../src/boards/w65_cmn.c: 366:   while( i < len ) {
+"367
+[; ;../src/boards/w65_cmn.c: 367:   while( i < len ) {
 [e $U 3346  ]
 [e :U 3347 ]
 {
-"367
-[; ;../src/boards/w65_cmn.c: 367:       LATC = ab.ll;
-[e = _LATC . . _ab 1 0 ]
 "368
-[; ;../src/boards/w65_cmn.c: 368:    LATD = ab.lh;
+[; ;../src/boards/w65_cmn.c: 368:       LATC = ab.ll;
+[e = _LATC . . _ab 1 0 ]
+"369
+[; ;../src/boards/w65_cmn.c: 369:    LATD = ab.lh;
 [e = _LATD . . _ab 1 1 ]
-"370
-[; ;../src/boards/w65_cmn.c: 370:          LATA4 = 0;
-[e = _LATA4 -> -> 0 `i `b ]
 "371
-[; ;../src/boards/w65_cmn.c: 371:          LATB = ((uint8_t*)buf)[i];
-[e = _LATB *U + _buf * -> _i `ux -> -> # *U _buf `ui `ux ]
+[; ;../src/boards/w65_cmn.c: 371:          LATA4 = 0;
+[e = _LATA4 -> -> 0 `i `b ]
 "372
-[; ;../src/boards/w65_cmn.c: 372:          LATA4 = 1;
+[; ;../src/boards/w65_cmn.c: 372:          LATB = ((uint8_t*)buf)[i];
+[e = _LATB *U + _buf * -> _i `ux -> -> # *U _buf `ui `ux ]
+"373
+[; ;../src/boards/w65_cmn.c: 373:          LATA4 = 1;
 [e = _LATA4 -> -> 1 `i `b ]
-"374
-[; ;../src/boards/w65_cmn.c: 374:    i++;
-[e ++ _i -> -> 1 `i `ui ]
 "375
-[; ;../src/boards/w65_cmn.c: 375:    ab.w++;
-[e ++ . _ab 0 -> -> -> 1 `i `l `ul ]
+[; ;../src/boards/w65_cmn.c: 375:    i++;
+[e ++ _i -> -> 1 `i `ui ]
 "376
-[; ;../src/boards/w65_cmn.c: 376:      }
+[; ;../src/boards/w65_cmn.c: 376:    ab.w++;
+[e ++ . _ab 0 -> -> -> 1 `i `l `ul ]
+"377
+[; ;../src/boards/w65_cmn.c: 377:      }
 }
 [e :U 3346 ]
-"366
-[; ;../src/boards/w65_cmn.c: 366:   while( i < len ) {
+"367
+[; ;../src/boards/w65_cmn.c: 367:   while( i < len ) {
 [e $ < _i _len 3347  ]
 [e :U 3348 ]
-"377
-[; ;../src/boards/w65_cmn.c: 377:  }
+"378
+[; ;../src/boards/w65_cmn.c: 378:  }
 }
 [e :U 3345 ]
-"378
-[; ;../src/boards/w65_cmn.c: 378:  TRISB = 0xff;
-[e = _TRISB -> -> 255 `i `uc ]
 "379
-[; ;../src/boards/w65_cmn.c: 379: }
+[; ;../src/boards/w65_cmn.c: 379:  TRISB = 0xff;
+[e = _TRISB -> -> 255 `i `uc ]
+"380
+[; ;../src/boards/w65_cmn.c: 380: }
 [e :UE 3340 ]
 }
-"381
-[; ;../src/boards/w65_cmn.c: 381: void read_sram(uint32_t addr, uint8_t *buf, unsigned int len)
-[v _read_sram `(v ~T0 @X0 1 ef3`ul`*uc`ui ]
 "382
-[; ;../src/boards/w65_cmn.c: 382: {
+[; ;../src/boards/w65_cmn.c: 382: void read_sram(uint32_t addr, uint8_t *buf, unsigned int len)
+[v _read_sram `(v ~T0 @X0 1 ef3`ul`*uc`ui ]
+"383
+[; ;../src/boards/w65_cmn.c: 383: {
 {
 [e :U _read_sram ]
-"381
-[; ;../src/boards/w65_cmn.c: 381: void read_sram(uint32_t addr, uint8_t *buf, unsigned int len)
+"382
+[; ;../src/boards/w65_cmn.c: 382: void read_sram(uint32_t addr, uint8_t *buf, unsigned int len)
 [v _addr `ul ~T0 @X0 1 r1 ]
 [v _buf `*uc ~T0 @X0 1 r2 ]
 [v _len `ui ~T0 @X0 1 r3 ]
-"382
-[; ;../src/boards/w65_cmn.c: 382: {
-[f ]
 "383
-[; ;../src/boards/w65_cmn.c: 383:     union address_bus_u ab;
-[v _ab `S3285 ~T0 @X0 1 a ]
+[; ;../src/boards/w65_cmn.c: 383: {
+[f ]
 "384
-[; ;../src/boards/w65_cmn.c: 384:     unsigned int i;
+[; ;../src/boards/w65_cmn.c: 384:     union address_bus_u ab;
+[v _ab `S3285 ~T0 @X0 1 a ]
+"385
+[; ;../src/boards/w65_cmn.c: 385:     unsigned int i;
 [v _i `ui ~T0 @X0 1 a ]
-"386
-[; ;../src/boards/w65_cmn.c: 386:  ab.w = addr;
-[e = . _ab 0 _addr ]
 "387
-[; ;../src/boards/w65_cmn.c: 387:  i = 0;
+[; ;../src/boards/w65_cmn.c: 387:  ab.w = addr;
+[e = . _ab 0 _addr ]
+"388
+[; ;../src/boards/w65_cmn.c: 388:  i = 0;
 [e = _i -> -> 0 `i `ui ]
-"389
-[; ;../src/boards/w65_cmn.c: 389:  if (cpu_flg) {
+"390
+[; ;../src/boards/w65_cmn.c: 390:  if (cpu_flg) {
 [e $ ! != -> _cpu_flg `i -> 0 `i 3350  ]
 {
-"391
-[; ;../src/boards/w65_cmn.c: 391:   while( i < len ) {
+"392
+[; ;../src/boards/w65_cmn.c: 392:   while( i < len ) {
 [e $U 3351  ]
 [e :U 3352 ]
 {
-"392
-[; ;../src/boards/w65_cmn.c: 392:    TRISB = 0x00;
-[e = _TRISB -> -> 0 `i `uc ]
 "393
-[; ;../src/boards/w65_cmn.c: 393:    LATC = ab.ll;
-[e = _LATC . . _ab 1 0 ]
+[; ;../src/boards/w65_cmn.c: 393:    TRISB = 0x00;
+[e = _TRISB -> -> 0 `i `uc ]
 "394
-[; ;../src/boards/w65_cmn.c: 394:    LATD = ab.lh;
+[; ;../src/boards/w65_cmn.c: 394:    LATC = ab.ll;
+[e = _LATC . . _ab 1 0 ]
+"395
+[; ;../src/boards/w65_cmn.c: 395:    LATD = ab.lh;
 [e = _LATD . . _ab 1 1 ]
-"396
-[; ;../src/boards/w65_cmn.c: 396:       LATB = ab.hl;
-[e = _LATB . . _ab 1 2 ]
 "397
-[; ;../src/boards/w65_cmn.c: 397:    LATA1 = 1;
-[e = _LATA1 -> -> 1 `i `b ]
+[; ;../src/boards/w65_cmn.c: 397:       LATB = ab.hl;
+[e = _LATB . . _ab 1 2 ]
 "398
-[; ;../src/boards/w65_cmn.c: 398:    LATA1 = 0;
+[; ;../src/boards/w65_cmn.c: 398:    LATA1 = 1;
+[e = _LATA1 -> -> 1 `i `b ]
+"399
+[; ;../src/boards/w65_cmn.c: 399:    LATA1 = 0;
 [e = _LATA1 -> -> 0 `i `b ]
-"400
-[; ;../src/boards/w65_cmn.c: 400:    TRISB = 0xFF;
-[e = _TRISB -> -> 255 `i `uc ]
 "401
-[; ;../src/boards/w65_cmn.c: 401:    ab.w++;
-[e ++ . _ab 0 -> -> -> 1 `i `l `ul ]
+[; ;../src/boards/w65_cmn.c: 401:    TRISB = 0xFF;
+[e = _TRISB -> -> 255 `i `uc ]
 "402
-[; ;../src/boards/w65_cmn.c: 402:    ((uint8_t*)buf)[i] = PORTB;
-[e = *U + _buf * -> _i `ux -> -> # *U _buf `ui `ux _PORTB ]
+[; ;../src/boards/w65_cmn.c: 402:    ab.w++;
+[e ++ . _ab 0 -> -> -> 1 `i `l `ul ]
 "403
-[; ;../src/boards/w65_cmn.c: 403:    i++;
-[e ++ _i -> -> 1 `i `ui ]
+[; ;../src/boards/w65_cmn.c: 403:    ((uint8_t*)buf)[i] = PORTB;
+[e = *U + _buf * -> _i `ux -> -> # *U _buf `ui `ux _PORTB ]
 "404
-[; ;../src/boards/w65_cmn.c: 404:      }
+[; ;../src/boards/w65_cmn.c: 404:    i++;
+[e ++ _i -> -> 1 `i `ui ]
+"405
+[; ;../src/boards/w65_cmn.c: 405:      }
 }
 [e :U 3351 ]
-"391
-[; ;../src/boards/w65_cmn.c: 391:   while( i < len ) {
+"392
+[; ;../src/boards/w65_cmn.c: 392:   while( i < len ) {
 [e $ < _i _len 3352  ]
 [e :U 3353 ]
-"405
-[; ;../src/boards/w65_cmn.c: 405:  }
+"406
+[; ;../src/boards/w65_cmn.c: 406:  }
 }
 [e $U 3354  ]
-"406
-[; ;../src/boards/w65_cmn.c: 406:  else {
+"407
+[; ;../src/boards/w65_cmn.c: 407:  else {
 [e :U 3350 ]
 {
-"408
-[; ;../src/boards/w65_cmn.c: 408:   while( i < len ) {
+"409
+[; ;../src/boards/w65_cmn.c: 409:   while( i < len ) {
 [e $U 3355  ]
 [e :U 3356 ]
 {
-"409
-[; ;../src/boards/w65_cmn.c: 409:    LATC = ab.ll;
-[e = _LATC . . _ab 1 0 ]
 "410
-[; ;../src/boards/w65_cmn.c: 410:    LATD = ab.lh;
+[; ;../src/boards/w65_cmn.c: 410:    LATC = ab.ll;
+[e = _LATC . . _ab 1 0 ]
+"411
+[; ;../src/boards/w65_cmn.c: 411:    LATD = ab.lh;
 [e = _LATD . . _ab 1 1 ]
-"412
-[; ;../src/boards/w65_cmn.c: 412:    ab.w++;
-[e ++ . _ab 0 -> -> -> 1 `i `l `ul ]
 "413
-[; ;../src/boards/w65_cmn.c: 413:    ((uint8_t*)buf)[i] = PORTB;
-[e = *U + _buf * -> _i `ux -> -> # *U _buf `ui `ux _PORTB ]
+[; ;../src/boards/w65_cmn.c: 413:    ab.w++;
+[e ++ . _ab 0 -> -> -> 1 `i `l `ul ]
 "414
-[; ;../src/boards/w65_cmn.c: 414:    i++;
-[e ++ _i -> -> 1 `i `ui ]
+[; ;../src/boards/w65_cmn.c: 414:    ((uint8_t*)buf)[i] = PORTB;
+[e = *U + _buf * -> _i `ux -> -> # *U _buf `ui `ux _PORTB ]
 "415
-[; ;../src/boards/w65_cmn.c: 415:      }
+[; ;../src/boards/w65_cmn.c: 415:    i++;
+[e ++ _i -> -> 1 `i `ui ]
+"416
+[; ;../src/boards/w65_cmn.c: 416:      }
 }
 [e :U 3355 ]
-"408
-[; ;../src/boards/w65_cmn.c: 408:   while( i < len ) {
+"409
+[; ;../src/boards/w65_cmn.c: 409:   while( i < len ) {
 [e $ < _i _len 3356  ]
 [e :U 3357 ]
-"416
-[; ;../src/boards/w65_cmn.c: 416:  }
+"417
+[; ;../src/boards/w65_cmn.c: 417:  }
 }
 [e :U 3354 ]
-"417
-[; ;../src/boards/w65_cmn.c: 417: }
+"418
+[; ;../src/boards/w65_cmn.c: 418: }
 [e :UE 3349 ]
 }
-"419
-[; ;../src/boards/w65_cmn.c: 419: void start_cpu(void) {
+"420
+[; ;../src/boards/w65_cmn.c: 420: void start_cpu(void) {
 [v _start_cpu `(v ~T0 @X0 1 ef ]
 {
 [e :U _start_cpu ]
 [f ]
-"421
-[; ;../src/boards/w65_cmn.c: 421:  bus_release_req();
+"422
+[; ;../src/boards/w65_cmn.c: 422:  bus_release_req();
 [e ( _bus_release_req ..  ]
-"423
-[; ;../src/boards/w65_cmn.c: 423:  CLCSELECT = 0;
-[e = _CLCSELECT -> -> 0 `i `uc ]
 "424
-[; ;../src/boards/w65_cmn.c: 424:  G2POL = 0;
-[e = _G2POL -> -> 0 `i `b ]
+[; ;../src/boards/w65_cmn.c: 424:  CLCSELECT = 0;
+[e = _CLCSELECT -> -> 0 `i `uc ]
 "425
-[; ;../src/boards/w65_cmn.c: 425:  LATE0 = 0;
+[; ;../src/boards/w65_cmn.c: 425:  G2POL = 0;
+[e = _G2POL -> -> 0 `i `b ]
+"426
+[; ;../src/boards/w65_cmn.c: 426:  LATE0 = 0;
 [e = _LATE0 -> -> 0 `i `b ]
-"427
-[; ;../src/boards/w65_cmn.c: 427:     _delay((unsigned long)((100)*(64000000UL/4000.0)));
+"428
+[; ;../src/boards/w65_cmn.c: 428:     _delay((unsigned long)((100)*(64000000UL/4000.0)));
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `ul `d .4000.0 `ul ]
-"429
-[; ;../src/boards/w65_cmn.c: 429:  G2POL = 1;
+"430
+[; ;../src/boards/w65_cmn.c: 430:  G2POL = 1;
 [e = _G2POL -> -> 1 `i `b ]
-"431
-[; ;../src/boards/w65_cmn.c: 431:  CLCSELECT = 7;
-[e = _CLCSELECT -> -> 7 `i `uc ]
 "432
-[; ;../src/boards/w65_cmn.c: 432:  G3POL = 1;
-[e = _G3POL -> -> 1 `i `b ]
+[; ;../src/boards/w65_cmn.c: 432:  CLCSELECT = 7;
+[e = _CLCSELECT -> -> 7 `i `uc ]
 "433
-[; ;../src/boards/w65_cmn.c: 433:  G3POL = 0;
+[; ;../src/boards/w65_cmn.c: 433:  G3POL = 1;
+[e = _G3POL -> -> 1 `i `b ]
+"434
+[; ;../src/boards/w65_cmn.c: 434:  G3POL = 0;
 [e = _G3POL -> -> 0 `i `b ]
-"435
-[; ;../src/boards/w65_cmn.c: 435:  LATE0 = 1;
+"436
+[; ;../src/boards/w65_cmn.c: 436:  LATE0 = 1;
 [e = _LATE0 -> -> 1 `i `b ]
-"437
-[; ;../src/boards/w65_cmn.c: 437:  irq_flg = 0;
-[e = _irq_flg -> -> 0 `i `uc ]
 "438
-[; ;../src/boards/w65_cmn.c: 438: }
+[; ;../src/boards/w65_cmn.c: 438:  irq_flg = 0;
+[e = _irq_flg -> -> 0 `i `uc ]
+"439
+[; ;../src/boards/w65_cmn.c: 439: }
 [e :UE 3358 ]
 }
-"440
-[; ;../src/boards/w65_cmn.c: 440: void timer_off(void) {
+"441
+[; ;../src/boards/w65_cmn.c: 441: void timer_off(void) {
 [v _timer_off `(v ~T0 @X0 1 ef ]
 {
 [e :U _timer_off ]
 [f ]
-"441
-[; ;../src/boards/w65_cmn.c: 441:  TMR0IE = 0;
-[e = _TMR0IE -> -> 0 `i `b ]
 "442
-[; ;../src/boards/w65_cmn.c: 442: }
+[; ;../src/boards/w65_cmn.c: 442:  TMR0IE = 0;
+[e = _TMR0IE -> -> 0 `i `b ]
+"443
+[; ;../src/boards/w65_cmn.c: 443: }
 [e :UE 3359 ]
 }
-"444
-[; ;../src/boards/w65_cmn.c: 444: void timer_on(void) {
+"445
+[; ;../src/boards/w65_cmn.c: 445: void timer_on(void) {
 [v _timer_on `(v ~T0 @X0 1 ef ]
 {
 [e :U _timer_on ]
 [f ]
-"445
-[; ;../src/boards/w65_cmn.c: 445:  TMR0IE = 1;
-[e = _TMR0IE -> -> 1 `i `b ]
 "446
-[; ;../src/boards/w65_cmn.c: 446: }
+[; ;../src/boards/w65_cmn.c: 446:  TMR0IE = 1;
+[e = _TMR0IE -> -> 1 `i `b ]
+"447
+[; ;../src/boards/w65_cmn.c: 447: }
 [e :UE 3360 ]
 }
 "63 ../src/boards/w65_bd.c
@@ -5390,219 +5390,219 @@ Version 4.0 HI-TECH Software Intermediate Code
 "245
 [; ;../src/boards/w65_bd.c: 245:     static int retry;
 [v F23962 `i ~T0 @X0 1 s retry ]
-"246
-[; ;../src/boards/w65_bd.c: 246:     for (retry = 0; 1; retry++) {
+"247
+[; ;../src/boards/w65_bd.c: 247:  for (retry = 0; 1; retry++) {
 {
 [e = F23962 -> 0 `i ]
 [e $U 3366  ]
 [e :U 3363 ]
 {
-"247
-[; ;../src/boards/w65_bd.c: 247:         if (20 <= retry) {
+"248
+[; ;../src/boards/w65_bd.c: 248:         if (20 <= retry) {
 [e $ ! <= -> 20 `i F23962 3367  ]
 {
-"248
-[; ;../src/boards/w65_bd.c: 248:             printf("No SD Card?\n\r");
-[e ( _printf :s 5C ]
 "249
-[; ;../src/boards/w65_bd.c: 249:             while(1);
+[; ;../src/boards/w65_bd.c: 249:             printf("No SD Card?\n\r");
+[e ( _printf :s 5C ]
+"250
+[; ;../src/boards/w65_bd.c: 250:             while(1);
 [e :U 3369 ]
 [e :U 3368 ]
 [e $U 3369  ]
 [e :U 3370 ]
-"250
-[; ;../src/boards/w65_bd.c: 250:         }
+"251
+[; ;../src/boards/w65_bd.c: 251:         }
 }
 [e :U 3367 ]
-"252
-[; ;../src/boards/w65_bd.c: 252:         if (SDCard_init(SPI_CLOCK_100KHZ, SPI_CLOCK_4MHZ, 100) == 0)
+"253
+[; ;../src/boards/w65_bd.c: 253:         if (SDCard_init(SPI_CLOCK_100KHZ, SPI_CLOCK_4MHZ, 100) == 0)
 [e $ ! == ( _SDCard_init (3 , , . `E23864 0 . `E23864 2 -> -> 100 `i `us -> 0 `i 3371  ]
-"254
-[; ;../src/boards/w65_bd.c: 254:             break;
+"255
+[; ;../src/boards/w65_bd.c: 255:             break;
 [e $U 3364  ]
 [e :U 3371 ]
-"255
-[; ;../src/boards/w65_bd.c: 255:         _delay((unsigned long)((200)*(64000000UL/4000.0)));
-[e ( __delay (1 -> * -> -> 200 `i `d / -> -> 64000000 `ul `d .4000.0 `ul ]
 "256
-[; ;../src/boards/w65_bd.c: 256:     }
+[; ;../src/boards/w65_bd.c: 256:         _delay((unsigned long)((200)*(64000000UL/4000.0)));
+[e ( __delay (1 -> * -> -> 200 `i `d / -> -> 64000000 `ul `d .4000.0 `ul ]
+"257
+[; ;../src/boards/w65_bd.c: 257:     }
 }
 [e ++ F23962 -> 1 `i ]
 [e :U 3366 ]
 [e $ != -> 1 `i -> 0 `i 3363  ]
 [e :U 3364 ]
 }
-"257
-[; ;../src/boards/w65_bd.c: 257: }
+"258
+[; ;../src/boards/w65_bd.c: 258: }
 [e :UE 3362 ]
 }
-"259
-[; ;../src/boards/w65_bd.c: 259: void start_W65(void)
-[v _start_W65 `(v ~T0 @X0 1 ef ]
 "260
-[; ;../src/boards/w65_bd.c: 260: {
+[; ;../src/boards/w65_bd.c: 260: void start_W65(void)
+[v _start_W65 `(v ~T0 @X0 1 ef ]
+"261
+[; ;../src/boards/w65_bd.c: 261: {
 {
 [e :U _start_W65 ]
 [f ]
-"261
-[; ;../src/boards/w65_bd.c: 261:  bus_release_req();
+"262
+[; ;../src/boards/w65_bd.c: 262:  bus_release_req();
 [e ( _bus_release_req ..  ]
-"264
-[; ;../src/boards/w65_bd.c: 264:  IVTLOCK = 0x55;
-[e = _IVTLOCK -> -> 85 `i `uc ]
 "265
-[; ;../src/boards/w65_bd.c: 265:  IVTLOCK = 0xAA;
-[e = _IVTLOCK -> -> 170 `i `uc ]
-"266
-[; ;../src/boards/w65_bd.c: 266:  IVTLOCKbits.IVTLOCKED = 0x00;
-[e = . . _IVTLOCKbits 0 0 -> -> 0 `i `uc ]
-"269
-[; ;../src/boards/w65_bd.c: 269:  IVTBASE = 0x000008;
-[e = _IVTBASE -> -> -> 8 `i `m `um ]
-"272
-[; ;../src/boards/w65_bd.c: 272:  IVTLOCK = 0x55;
+[; ;../src/boards/w65_bd.c: 265:  IVTLOCK = 0x55;
 [e = _IVTLOCK -> -> 85 `i `uc ]
-"273
-[; ;../src/boards/w65_bd.c: 273:  IVTLOCK = 0xAA;
+"266
+[; ;../src/boards/w65_bd.c: 266:  IVTLOCK = 0xAA;
 [e = _IVTLOCK -> -> 170 `i `uc ]
+"267
+[; ;../src/boards/w65_bd.c: 267:  IVTLOCKbits.IVTLOCKED = 0x00;
+[e = . . _IVTLOCKbits 0 0 -> -> 0 `i `uc ]
+"270
+[; ;../src/boards/w65_bd.c: 270:  IVTBASE = 0x000008;
+[e = _IVTBASE -> -> -> 8 `i `m `um ]
+"273
+[; ;../src/boards/w65_bd.c: 273:  IVTLOCK = 0x55;
+[e = _IVTLOCK -> -> 85 `i `uc ]
 "274
-[; ;../src/boards/w65_bd.c: 274:  IVTLOCKbits.IVTLOCKED = 0x01;
+[; ;../src/boards/w65_bd.c: 274:  IVTLOCK = 0xAA;
+[e = _IVTLOCK -> -> 170 `i `uc ]
+"275
+[; ;../src/boards/w65_bd.c: 275:  IVTLOCKbits.IVTLOCKED = 0x01;
 [e = . . _IVTLOCKbits 0 0 -> -> 1 `i `uc ]
-"277
-[; ;../src/boards/w65_bd.c: 277:  CLCSELECT = 0;
-[e = _CLCSELECT -> -> 0 `i `uc ]
 "278
-[; ;../src/boards/w65_bd.c: 278:  G2POL = 1;
+[; ;../src/boards/w65_bd.c: 278:  CLCSELECT = 0;
+[e = _CLCSELECT -> -> 0 `i `uc ]
+"279
+[; ;../src/boards/w65_bd.c: 279:  G2POL = 1;
 [e = _G2POL -> -> 1 `i `b ]
-"281
-[; ;../src/boards/w65_bd.c: 281:  LATE0 = 1;
-[e = _LATE0 -> -> 1 `i `b ]
 "282
-[; ;../src/boards/w65_bd.c: 282: }
+[; ;../src/boards/w65_bd.c: 282:  LATE0 = 1;
+[e = _LATE0 -> -> 1 `i `b ]
+"283
+[; ;../src/boards/w65_bd.c: 283: }
 [e :UE 3372 ]
 }
-"284
-[; ;../src/boards/w65_bd.c: 284: static void bus_hold_req(void) {
+"285
+[; ;../src/boards/w65_bd.c: 285: static void bus_hold_req(void) {
 [v _bus_hold_req `(v ~T0 @X0 1 sf ]
 {
 [e :U _bus_hold_req ]
 [f ]
-"286
-[; ;../src/boards/w65_bd.c: 286:  TRISC = 0x00;
-[e = _TRISC -> -> 0 `i `uc ]
 "287
-[; ;../src/boards/w65_bd.c: 287:  TRISD = 0x00;
+[; ;../src/boards/w65_bd.c: 287:  TRISC = 0x00;
+[e = _TRISC -> -> 0 `i `uc ]
+"288
+[; ;../src/boards/w65_bd.c: 288:  TRISD = 0x00;
 [e = _TRISD -> -> 0 `i `uc ]
-"289
-[; ;../src/boards/w65_bd.c: 289:  LATA4 = 1;
-[e = _LATA4 -> -> 1 `i `b ]
 "290
-[; ;../src/boards/w65_bd.c: 290:  TRISA4 = 0;
-[e = _TRISA4 -> -> 0 `i `b ]
+[; ;../src/boards/w65_bd.c: 290:  LATA4 = 1;
+[e = _LATA4 -> -> 1 `i `b ]
 "291
-[; ;../src/boards/w65_bd.c: 291:  TRISA1 = 0;
-[e = _TRISA1 -> -> 0 `i `b ]
+[; ;../src/boards/w65_bd.c: 291:  TRISA4 = 0;
+[e = _TRISA4 -> -> 0 `i `b ]
 "292
-[; ;../src/boards/w65_bd.c: 292: }
+[; ;../src/boards/w65_bd.c: 292:  TRISA1 = 0;
+[e = _TRISA1 -> -> 0 `i `b ]
+"293
+[; ;../src/boards/w65_bd.c: 293: }
 [e :UE 3373 ]
 }
-"294
-[; ;../src/boards/w65_bd.c: 294: static void bus_release_req(void) {
+"295
+[; ;../src/boards/w65_bd.c: 295: static void bus_release_req(void) {
 [v _bus_release_req `(v ~T0 @X0 1 sf ]
 {
 [e :U _bus_release_req ]
 [f ]
-"296
-[; ;../src/boards/w65_bd.c: 296:  TRISC = 0xff;
-[e = _TRISC -> -> 255 `i `uc ]
 "297
-[; ;../src/boards/w65_bd.c: 297:  TRISD = 0xff;
+[; ;../src/boards/w65_bd.c: 297:  TRISC = 0xff;
+[e = _TRISC -> -> 255 `i `uc ]
+"298
+[; ;../src/boards/w65_bd.c: 298:  TRISD = 0xff;
 [e = _TRISD -> -> 255 `i `uc ]
-"299
-[; ;../src/boards/w65_bd.c: 299:  TRISA1 = 1;
-[e = _TRISA1 -> -> 1 `i `b ]
 "300
-[; ;../src/boards/w65_bd.c: 300:  TRISA4 = 1;
-[e = _TRISA4 -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 300:  TRISA1 = 1;
+[e = _TRISA1 -> -> 1 `i `b ]
 "301
-[; ;../src/boards/w65_bd.c: 301: }
+[; ;../src/boards/w65_bd.c: 301:  TRISA4 = 1;
+[e = _TRISA4 -> -> 1 `i `b ]
+"302
+[; ;../src/boards/w65_bd.c: 302: }
 [e :UE 3374 ]
 }
-"306
-[; ;../src/boards/w65_bd.c: 306: void board_event_loop(void) {
+"307
+[; ;../src/boards/w65_bd.c: 307: void board_event_loop(void) {
 [v _board_event_loop `(v ~T0 @X0 1 ef ]
 {
 [e :U _board_event_loop ]
 [f ]
-"308
-[; ;../src/boards/w65_bd.c: 308:  for (;;) {
+"309
+[; ;../src/boards/w65_bd.c: 309:  for (;;) {
 {
 [e :U 3376 ]
 {
-"309
-[; ;../src/boards/w65_bd.c: 309:   while (RA5) {
+"310
+[; ;../src/boards/w65_bd.c: 310:   while (RA5) {
 [e $U 3379  ]
 [e :U 3380 ]
 {
-"310
-[; ;../src/boards/w65_bd.c: 310:    if ( irq_flg >= 1 ) {
+"311
+[; ;../src/boards/w65_bd.c: 311:    if ( irq_flg >= 1 ) {
 [e $ ! >= -> _irq_flg `i -> 1 `i 3382  ]
 {
-"311
-[; ;../src/boards/w65_bd.c: 311:     make_irq();
-[e ( _make_irq ..  ]
 "312
-[; ;../src/boards/w65_bd.c: 312:     GIE = 0;
-[e = _GIE -> -> 0 `i `b ]
+[; ;../src/boards/w65_bd.c: 312:     make_irq();
+[e ( _make_irq ..  ]
 "313
-[; ;../src/boards/w65_bd.c: 313:     irq_flg = 0;
-[e = _irq_flg -> -> 0 `i `uc ]
+[; ;../src/boards/w65_bd.c: 313:     GIE = 0;
+[e = _GIE -> -> 0 `i `b ]
 "314
-[; ;../src/boards/w65_bd.c: 314:     GIE = 1;
-[e = _GIE -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 314:     irq_flg = 0;
+[e = _irq_flg -> -> 0 `i `uc ]
 "315
-[; ;../src/boards/w65_bd.c: 315:    }
+[; ;../src/boards/w65_bd.c: 315:     GIE = 1;
+[e = _GIE -> -> 1 `i `b ]
+"316
+[; ;../src/boards/w65_bd.c: 316:    }
 }
 [e :U 3382 ]
-"316
-[; ;../src/boards/w65_bd.c: 316:   }
+"317
+[; ;../src/boards/w65_bd.c: 317:   }
 }
 [e :U 3379 ]
-"309
-[; ;../src/boards/w65_bd.c: 309:   while (RA5) {
+"310
+[; ;../src/boards/w65_bd.c: 310:   while (RA5) {
 [e $ _RA5 3380  ]
 [e :U 3381 ]
-"318
-[; ;../src/boards/w65_bd.c: 318:   CLCSELECT = 0;
-[e = _CLCSELECT -> -> 0 `i `uc ]
 "319
-[; ;../src/boards/w65_bd.c: 319:   G2POL = 0;
-[e = _G2POL -> -> 0 `i `b ]
+[; ;../src/boards/w65_bd.c: 319:   CLCSELECT = 0;
+[e = _CLCSELECT -> -> 0 `i `uc ]
 "320
-[; ;../src/boards/w65_bd.c: 320:   bus_hold_req();
-[e ( _bus_hold_req ..  ]
+[; ;../src/boards/w65_bd.c: 320:   G2POL = 0;
+[e = _G2POL -> -> 0 `i `b ]
 "321
-[; ;../src/boards/w65_bd.c: 321:   bus_master_operation();
-[e ( _bus_master_operation ..  ]
+[; ;../src/boards/w65_bd.c: 321:   bus_hold_req();
+[e ( _bus_hold_req ..  ]
 "322
-[; ;../src/boards/w65_bd.c: 322:   if(wup_flg) return;
+[; ;../src/boards/w65_bd.c: 322:   bus_master_operation();
+[e ( _bus_master_operation ..  ]
+"323
+[; ;../src/boards/w65_bd.c: 323:   if(wup_flg) return;
 [e $ ! != -> _wup_flg `i -> 0 `i 3383  ]
 [e $UE 3375  ]
 [e :U 3383 ]
-"323
-[; ;../src/boards/w65_bd.c: 323:   bus_release_req();
+"324
+[; ;../src/boards/w65_bd.c: 324:   bus_release_req();
 [e ( _bus_release_req ..  ]
-"325
-[; ;../src/boards/w65_bd.c: 325:   G2POL = 1;
+"326
+[; ;../src/boards/w65_bd.c: 326:   G2POL = 1;
 [e = _G2POL -> -> 1 `i `b ]
-"327
-[; ;../src/boards/w65_bd.c: 327:   CLCSELECT = 1;
-[e = _CLCSELECT -> -> 1 `i `uc ]
 "328
-[; ;../src/boards/w65_bd.c: 328:   G2POL = 1;
-[e = _G2POL -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 328:   CLCSELECT = 1;
+[e = _CLCSELECT -> -> 1 `i `uc ]
 "329
-[; ;../src/boards/w65_bd.c: 329:   while(!CLC8OUT){}
+[; ;../src/boards/w65_bd.c: 329:   G2POL = 1;
+[e = _G2POL -> -> 1 `i `b ]
+"330
+[; ;../src/boards/w65_bd.c: 330:   while(!CLC8OUT){}
 [e $U 3384  ]
 [e :U 3385 ]
 {
@@ -5610,67 +5610,67 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e :U 3384 ]
 [e $ ! _CLC8OUT 3385  ]
 [e :U 3386 ]
-"330
-[; ;../src/boards/w65_bd.c: 330:   G2POL = 0;
-[e = _G2POL -> -> 0 `i `b ]
 "331
-[; ;../src/boards/w65_bd.c: 331:   CLCSELECT = 7;
-[e = _CLCSELECT -> -> 7 `i `uc ]
+[; ;../src/boards/w65_bd.c: 331:   G2POL = 0;
+[e = _G2POL -> -> 0 `i `b ]
 "332
-[; ;../src/boards/w65_bd.c: 332:   G3POL = 1;
-[e = _G3POL -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 332:   CLCSELECT = 7;
+[e = _CLCSELECT -> -> 7 `i `uc ]
 "333
-[; ;../src/boards/w65_bd.c: 333:   G3POL = 0;
+[; ;../src/boards/w65_bd.c: 333:   G3POL = 1;
+[e = _G3POL -> -> 1 `i `b ]
+"334
+[; ;../src/boards/w65_bd.c: 334:   G3POL = 0;
 [e = _G3POL -> -> 0 `i `b ]
-"335
-[; ;../src/boards/w65_bd.c: 335:   GIE = 0;
-[e = _GIE -> -> 0 `i `b ]
 "336
-[; ;../src/boards/w65_bd.c: 336:   irq_flg = 0;
-[e = _irq_flg -> -> 0 `i `uc ]
+[; ;../src/boards/w65_bd.c: 336:   GIE = 0;
+[e = _GIE -> -> 0 `i `b ]
 "337
-[; ;../src/boards/w65_bd.c: 337:   GIE = 1;
+[; ;../src/boards/w65_bd.c: 337:   irq_flg = 0;
+[e = _irq_flg -> -> 0 `i `uc ]
+"338
+[; ;../src/boards/w65_bd.c: 338:   GIE = 1;
 [e = _GIE -> -> 1 `i `b ]
-"339
-[; ;../src/boards/w65_bd.c: 339:   if (nmi_sig) {
+"340
+[; ;../src/boards/w65_bd.c: 340:   if (nmi_sig) {
 [e $ ! != -> _nmi_sig `i -> 0 `i 3387  ]
 {
-"340
-[; ;../src/boards/w65_bd.c: 340:    LATE1 = 0;
-[e = _LATE1 -> -> 0 `i `b ]
 "341
-[; ;../src/boards/w65_bd.c: 341:    LATE1 = 1;
-[e = _LATE1 -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 341:    LATE1 = 0;
+[e = _LATE1 -> -> 0 `i `b ]
 "342
-[; ;../src/boards/w65_bd.c: 342:    nmi_sig = 0;
-[e = _nmi_sig -> -> 0 `i `uc ]
+[; ;../src/boards/w65_bd.c: 342:    LATE1 = 1;
+[e = _LATE1 -> -> 1 `i `b ]
 "343
-[; ;../src/boards/w65_bd.c: 343:   }
+[; ;../src/boards/w65_bd.c: 343:    nmi_sig = 0;
+[e = _nmi_sig -> -> 0 `i `uc ]
+"344
+[; ;../src/boards/w65_bd.c: 344:   }
 }
 [e :U 3387 ]
-"344
-[; ;../src/boards/w65_bd.c: 344:  }
+"345
+[; ;../src/boards/w65_bd.c: 345:  }
 }
 [e $U 3376  ]
 [e :U 3377 ]
 }
-"345
-[; ;../src/boards/w65_bd.c: 345: }
+"346
+[; ;../src/boards/w65_bd.c: 346: }
 [e :UE 3375 ]
 }
-"347
-[; ;../src/boards/w65_bd.c: 347: void board_event_loop1(void) {
+"348
+[; ;../src/boards/w65_bd.c: 348: void board_event_loop1(void) {
 [v _board_event_loop1 `(v ~T0 @X0 1 ef ]
 {
 [e :U _board_event_loop1 ]
 [f ]
-"349
-[; ;../src/boards/w65_bd.c: 349:  for (;;) {
+"350
+[; ;../src/boards/w65_bd.c: 350:  for (;;) {
 {
 [e :U 3389 ]
 {
-"350
-[; ;../src/boards/w65_bd.c: 350:   while (RA5) {}
+"351
+[; ;../src/boards/w65_bd.c: 351:   while (RA5) {}
 [e $U 3392  ]
 [e :U 3393 ]
 {
@@ -5678,37 +5678,37 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e :U 3392 ]
 [e $ _RA5 3393  ]
 [e :U 3394 ]
-"352
-[; ;../src/boards/w65_bd.c: 352:   CLCSELECT = 0;
-[e = _CLCSELECT -> -> 0 `i `uc ]
 "353
-[; ;../src/boards/w65_bd.c: 353:   G2POL = 0;
-[e = _G2POL -> -> 0 `i `b ]
+[; ;../src/boards/w65_bd.c: 353:   CLCSELECT = 0;
+[e = _CLCSELECT -> -> 0 `i `uc ]
 "354
-[; ;../src/boards/w65_bd.c: 354:   bus_hold_req();
-[e ( _bus_hold_req ..  ]
+[; ;../src/boards/w65_bd.c: 354:   G2POL = 0;
+[e = _G2POL -> -> 0 `i `b ]
 "355
-[; ;../src/boards/w65_bd.c: 355:   bus_master_operation();
-[e ( _bus_master_operation ..  ]
+[; ;../src/boards/w65_bd.c: 355:   bus_hold_req();
+[e ( _bus_hold_req ..  ]
 "356
-[; ;../src/boards/w65_bd.c: 356:   if(wup_flg) return;
+[; ;../src/boards/w65_bd.c: 356:   bus_master_operation();
+[e ( _bus_master_operation ..  ]
+"357
+[; ;../src/boards/w65_bd.c: 357:   if(wup_flg) return;
 [e $ ! != -> _wup_flg `i -> 0 `i 3395  ]
 [e $UE 3388  ]
 [e :U 3395 ]
-"357
-[; ;../src/boards/w65_bd.c: 357:   bus_release_req();
+"358
+[; ;../src/boards/w65_bd.c: 358:   bus_release_req();
 [e ( _bus_release_req ..  ]
-"359
-[; ;../src/boards/w65_bd.c: 359:   G2POL = 1;
+"360
+[; ;../src/boards/w65_bd.c: 360:   G2POL = 1;
 [e = _G2POL -> -> 1 `i `b ]
-"361
-[; ;../src/boards/w65_bd.c: 361:   CLCSELECT = 1;
-[e = _CLCSELECT -> -> 1 `i `uc ]
 "362
-[; ;../src/boards/w65_bd.c: 362:   G2POL = 1;
-[e = _G2POL -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 362:   CLCSELECT = 1;
+[e = _CLCSELECT -> -> 1 `i `uc ]
 "363
-[; ;../src/boards/w65_bd.c: 363:   while(!CLC8OUT){}
+[; ;../src/boards/w65_bd.c: 363:   G2POL = 1;
+[e = _G2POL -> -> 1 `i `b ]
+"364
+[; ;../src/boards/w65_bd.c: 364:   while(!CLC8OUT){}
 [e $U 3396  ]
 [e :U 3397 ]
 {
@@ -5716,68 +5716,68 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e :U 3396 ]
 [e $ ! _CLC8OUT 3397  ]
 [e :U 3398 ]
-"364
-[; ;../src/boards/w65_bd.c: 364:   G2POL = 0;
-[e = _G2POL -> -> 0 `i `b ]
 "365
-[; ;../src/boards/w65_bd.c: 365:   CLCSELECT = 7;
-[e = _CLCSELECT -> -> 7 `i `uc ]
+[; ;../src/boards/w65_bd.c: 365:   G2POL = 0;
+[e = _G2POL -> -> 0 `i `b ]
 "366
-[; ;../src/boards/w65_bd.c: 366:   G3POL = 1;
-[e = _G3POL -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 366:   CLCSELECT = 7;
+[e = _CLCSELECT -> -> 7 `i `uc ]
 "367
-[; ;../src/boards/w65_bd.c: 367:   G3POL = 0;
+[; ;../src/boards/w65_bd.c: 367:   G3POL = 1;
+[e = _G3POL -> -> 1 `i `b ]
+"368
+[; ;../src/boards/w65_bd.c: 368:   G3POL = 0;
 [e = _G3POL -> -> 0 `i `b ]
-"369
-[; ;../src/boards/w65_bd.c: 369:   if (nmi_sig) {
+"370
+[; ;../src/boards/w65_bd.c: 370:   if (nmi_sig) {
 [e $ ! != -> _nmi_sig `i -> 0 `i 3399  ]
 {
-"370
-[; ;../src/boards/w65_bd.c: 370:    LATE1 = 0;
-[e = _LATE1 -> -> 0 `i `b ]
 "371
-[; ;../src/boards/w65_bd.c: 371:    LATE1 = 1;
-[e = _LATE1 -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 371:    LATE1 = 0;
+[e = _LATE1 -> -> 0 `i `b ]
 "372
-[; ;../src/boards/w65_bd.c: 372:    nmi_sig = 0;
-[e = _nmi_sig -> -> 0 `i `uc ]
+[; ;../src/boards/w65_bd.c: 372:    LATE1 = 1;
+[e = _LATE1 -> -> 1 `i `b ]
 "373
-[; ;../src/boards/w65_bd.c: 373:   }
+[; ;../src/boards/w65_bd.c: 373:    nmi_sig = 0;
+[e = _nmi_sig -> -> 0 `i `uc ]
+"374
+[; ;../src/boards/w65_bd.c: 374:   }
 }
 [e :U 3399 ]
-"374
-[; ;../src/boards/w65_bd.c: 374:  }
+"375
+[; ;../src/boards/w65_bd.c: 375:  }
 }
 [e $U 3389  ]
 [e :U 3390 ]
 }
-"375
-[; ;../src/boards/w65_bd.c: 375: }
+"376
+[; ;../src/boards/w65_bd.c: 376: }
 [e :UE 3388 ]
 }
-"377
-[; ;../src/boards/w65_bd.c: 377: void continue_action(void) {
+"378
+[; ;../src/boards/w65_bd.c: 378: void continue_action(void) {
 [v _continue_action `(v ~T0 @X0 1 ef ]
 {
 [e :U _continue_action ]
 [f ]
-"379
-[; ;../src/boards/w65_bd.c: 379:  CLCSELECT = 0;
-[e = _CLCSELECT -> -> 0 `i `uc ]
 "380
-[; ;../src/boards/w65_bd.c: 380:  bus_release_req();
+[; ;../src/boards/w65_bd.c: 380:  CLCSELECT = 0;
+[e = _CLCSELECT -> -> 0 `i `uc ]
+"381
+[; ;../src/boards/w65_bd.c: 381:  bus_release_req();
 [e ( _bus_release_req ..  ]
-"382
-[; ;../src/boards/w65_bd.c: 382:  G2POL = 1;
+"383
+[; ;../src/boards/w65_bd.c: 383:  G2POL = 1;
 [e = _G2POL -> -> 1 `i `b ]
-"384
-[; ;../src/boards/w65_bd.c: 384:  CLCSELECT = 1;
-[e = _CLCSELECT -> -> 1 `i `uc ]
 "385
-[; ;../src/boards/w65_bd.c: 385:  G2POL = 1;
-[e = _G2POL -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 385:  CLCSELECT = 1;
+[e = _CLCSELECT -> -> 1 `i `uc ]
 "386
-[; ;../src/boards/w65_bd.c: 386:  while(!CLC8OUT){}
+[; ;../src/boards/w65_bd.c: 386:  G2POL = 1;
+[e = _G2POL -> -> 1 `i `b ]
+"387
+[; ;../src/boards/w65_bd.c: 387:  while(!CLC8OUT){}
 [e $U 3401  ]
 [e :U 3402 ]
 {
@@ -5785,37 +5785,37 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e :U 3401 ]
 [e $ ! _CLC8OUT 3402  ]
 [e :U 3403 ]
-"387
-[; ;../src/boards/w65_bd.c: 387:  G2POL = 0;
-[e = _G2POL -> -> 0 `i `b ]
 "388
-[; ;../src/boards/w65_bd.c: 388:  CLCSELECT = 7;
-[e = _CLCSELECT -> -> 7 `i `uc ]
+[; ;../src/boards/w65_bd.c: 388:  G2POL = 0;
+[e = _G2POL -> -> 0 `i `b ]
 "389
-[; ;../src/boards/w65_bd.c: 389:  G3POL = 1;
-[e = _G3POL -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 389:  CLCSELECT = 7;
+[e = _CLCSELECT -> -> 7 `i `uc ]
 "390
-[; ;../src/boards/w65_bd.c: 390:  G3POL = 0;
+[; ;../src/boards/w65_bd.c: 390:  G3POL = 1;
+[e = _G3POL -> -> 1 `i `b ]
+"391
+[; ;../src/boards/w65_bd.c: 391:  G3POL = 0;
 [e = _G3POL -> -> 0 `i `b ]
-"392
-[; ;../src/boards/w65_bd.c: 392:  if( fh.irq_sw ) {
+"393
+[; ;../src/boards/w65_bd.c: 393:  if( fh.irq_sw ) {
 [e $ ! != -> . _fh 9 `i -> 0 `i 3404  ]
 {
-"393
-[; ;../src/boards/w65_bd.c: 393:   GIE = 0;
-[e = _GIE -> -> 0 `i `b ]
 "394
-[; ;../src/boards/w65_bd.c: 394:   irq_flg = 0;
-[e = _irq_flg -> -> 0 `i `uc ]
+[; ;../src/boards/w65_bd.c: 394:   GIE = 0;
+[e = _GIE -> -> 0 `i `b ]
 "395
-[; ;../src/boards/w65_bd.c: 395:   GIE = 1;
-[e = _GIE -> -> 1 `i `b ]
+[; ;../src/boards/w65_bd.c: 395:   irq_flg = 0;
+[e = _irq_flg -> -> 0 `i `uc ]
 "396
-[; ;../src/boards/w65_bd.c: 396:  }
+[; ;../src/boards/w65_bd.c: 396:   GIE = 1;
+[e = _GIE -> -> 1 `i `b ]
+"397
+[; ;../src/boards/w65_bd.c: 397:  }
 }
 [e :U 3404 ]
-"397
-[; ;../src/boards/w65_bd.c: 397: }
+"398
+[; ;../src/boards/w65_bd.c: 398: }
 [e :UE 3400 ]
 }
 "34 ../src/boards/../../drivers/pic18f57q43_spi.c
@@ -6201,89 +6201,6 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 144: }
 [e :UE 3430 ]
 }
-"146
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 146: uint8_t SPI_SD_transfer_byte(struct SPI *ctx_, uint8_t output)
-[v _SPI_SD_transfer_byte `(uc ~T0 @X0 1 ef2`*S3301`uc ]
-"147
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 147: {
-{
-[e :U _SPI_SD_transfer_byte ]
-"146
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 146: uint8_t SPI_SD_transfer_byte(struct SPI *ctx_, uint8_t output)
-[v _ctx_ `*S3301 ~T0 @X0 1 r1 ]
-[v _output `uc ~T0 @X0 1 r2 ]
-"147
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 147: {
-[f ]
-"148
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 148:     SPI1TCNTH = 0;
-[e = _SPI1TCNTH -> -> 0 `i `uc ]
-"149
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 149:     SPI1TCNTL = 1;
-[e = _SPI1TCNTL -> -> 1 `i `uc ]
-"150
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 150:     SPI1TXB = output;
-[e = _SPI1TXB _output ]
-"151
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 151:     while(!SPI1RXIF);
-[e $U 3432  ]
-[e :U 3433 ]
-[e :U 3432 ]
-[e $ ! _SPI1RXIF 3433  ]
-[e :U 3434 ]
-"152
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 152:     return SPI1RXB;
-[e ) _SPI1RXB ]
-[e $UE 3431  ]
-"153
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 153: }
-[e :UE 3431 ]
-}
-"155
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 155: void SPI_SD_transfer(struct SPI *ctx_, void *buf, unsigned int count)
-[v _SPI_SD_transfer `(v ~T0 @X0 1 ef3`*S3301`*v`ui ]
-"156
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 156: {
-{
-[e :U _SPI_SD_transfer ]
-"155
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 155: void SPI_SD_transfer(struct SPI *ctx_, void *buf, unsigned int count)
-[v _ctx_ `*S3301 ~T0 @X0 1 r1 ]
-[v _buf `*v ~T0 @X0 1 r2 ]
-[v _count `ui ~T0 @X0 1 r3 ]
-"156
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 156: {
-[f ]
-"157
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 157:     uint8_t *p = (uint8_t*)buf;
-[v _p `*uc ~T0 @X0 1 a ]
-[e = _p -> _buf `*uc ]
-"158
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 158:     for (int i = 0; i < count; i++) {
-{
-[v _i `i ~T0 @X0 1 a ]
-[e = _i -> 0 `i ]
-[e $U 3439  ]
-[e :U 3436 ]
-{
-"159
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 159:         *p = SPI_SD_transfer_byte(ctx_, *p);
-[e = *U _p ( _SPI_SD_transfer_byte (2 , _ctx_ *U _p ]
-"160
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 160:         p++;
-[e ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x ]
-"161
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 161:     }
-}
-[e ++ _i -> 1 `i ]
-[e :U 3439 ]
-[e $ < -> _i `ui _count 3436  ]
-[e :U 3437 ]
-}
-"162
-[; ;../src/boards/../../drivers/pic18f57q43_spi.c: 162: }
-[e :UE 3435 ]
-}
 "164
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 164: void SPI_SD_send(struct SPI *ctx_, const void *buf, unsigned int count)
 [v _SPI_SD_send `(v ~T0 @X0 1 ef3`*S3301`*Cv`ui ]
@@ -6308,11 +6225,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [v _dummy `uc ~T0 @X0 1 a ]
 "169
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 169:     if (count == 0)
-[e $ ! == _count -> -> 0 `i `ui 3441  ]
+[e $ ! == _count -> -> 0 `i `ui 3432  ]
 "170
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 170:         return;
-[e $UE 3440  ]
-[e :U 3441 ]
+[e $UE 3431  ]
+[e :U 3432 ]
 "172
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 172:     SPI1TCNTH = (count >> 8);
 [e = _SPI1TCNTH -> >> _count -> 8 `i `uc ]
@@ -6327,19 +6244,19 @@ Version 4.0 HI-TECH Software Intermediate Code
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 1 `i ]
-[e $U 3445  ]
-[e :U 3442 ]
+[e $U 3436  ]
+[e :U 3433 ]
 {
 "177
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 177:         SPI1TXB = *p++;
 [e = _SPI1TXB *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x ]
 "178
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 178:         while(!SPI1RXIF);
-[e $U 3446  ]
-[e :U 3447 ]
-[e :U 3446 ]
-[e $ ! _SPI1RXIF 3447  ]
-[e :U 3448 ]
+[e $U 3437  ]
+[e :U 3438 ]
+[e :U 3437 ]
+[e $ ! _SPI1RXIF 3438  ]
+[e :U 3439 ]
 "179
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 179:         dummy = SPI1RXB;
 [e = _dummy _SPI1RXB ]
@@ -6347,23 +6264,23 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 180:     }
 }
 [e ++ _i -> 1 `i ]
-[e :U 3445 ]
-[e $ < -> _i `ui _count 3442  ]
-[e :U 3443 ]
+[e :U 3436 ]
+[e $ < -> _i `ui _count 3433  ]
+[e :U 3434 ]
 }
 "181
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 181:     while(!SPI1RXIF);
-[e $U 3449  ]
-[e :U 3450 ]
-[e :U 3449 ]
-[e $ ! _SPI1RXIF 3450  ]
-[e :U 3451 ]
+[e $U 3440  ]
+[e :U 3441 ]
+[e :U 3440 ]
+[e $ ! _SPI1RXIF 3441  ]
+[e :U 3442 ]
 "182
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 182:     dummy = SPI1RXB;
 [e = _dummy _SPI1RXB ]
 "183
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 183: }
-[e :UE 3440 ]
+[e :UE 3431 ]
 }
 "185
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 185: void SPI_SD_receive(struct SPI *ctx_, void *buf, unsigned int count)
@@ -6386,11 +6303,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _p -> _buf `*uc ]
 "189
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 189:     if (count == 0)
-[e $ ! == _count -> -> 0 `i `ui 3453  ]
+[e $ ! == _count -> -> 0 `i `ui 3444  ]
 "190
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 190:         return;
-[e $UE 3452  ]
-[e :U 3453 ]
+[e $UE 3443  ]
+[e :U 3444 ]
 "192
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 192:     SPI1TCNTH = (count >> 8);
 [e = _SPI1TCNTH -> >> _count -> 8 `i `uc ]
@@ -6399,7 +6316,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TCNTL -> & _count -> -> 255 `i `ui `uc ]
 "195
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 195:     if ((count & 0x07) || 255 < count / 8) {
-[e $ ! || != & _count -> -> 7 `i `ui -> -> 0 `i `ui < -> -> 255 `i `ui / _count -> -> 8 `i `ui 3454  ]
+[e $ ! || != & _count -> -> 7 `i `ui -> -> 0 `i `ui < -> -> 255 `i `ui / _count -> -> 8 `i `ui 3445  ]
 {
 "196
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 196:         SPI1TXB = 0xff;
@@ -6409,19 +6326,19 @@ Version 4.0 HI-TECH Software Intermediate Code
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 1 `i ]
-[e $U 3458  ]
-[e :U 3455 ]
+[e $U 3449  ]
+[e :U 3446 ]
 {
 "198
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 198:             SPI1TXB = 0xff;
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "199
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 199:             while(!SPI1RXIF);
-[e $U 3459  ]
-[e :U 3460 ]
-[e :U 3459 ]
-[e $ ! _SPI1RXIF 3460  ]
-[e :U 3461 ]
+[e $U 3450  ]
+[e :U 3451 ]
+[e :U 3450 ]
+[e $ ! _SPI1RXIF 3451  ]
+[e :U 3452 ]
 "200
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 200:             *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6429,25 +6346,25 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 201:         }
 }
 [e ++ _i -> 1 `i ]
-[e :U 3458 ]
-[e $ < -> _i `ui _count 3455  ]
-[e :U 3456 ]
+[e :U 3449 ]
+[e $ < -> _i `ui _count 3446  ]
+[e :U 3447 ]
 }
 "202
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 202:         while(!SPI1RXIF);
-[e $U 3462  ]
-[e :U 3463 ]
-[e :U 3462 ]
-[e $ ! _SPI1RXIF 3463  ]
-[e :U 3464 ]
+[e $U 3453  ]
+[e :U 3454 ]
+[e :U 3453 ]
+[e $ ! _SPI1RXIF 3454  ]
+[e :U 3455 ]
 "203
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 203:         *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
 "204
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 204:     } else {
 }
-[e $U 3465  ]
-[e :U 3454 ]
+[e $U 3456  ]
+[e :U 3445 ]
 {
 "205
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 205:         SPI1TXB = 0xff;
@@ -6457,11 +6374,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "207
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 207:         while(!SPI1RXIF);
-[e $U 3466  ]
-[e :U 3467 ]
-[e :U 3466 ]
-[e $ ! _SPI1RXIF 3467  ]
-[e :U 3468 ]
+[e $U 3457  ]
+[e :U 3458 ]
+[e :U 3457 ]
+[e $ ! _SPI1RXIF 3458  ]
+[e :U 3459 ]
 "208
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 208:         *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6470,11 +6387,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "210
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 210:         while(!SPI1RXIF);
-[e $U 3469  ]
-[e :U 3470 ]
-[e :U 3469 ]
-[e $ ! _SPI1RXIF 3470  ]
-[e :U 3471 ]
+[e $U 3460  ]
+[e :U 3461 ]
+[e :U 3460 ]
+[e $ ! _SPI1RXIF 3461  ]
+[e :U 3462 ]
 "211
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 211:         *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6483,11 +6400,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "213
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 213:         while(!SPI1RXIF);
-[e $U 3472  ]
-[e :U 3473 ]
-[e :U 3472 ]
-[e $ ! _SPI1RXIF 3473  ]
-[e :U 3474 ]
+[e $U 3463  ]
+[e :U 3464 ]
+[e :U 3463 ]
+[e $ ! _SPI1RXIF 3464  ]
+[e :U 3465 ]
 "214
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 214:         *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6496,11 +6413,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "216
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 216:         while(!SPI1RXIF);
-[e $U 3475  ]
-[e :U 3476 ]
-[e :U 3475 ]
-[e $ ! _SPI1RXIF 3476  ]
-[e :U 3477 ]
+[e $U 3466  ]
+[e :U 3467 ]
+[e :U 3466 ]
+[e $ ! _SPI1RXIF 3467  ]
+[e :U 3468 ]
 "217
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 217:         *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6509,11 +6426,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "219
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 219:         while(!SPI1RXIF);
-[e $U 3478  ]
-[e :U 3479 ]
-[e :U 3478 ]
-[e $ ! _SPI1RXIF 3479  ]
-[e :U 3480 ]
+[e $U 3469  ]
+[e :U 3470 ]
+[e :U 3469 ]
+[e $ ! _SPI1RXIF 3470  ]
+[e :U 3471 ]
 "220
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 220:         *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6522,11 +6439,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "222
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 222:         while(!SPI1RXIF);
-[e $U 3481  ]
-[e :U 3482 ]
-[e :U 3481 ]
-[e $ ! _SPI1RXIF 3482  ]
-[e :U 3483 ]
+[e $U 3472  ]
+[e :U 3473 ]
+[e :U 3472 ]
+[e $ ! _SPI1RXIF 3473  ]
+[e :U 3474 ]
 "223
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 223:         *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6535,11 +6452,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "225
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 225:         while(!SPI1RXIF);
-[e $U 3484  ]
-[e :U 3485 ]
-[e :U 3484 ]
-[e $ ! _SPI1RXIF 3485  ]
-[e :U 3486 ]
+[e $U 3475  ]
+[e :U 3476 ]
+[e :U 3475 ]
+[e $ ! _SPI1RXIF 3476  ]
+[e :U 3477 ]
 "226
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 226:         *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6552,19 +6469,19 @@ Version 4.0 HI-TECH Software Intermediate Code
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 1 `i `uc ]
-[e $U 3490  ]
-[e :U 3487 ]
+[e $U 3481  ]
+[e :U 3478 ]
 {
 "229
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 229:             SPI1TXB = 0xff;
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "230
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 230:             while(!SPI1RXIF);
-[e $U 3491  ]
-[e :U 3492 ]
-[e :U 3491 ]
-[e $ ! _SPI1RXIF 3492  ]
-[e :U 3493 ]
+[e $U 3482  ]
+[e :U 3483 ]
+[e :U 3482 ]
+[e $ ! _SPI1RXIF 3483  ]
+[e :U 3484 ]
 "231
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 231:             *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6573,11 +6490,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "233
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 233:             while(!SPI1RXIF);
-[e $U 3494  ]
-[e :U 3495 ]
-[e :U 3494 ]
-[e $ ! _SPI1RXIF 3495  ]
-[e :U 3496 ]
+[e $U 3485  ]
+[e :U 3486 ]
+[e :U 3485 ]
+[e $ ! _SPI1RXIF 3486  ]
+[e :U 3487 ]
 "234
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 234:             *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6586,11 +6503,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "236
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 236:             while(!SPI1RXIF);
-[e $U 3497  ]
-[e :U 3498 ]
-[e :U 3497 ]
-[e $ ! _SPI1RXIF 3498  ]
-[e :U 3499 ]
+[e $U 3488  ]
+[e :U 3489 ]
+[e :U 3488 ]
+[e $ ! _SPI1RXIF 3489  ]
+[e :U 3490 ]
 "237
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 237:             *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6599,11 +6516,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "239
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 239:             while(!SPI1RXIF);
-[e $U 3500  ]
-[e :U 3501 ]
-[e :U 3500 ]
-[e $ ! _SPI1RXIF 3501  ]
-[e :U 3502 ]
+[e $U 3491  ]
+[e :U 3492 ]
+[e :U 3491 ]
+[e $ ! _SPI1RXIF 3492  ]
+[e :U 3493 ]
 "240
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 240:             *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6612,11 +6529,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "242
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 242:             while(!SPI1RXIF);
-[e $U 3503  ]
-[e :U 3504 ]
-[e :U 3503 ]
-[e $ ! _SPI1RXIF 3504  ]
-[e :U 3505 ]
+[e $U 3494  ]
+[e :U 3495 ]
+[e :U 3494 ]
+[e $ ! _SPI1RXIF 3495  ]
+[e :U 3496 ]
 "243
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 243:             *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6625,11 +6542,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "245
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 245:             while(!SPI1RXIF);
-[e $U 3506  ]
-[e :U 3507 ]
-[e :U 3506 ]
-[e $ ! _SPI1RXIF 3507  ]
-[e :U 3508 ]
+[e $U 3497  ]
+[e :U 3498 ]
+[e :U 3497 ]
+[e $ ! _SPI1RXIF 3498  ]
+[e :U 3499 ]
 "246
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 246:             *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6638,11 +6555,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "248
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 248:             while(!SPI1RXIF);
-[e $U 3509  ]
-[e :U 3510 ]
-[e :U 3509 ]
-[e $ ! _SPI1RXIF 3510  ]
-[e :U 3511 ]
+[e $U 3500  ]
+[e :U 3501 ]
+[e :U 3500 ]
+[e $ ! _SPI1RXIF 3501  ]
+[e :U 3502 ]
 "249
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 249:             *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6651,11 +6568,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _SPI1TXB -> -> 255 `i `uc ]
 "251
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 251:             while(!SPI1RXIF);
-[e $U 3512  ]
-[e :U 3513 ]
-[e :U 3512 ]
-[e $ ! _SPI1RXIF 3513  ]
-[e :U 3514 ]
+[e $U 3503  ]
+[e :U 3504 ]
+[e :U 3503 ]
+[e $ ! _SPI1RXIF 3504  ]
+[e :U 3505 ]
 "252
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 252:             *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
@@ -6663,27 +6580,27 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 253:         }
 }
 [e ++ _i -> -> 1 `i `uc ]
-[e :U 3490 ]
-[e $ < -> _i `i -> _repeat `i 3487  ]
-[e :U 3488 ]
+[e :U 3481 ]
+[e $ < -> _i `i -> _repeat `i 3478  ]
+[e :U 3479 ]
 }
 "254
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 254:         while(!SPI1RXIF);
-[e $U 3515  ]
-[e :U 3516 ]
-[e :U 3515 ]
-[e $ ! _SPI1RXIF 3516  ]
-[e :U 3517 ]
+[e $U 3506  ]
+[e :U 3507 ]
+[e :U 3506 ]
+[e $ ! _SPI1RXIF 3507  ]
+[e :U 3508 ]
 "255
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 255:         *p++ = SPI1RXB;
 [e = *U ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x _SPI1RXB ]
 "256
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 256:     }
 }
-[e :U 3465 ]
+[e :U 3456 ]
 "257
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 257: }
-[e :UE 3452 ]
+[e :UE 3443 ]
 }
 "259
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 259: void SPI_SD_dummy_clocks(struct SPI *ctx_, unsigned int clocks)
@@ -6711,8 +6628,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
-[e $U 3522  ]
-[e :U 3519 ]
+[e $U 3513  ]
+[e :U 3510 ]
 {
 "264
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 264:         SPI_SD_send(ctx_, &dummy, 1);
@@ -6721,16 +6638,16 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 265:     }
 }
 [e ++ _i -> 1 `i ]
-[e :U 3522 ]
-[e $ < -> _i `ui _clocks 3519  ]
-[e :U 3520 ]
+[e :U 3513 ]
+[e $ < -> _i `ui _clocks 3510  ]
+[e :U 3511 ]
 }
 "266
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 266:     release_bus(ctx_);
 [e ( _release_bus (1 _ctx_ ]
 "267
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 267: }
-[e :UE 3518 ]
+[e :UE 3509 ]
 }
 "269
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 269: uint8_t SPI_SD_receive_byte(struct SPI *ctx_)
@@ -6755,10 +6672,10 @@ Version 4.0 HI-TECH Software Intermediate Code
 "273
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 273:     return dummy;
 [e ) _dummy ]
-[e $UE 3523  ]
+[e $UE 3514  ]
 "274
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 274: }
-[e :UE 3523 ]
+[e :UE 3514 ]
 }
 "276
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 276: void SPI_SD_select(struct SPI *ctx_, int select)
@@ -6779,7 +6696,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _LATE2 -> ? != _select -> 0 `i : -> 0 `i -> 1 `i `b ]
 "279
 [; ;../src/boards/../../drivers/pic18f57q43_spi.c: 279: }
-[e :UE 3524 ]
+[e :UE 3515 ]
 }
 "33 ../src/boards/../../drivers/SDCard.c
 [; ;../src/boards/../../drivers/SDCard.c: 33: static const int debug_flags = 0;
@@ -6789,7 +6706,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 ]
 "44
 [; ;../src/boards/../../drivers/SDCard.c: 44: } ctx_ = { 0 };
-[v _ctx_ `S3525 ~T0 @X0 1 s ]
+[v _ctx_ `S3516 ~T0 @X0 1 s ]
 [i _ctx_
 :U ..
 :U ..
@@ -6817,7 +6734,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _SPI_SD_dummy_clocks (2 , _spi -> -> 1 `i `ui ]
 "51
 [; ;../src/boards/../../drivers/SDCard.c: 51: }
-[e :UE 3526 ]
+[e :UE 3517 ]
 }
 "53
 [; ;../src/boards/../../drivers/SDCard.c: 53: int SDCard_init(int initial_clock_speed, int clock_speed, uint16_t timeout)
@@ -6855,13 +6772,13 @@ Version 4.0 HI-TECH Software Intermediate Code
 [v _buf `uc ~T0 @X0 -> 5 `i a ]
 "62
 [; ;../src/boards/../../drivers/SDCard.c: 62:     do { if (debug_flags) printf ("\n\rSD Card: initialize ...\n\r"); } while(0);
-[e :U 3530 ]
+[e :U 3521 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3531  ]
+[e $ ! != _debug_flags -> 0 `i 3522  ]
 [e ( _printf :s 10C ]
-[e :U 3531 ]
+[e :U 3522 ]
 }
-[e :U 3529 ]
+[e :U 3520 ]
 "64
 [; ;../src/boards/../../drivers/SDCard.c: 64:     SPI_SD_configure(spi, initial_clock_speed, 1, 0);
 [e ( _SPI_SD_configure (4 , , , _spi _initial_clock_speed -> -> 1 `i `uc -> -> 0 `i `uc ]
@@ -6879,75 +6796,75 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _SDCard_command (4 , , , -> -> 0 `i `uc -> -> -> 0 `i `l `ul -> &U _buf `*v -> -> 1 `i `ui ]
 "71
 [; ;../src/boards/../../drivers/SDCard.c: 71:     do { if (debug_flags) printf ("SD Card: CMD0, R1=%02x\n\r", buf[0]); } while(0);
-[e :U 3534 ]
+[e :U 3525 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3535  ]
+[e $ ! != _debug_flags -> 0 `i 3526  ]
 [e ( _printf , (. :s 11C -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i ]
-[e :U 3535 ]
+[e :U 3526 ]
 }
-[e :U 3533 ]
+[e :U 3524 ]
 "72
 [; ;../src/boards/../../drivers/SDCard.c: 72:     if (buf[0] != 0x01) {
-[e $ ! != -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 1 `i 3536  ]
+[e $ ! != -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 1 `i 3527  ]
 {
 "73
 [; ;../src/boards/../../drivers/SDCard.c: 73:         do { if (debug_flags) printf ("SD Card: timeout\n\r"); } while(0);
-[e :U 3539 ]
+[e :U 3530 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3540  ]
+[e $ ! != _debug_flags -> 0 `i 3531  ]
 [e ( _printf :s 12C ]
-[e :U 3540 ]
+[e :U 3531 ]
 }
-[e :U 3538 ]
+[e :U 3529 ]
 "74
 [; ;../src/boards/../../drivers/SDCard.c: 74:         return 1;
 [e ) -> 1 `i ]
-[e $UE 3527  ]
+[e $UE 3518  ]
 "75
 [; ;../src/boards/../../drivers/SDCard.c: 75:     }
 }
-[e :U 3536 ]
+[e :U 3527 ]
 "78
 [; ;../src/boards/../../drivers/SDCard.c: 78:     SDCard_command(8, 0x000001aa, buf, 5);
 [e ( _SDCard_command (4 , , , -> -> 8 `i `uc -> -> -> 426 `i `l `ul -> &U _buf `*v -> -> 5 `i `ui ]
 "79
 [; ;../src/boards/../../drivers/SDCard.c: 79:     do { if (debug_flags) printf ("SD Card: CMD8, R7=%02x %02x %02x %02x %02x\n\r", buf[0], buf[1], buf[2], buf[3], buf[4]); } while(0);
-[e :U 3543 ]
+[e :U 3534 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3544  ]
+[e $ ! != _debug_flags -> 0 `i 3535  ]
 [e ( _printf , , , , , (. :s 13C -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> *U + &U _buf * -> -> -> 1 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> *U + &U _buf * -> -> -> 2 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> *U + &U _buf * -> -> -> 3 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> *U + &U _buf * -> -> -> 4 `i `ui `ux -> -> # *U &U _buf `ui `ux `i ]
-[e :U 3544 ]
+[e :U 3535 ]
 }
-[e :U 3542 ]
+[e :U 3533 ]
 "81
 [; ;../src/boards/../../drivers/SDCard.c: 81:     if (buf[0] != 0x01 || (buf[3] & 0x01) != 0x01 || buf[4] != 0xaa) {
-[e $ ! || || != -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 1 `i != & -> *U + &U _buf * -> -> -> 3 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 1 `i -> 1 `i != -> *U + &U _buf * -> -> -> 4 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 170 `i 3545  ]
+[e $ ! || || != -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 1 `i != & -> *U + &U _buf * -> -> -> 3 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 1 `i -> 1 `i != -> *U + &U _buf * -> -> -> 4 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 170 `i 3536  ]
 {
 "82
 [; ;../src/boards/../../drivers/SDCard.c: 82:         do { if (debug_flags) printf ("SD Card: not supoprted\n\r"); } while(0);
-[e :U 3548 ]
+[e :U 3539 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3549  ]
+[e $ ! != _debug_flags -> 0 `i 3540  ]
 [e ( _printf :s 14C ]
-[e :U 3549 ]
+[e :U 3540 ]
 }
-[e :U 3547 ]
+[e :U 3538 ]
 "83
 [; ;../src/boards/../../drivers/SDCard.c: 83:         return 2;
 [e ) -> 2 `i ]
-[e $UE 3527  ]
+[e $UE 3518  ]
 "84
 [; ;../src/boards/../../drivers/SDCard.c: 84:     }
 }
-[e :U 3545 ]
+[e :U 3536 ]
 "87
 [; ;../src/boards/../../drivers/SDCard.c: 87:     for (int i = 0; i < 3000; i++) {
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
-[e $ < _i -> 3000 `i 3550  ]
-[e $U 3551  ]
-[e :U 3550 ]
+[e $ < _i -> 3000 `i 3541  ]
+[e $U 3542  ]
+[e :U 3541 ]
 {
 "88
 [; ;../src/boards/../../drivers/SDCard.c: 88:         SDCard_command(55, 0, buf, 1);
@@ -6957,184 +6874,184 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _SDCard_command (4 , , , -> -> 41 `i `uc << -> 1 `ul -> 30 `i -> &U _buf `*v -> -> 5 `i `ui ]
 "90
 [; ;../src/boards/../../drivers/SDCard.c: 90:         if (buf[0] == 0x00)
-[e $ ! == -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 0 `i 3553  ]
+[e $ ! == -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 0 `i 3544  ]
 "91
 [; ;../src/boards/../../drivers/SDCard.c: 91:             break;
-[e $U 3551  ]
-[e :U 3553 ]
+[e $U 3542  ]
+[e :U 3544 ]
 "92
 [; ;../src/boards/../../drivers/SDCard.c: 92:     }
 }
 [e ++ _i -> 1 `i ]
-[e $ < _i -> 3000 `i 3550  ]
-[e :U 3551 ]
+[e $ < _i -> 3000 `i 3541  ]
+[e :U 3542 ]
 }
 "93
 [; ;../src/boards/../../drivers/SDCard.c: 93:     do { if (debug_flags) printf ("SD Card: ACMD41, R1=%02x\n\r", buf[0]); } while(0);
-[e :U 3556 ]
+[e :U 3547 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3557  ]
+[e $ ! != _debug_flags -> 0 `i 3548  ]
 [e ( _printf , (. :s 15C -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i ]
-[e :U 3557 ]
+[e :U 3548 ]
 }
-[e :U 3555 ]
+[e :U 3546 ]
 "94
 [; ;../src/boards/../../drivers/SDCard.c: 94:     if (buf[0] != 0x00) {
-[e $ ! != -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 0 `i 3558  ]
+[e $ ! != -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 0 `i 3549  ]
 {
 "95
 [; ;../src/boards/../../drivers/SDCard.c: 95:         do { if (debug_flags) printf ("SD Card: ACMD41 response is %02x\n\r", buf[0]); } while(0);
-[e :U 3561 ]
+[e :U 3552 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3562  ]
+[e $ ! != _debug_flags -> 0 `i 3553  ]
 [e ( _printf , (. :s 16C -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i ]
-[e :U 3562 ]
+[e :U 3553 ]
 }
-[e :U 3560 ]
+[e :U 3551 ]
 "96
 [; ;../src/boards/../../drivers/SDCard.c: 96:         return 1;
 [e ) -> 1 `i ]
-[e $UE 3527  ]
+[e $UE 3518  ]
 "97
 [; ;../src/boards/../../drivers/SDCard.c: 97:     }
 }
-[e :U 3558 ]
+[e :U 3549 ]
 "100
 [; ;../src/boards/../../drivers/SDCard.c: 100:     SDCard_command(58, 0, buf, 5);
 [e ( _SDCard_command (4 , , , -> -> 58 `i `uc -> -> -> 0 `i `l `ul -> &U _buf `*v -> -> 5 `i `ui ]
 "101
 [; ;../src/boards/../../drivers/SDCard.c: 101:     do { if (debug_flags) printf ("SD Card: CMD58, R3=%02x %02x %02x %02x %02x\n\r", buf[0], buf[1], buf[2], buf[3], buf[4]); } while(0);
-[e :U 3565 ]
+[e :U 3556 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3566  ]
+[e $ ! != _debug_flags -> 0 `i 3557  ]
 [e ( _printf , , , , , (. :s 17C -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> *U + &U _buf * -> -> -> 1 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> *U + &U _buf * -> -> -> 2 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> *U + &U _buf * -> -> -> 3 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> *U + &U _buf * -> -> -> 4 `i `ui `ux -> -> # *U &U _buf `ui `ux `i ]
-[e :U 3566 ]
+[e :U 3557 ]
 }
-[e :U 3564 ]
+[e :U 3555 ]
 "103
 [; ;../src/boards/../../drivers/SDCard.c: 103:     if (buf[0] & 0xfe) {
-[e $ ! != & -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 254 `i -> 0 `i 3567  ]
+[e $ ! != & -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 254 `i -> 0 `i 3558  ]
 {
 "104
 [; ;../src/boards/../../drivers/SDCard.c: 104:         do { if (debug_flags) printf ("SD Card: unexpected response %02x\n\r", buf[0]); } while(0);
-[e :U 3570 ]
+[e :U 3561 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3571  ]
+[e $ ! != _debug_flags -> 0 `i 3562  ]
 [e ( _printf , (. :s 18C -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i ]
-[e :U 3571 ]
+[e :U 3562 ]
 }
-[e :U 3569 ]
+[e :U 3560 ]
 "105
 [; ;../src/boards/../../drivers/SDCard.c: 105:         return 3;
 [e ) -> 3 `i ]
-[e $UE 3527  ]
+[e $UE 3518  ]
 "106
 [; ;../src/boards/../../drivers/SDCard.c: 106:     }
 }
-[e :U 3567 ]
+[e :U 3558 ]
 "107
 [; ;../src/boards/../../drivers/SDCard.c: 107:     if (!(buf[1] & 0x40)) {
-[e $ ! ! != & -> *U + &U _buf * -> -> -> 1 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 64 `i -> 0 `i 3572  ]
+[e $ ! ! != & -> *U + &U _buf * -> -> -> 1 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 64 `i -> 0 `i 3563  ]
 {
 "108
 [; ;../src/boards/../../drivers/SDCard.c: 108:         do { if (debug_flags) printf ("SD Card: CCS (Card Capacity Status) is 0\n\r"); } while(0);
-[e :U 3575 ]
+[e :U 3566 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3576  ]
+[e $ ! != _debug_flags -> 0 `i 3567  ]
 [e ( _printf :s 19C ]
-[e :U 3576 ]
+[e :U 3567 ]
 }
-[e :U 3574 ]
+[e :U 3565 ]
 "109
 [; ;../src/boards/../../drivers/SDCard.c: 109:         return 2;
 [e ) -> 2 `i ]
-[e $UE 3527  ]
+[e $UE 3518  ]
 "110
 [; ;../src/boards/../../drivers/SDCard.c: 110:     }
 }
-[e :U 3572 ]
+[e :U 3563 ]
 "111
 [; ;../src/boards/../../drivers/SDCard.c: 111:     do { if (debug_flags) printf ("SD Card: SDHC or SDXC card detected\n\r"); } while(0);
-[e :U 3579 ]
+[e :U 3570 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3580  ]
+[e $ ! != _debug_flags -> 0 `i 3571  ]
 [e ( _printf :s 20C ]
-[e :U 3580 ]
+[e :U 3571 ]
 }
-[e :U 3578 ]
+[e :U 3569 ]
 "113
 [; ;../src/boards/../../drivers/SDCard.c: 113:     if (!(buf[1] & 0x80)) {
-[e $ ! ! != & -> *U + &U _buf * -> -> -> 1 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 128 `i -> 0 `i 3581  ]
+[e $ ! ! != & -> *U + &U _buf * -> -> -> 1 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 128 `i -> 0 `i 3572  ]
 {
 "114
 [; ;../src/boards/../../drivers/SDCard.c: 114:         do { if (debug_flags) printf ("SD Card: Card power up status bis is 0\n\r"); } while(0);
-[e :U 3584 ]
+[e :U 3575 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3585  ]
+[e $ ! != _debug_flags -> 0 `i 3576  ]
 [e ( _printf :s 21C ]
-[e :U 3585 ]
+[e :U 3576 ]
 }
-[e :U 3583 ]
+[e :U 3574 ]
 "115
 [; ;../src/boards/../../drivers/SDCard.c: 115:         return 3;
 [e ) -> 3 `i ]
-[e $UE 3527  ]
+[e $UE 3518  ]
 "116
 [; ;../src/boards/../../drivers/SDCard.c: 116:     }
 }
-[e :U 3581 ]
+[e :U 3572 ]
 "117
 [; ;../src/boards/../../drivers/SDCard.c: 117:     do { if (debug_flags) printf ("SD Card: ready.\n\r"); } while(0);
-[e :U 3588 ]
+[e :U 3579 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3589  ]
+[e $ ! != _debug_flags -> 0 `i 3580  ]
 [e ( _printf :s 22C ]
-[e :U 3589 ]
+[e :U 3580 ]
 }
-[e :U 3587 ]
+[e :U 3578 ]
 "120
 [; ;../src/boards/../../drivers/SDCard.c: 120:     SDCard_command(59, 1, buf, 1);
 [e ( _SDCard_command (4 , , , -> -> 59 `i `uc -> -> -> 1 `i `l `ul -> &U _buf `*v -> -> 1 `i `ui ]
 "121
 [; ;../src/boards/../../drivers/SDCard.c: 121:     if (buf[0] != 0x00) {
-[e $ ! != -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 0 `i 3590  ]
+[e $ ! != -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i -> 0 `i 3581  ]
 {
 "122
 [; ;../src/boards/../../drivers/SDCard.c: 122:         do { if (debug_flags) printf ("SD Card: CMD59 response is %02x\n\r", buf[0]); } while(0);
-[e :U 3593 ]
+[e :U 3584 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3594  ]
+[e $ ! != _debug_flags -> 0 `i 3585  ]
 [e ( _printf , (. :s 23C -> *U + &U _buf * -> -> -> 0 `i `ui `ux -> -> # *U &U _buf `ui `ux `i ]
-[e :U 3594 ]
+[e :U 3585 ]
 }
-[e :U 3592 ]
+[e :U 3583 ]
 "123
 [; ;../src/boards/../../drivers/SDCard.c: 123:         return 3;
 [e ) -> 3 `i ]
-[e $UE 3527  ]
+[e $UE 3518  ]
 "124
 [; ;../src/boards/../../drivers/SDCard.c: 124:     }
 }
-[e :U 3590 ]
+[e :U 3581 ]
 "126
 [; ;../src/boards/../../drivers/SDCard.c: 126:     SPI_SD_configure(spi, clock_speed, 1, 0);
 [e ( _SPI_SD_configure (4 , , , _spi _clock_speed -> -> 1 `i `uc -> -> 0 `i `uc ]
 "128
 [; ;../src/boards/../../drivers/SDCard.c: 128:     do { if (debug_flags) printf ("SD Card: initialize ... succeeded\n\r"); } while(0);
-[e :U 3597 ]
+[e :U 3588 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3598  ]
+[e $ ! != _debug_flags -> 0 `i 3589  ]
 [e ( _printf :s 24C ]
-[e :U 3598 ]
+[e :U 3589 ]
 }
-[e :U 3596 ]
+[e :U 3587 ]
 "130
 [; ;../src/boards/../../drivers/SDCard.c: 130:     return 0;
 [e ) -> 0 `i ]
-[e $UE 3527  ]
+[e $UE 3518  ]
 "131
 [; ;../src/boards/../../drivers/SDCard.c: 131: }
-[e :UE 3527 ]
+[e :UE 3518 ]
 }
 "133
 [; ;../src/boards/../../drivers/SDCard.c: 133: static uint8_t __SDCard_wait_response(uint8_t no_response, unsigned int attempts)
@@ -7159,7 +7076,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [v _response `uc ~T0 @X0 1 a ]
 "137
 [; ;../src/boards/../../drivers/SDCard.c: 137:     do {
-[e :U 3602 ]
+[e :U 3593 ]
 {
 "138
 [; ;../src/boards/../../drivers/SDCard.c: 138:         response = SPI_SD_receive_byte(spi);
@@ -7167,15 +7084,15 @@ Version 4.0 HI-TECH Software Intermediate Code
 "139
 [; ;../src/boards/../../drivers/SDCard.c: 139:     } while ((response == no_response) && 0 < --attempts);
 }
-[e $ && == -> _response `i -> _no_response `i < -> -> 0 `i `ui =- _attempts -> -> 1 `i `ui 3602  ]
-[e :U 3601 ]
+[e $ && == -> _response `i -> _no_response `i < -> -> 0 `i `ui =- _attempts -> -> 1 `i `ui 3593  ]
+[e :U 3592 ]
 "140
 [; ;../src/boards/../../drivers/SDCard.c: 140:     return response;
 [e ) _response ]
-[e $UE 3599  ]
+[e $UE 3590  ]
 "141
 [; ;../src/boards/../../drivers/SDCard.c: 141: }
-[e :UE 3599 ]
+[e :UE 3590 ]
 }
 "143
 [; ;../src/boards/../../drivers/SDCard.c: 143: static int __SDCard_command_r1(uint8_t command, uint32_t argument, uint8_t *r1)
@@ -7237,23 +7154,23 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = *U _r1 _response ]
 "162
 [; ;../src/boards/../../drivers/SDCard.c: 162:     if (response == 0xff) {
-[e $ ! == -> _response `i -> 255 `i 3604  ]
+[e $ ! == -> _response `i -> 255 `i 3595  ]
 {
 "163
 [; ;../src/boards/../../drivers/SDCard.c: 163:         return 1;
 [e ) -> 1 `i ]
-[e $UE 3603  ]
+[e $UE 3594  ]
 "164
 [; ;../src/boards/../../drivers/SDCard.c: 164:     }
 }
-[e :U 3604 ]
+[e :U 3595 ]
 "166
 [; ;../src/boards/../../drivers/SDCard.c: 166:     return 0;
 [e ) -> 0 `i ]
-[e $UE 3603  ]
+[e $UE 3594  ]
 "167
 [; ;../src/boards/../../drivers/SDCard.c: 167: }
-[e :UE 3603 ]
+[e :UE 3594 ]
 }
 "169
 [; ;../src/boards/../../drivers/SDCard.c: 169: int SDCard_read512(uint32_t addr, unsigned int offs, void *buf, unsigned int count)
@@ -7291,75 +7208,75 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _retry -> 5 `i ]
 "177
 [; ;../src/boards/../../drivers/SDCard.c: 177:     do { if (debug_flags & (1 << 1)) printf ("SD Card:  read512: addr=%8ld, offs=%d, count=%d\n\r", addr, offs, count); } while(0);
-[e :U 3608 ]
+[e :U 3599 ]
 {
-[e $ ! != & _debug_flags << -> 1 `i -> 1 `i -> 0 `i 3609  ]
+[e $ ! != & _debug_flags << -> 1 `i -> 1 `i -> 0 `i 3600  ]
 [e ( _printf , , , (. :s 25C _addr _offs _count ]
-[e :U 3609 ]
+[e :U 3600 ]
 }
-[e :U 3607 ]
+[e :U 3598 ]
 "179
 [; ;../src/boards/../../drivers/SDCard.c: 179:  retry:
-[e :U 3610 ]
+[e :U 3601 ]
 "180
 [; ;../src/boards/../../drivers/SDCard.c: 180:     result = __SDCard_command_r1(17, addr, &response);
 [e = _result ( ___SDCard_command_r1 (3 , , -> -> 17 `i `uc _addr &U _response ]
 "181
 [; ;../src/boards/../../drivers/SDCard.c: 181:     if (result != 0) {
-[e $ ! != _result -> 0 `i 3611  ]
+[e $ ! != _result -> 0 `i 3602  ]
 {
 "182
 [; ;../src/boards/../../drivers/SDCard.c: 182:         goto done;
-[e $U 3612  ]
+[e $U 3603  ]
 "183
 [; ;../src/boards/../../drivers/SDCard.c: 183:     }
 }
-[e :U 3611 ]
+[e :U 3602 ]
 "184
 [; ;../src/boards/../../drivers/SDCard.c: 184:     if (response != 0) {
-[e $ ! != -> _response `i -> 0 `i 3613  ]
+[e $ ! != -> _response `i -> 0 `i 3604  ]
 {
 "185
 [; ;../src/boards/../../drivers/SDCard.c: 185:         result = 3;
 [e = _result -> 3 `i ]
 "186
 [; ;../src/boards/../../drivers/SDCard.c: 186:         goto done;
-[e $U 3612  ]
+[e $U 3603  ]
 "187
 [; ;../src/boards/../../drivers/SDCard.c: 187:     }
 }
-[e :U 3613 ]
+[e :U 3604 ]
 "189
 [; ;../src/boards/../../drivers/SDCard.c: 189:     response = __SDCard_wait_response(0xff, 3000);
 [e = _response ( ___SDCard_wait_response (2 , -> -> 255 `i `uc -> -> 3000 `i `ui ]
 "190
 [; ;../src/boards/../../drivers/SDCard.c: 190:     if (response == 0xff) {
-[e $ ! == -> _response `i -> 255 `i 3614  ]
+[e $ ! == -> _response `i -> 255 `i 3605  ]
 {
 "191
 [; ;../src/boards/../../drivers/SDCard.c: 191:         result = 1;
 [e = _result -> 1 `i ]
 "192
 [; ;../src/boards/../../drivers/SDCard.c: 192:         goto done;
-[e $U 3612  ]
+[e $U 3603  ]
 "193
 [; ;../src/boards/../../drivers/SDCard.c: 193:     }
 }
-[e :U 3614 ]
+[e :U 3605 ]
 "194
 [; ;../src/boards/../../drivers/SDCard.c: 194:     if (response != 0xfe) {
-[e $ ! != -> _response `i -> 254 `i 3615  ]
+[e $ ! != -> _response `i -> 254 `i 3606  ]
 {
 "195
 [; ;../src/boards/../../drivers/SDCard.c: 195:         result = 3;
 [e = _result -> 3 `i ]
 "196
 [; ;../src/boards/../../drivers/SDCard.c: 196:         goto done;
-[e $U 3612  ]
+[e $U 3603  ]
 "197
 [; ;../src/boards/../../drivers/SDCard.c: 197:     }
 }
-[e :U 3615 ]
+[e :U 3606 ]
 "199
 [; ;../src/boards/../../drivers/SDCard.c: 199:     crc = 0;
 [e = _crc -> -> 0 `i `us ]
@@ -7368,66 +7285,66 @@ Version 4.0 HI-TECH Software Intermediate Code
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
-[e $U 3619  ]
-[e :U 3616 ]
+[e $U 3610  ]
+[e :U 3607 ]
 {
 "201
 [; ;../src/boards/../../drivers/SDCard.c: 201:         response = SPI_SD_receive_byte(spi);
 [e = _response ( _SPI_SD_receive_byte (1 _spi ]
 "202
 [; ;../src/boards/../../drivers/SDCard.c: 202:         if (ctx_.calc_read_crc)
-[e $ ! != -> . _ctx_ 2 `i -> 0 `i 3620  ]
+[e $ ! != -> . _ctx_ 2 `i -> 0 `i 3611  ]
 "203
 [; ;../src/boards/../../drivers/SDCard.c: 203:             crc = __SDCard_crc16(crc, &response, 1);
 [e = _crc ( ___SDCard_crc16 (3 , , _crc -> &U _response `*Cv -> -> 1 `i `ui ]
-[e :U 3620 ]
+[e :U 3611 ]
 "204
 [; ;../src/boards/../../drivers/SDCard.c: 204:     }
 }
 [e ++ _i -> 1 `i ]
-[e :U 3619 ]
-[e $ < -> _i `ui _offs 3616  ]
-[e :U 3617 ]
+[e :U 3610 ]
+[e $ < -> _i `ui _offs 3607  ]
+[e :U 3608 ]
 }
 "205
 [; ;../src/boards/../../drivers/SDCard.c: 205:     SPI_SD_receive(spi, buf, count);
 [e ( _SPI_SD_receive (3 , , _spi _buf _count ]
 "206
 [; ;../src/boards/../../drivers/SDCard.c: 206:     if (ctx_.calc_read_crc)
-[e $ ! != -> . _ctx_ 2 `i -> 0 `i 3621  ]
+[e $ ! != -> . _ctx_ 2 `i -> 0 `i 3612  ]
 "207
 [; ;../src/boards/../../drivers/SDCard.c: 207:         crc = __SDCard_crc16(crc, buf, count);
 [e = _crc ( ___SDCard_crc16 (3 , , _crc -> _buf `*Cv _count ]
-[e :U 3621 ]
+[e :U 3612 ]
 "208
 [; ;../src/boards/../../drivers/SDCard.c: 208:     for (unsigned int i = 0; i < 512 - offs - count; i++) {
 {
 [v _i `ui ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `ui ]
-[e $U 3625  ]
-[e :U 3622 ]
+[e $U 3616  ]
+[e :U 3613 ]
 {
 "209
 [; ;../src/boards/../../drivers/SDCard.c: 209:         response = SPI_SD_receive_byte(spi);
 [e = _response ( _SPI_SD_receive_byte (1 _spi ]
 "210
 [; ;../src/boards/../../drivers/SDCard.c: 210:         if (ctx_.calc_read_crc)
-[e $ ! != -> . _ctx_ 2 `i -> 0 `i 3626  ]
+[e $ ! != -> . _ctx_ 2 `i -> 0 `i 3617  ]
 "211
 [; ;../src/boards/../../drivers/SDCard.c: 211:             crc = __SDCard_crc16(crc, &response, 1);
 [e = _crc ( ___SDCard_crc16 (3 , , _crc -> &U _response `*Cv -> -> 1 `i `ui ]
-[e :U 3626 ]
+[e :U 3617 ]
 "212
 [; ;../src/boards/../../drivers/SDCard.c: 212:     }
 }
 [e ++ _i -> -> 1 `i `ui ]
-[e :U 3625 ]
-[e $ < _i - - -> -> 512 `i `ui _offs _count 3622  ]
-[e :U 3623 ]
+[e :U 3616 ]
+[e $ < _i - - -> -> 512 `i `ui _offs _count 3613  ]
+[e :U 3614 ]
 }
 "213
 [; ;../src/boards/../../drivers/SDCard.c: 213:     if ((debug_flags & (1 << 1)) && (debug_flags & (1 << 3))) {
-[e $ ! && != & _debug_flags << -> 1 `i -> 1 `i -> 0 `i != & _debug_flags << -> 1 `i -> 3 `i -> 0 `i 3627  ]
+[e $ ! && != & _debug_flags << -> 1 `i -> 1 `i -> 0 `i != & _debug_flags << -> 1 `i -> 3 `i -> 0 `i 3618  ]
 {
 "214
 [; ;../src/boards/../../drivers/SDCard.c: 214:         util_addrdump("SD: ", (addr * 512) + offs, buf, count);
@@ -7435,7 +7352,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 "215
 [; ;../src/boards/../../drivers/SDCard.c: 215:     }
 }
-[e :U 3627 ]
+[e :U 3618 ]
 "217
 [; ;../src/boards/../../drivers/SDCard.c: 217:     resp_crc = (uint16_t)SPI_SD_receive_byte(spi) << 8;
 [e = _resp_crc -> << -> -> ( _SPI_SD_receive_byte (1 _spi `us `ui -> 8 `i `us ]
@@ -7444,57 +7361,57 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e =| _resp_crc -> ( _SPI_SD_receive_byte (1 _spi `us ]
 "219
 [; ;../src/boards/../../drivers/SDCard.c: 219:     if (ctx_.calc_read_crc && resp_crc != crc) {
-[e $ ! && != -> . _ctx_ 2 `i -> 0 `i != -> _resp_crc `ui -> _crc `ui 3628  ]
+[e $ ! && != -> . _ctx_ 2 `i -> 0 `i != -> _resp_crc `ui -> _crc `ui 3619  ]
 {
 "220
 [; ;../src/boards/../../drivers/SDCard.c: 220:         do { if (debug_flags) printf ("SD Card: read512: CRC error (%04x != %04x, retry=%d)\n\r", crc, resp_crc, retry); } while(0);
-[e :U 3631 ]
+[e :U 3622 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3632  ]
+[e $ ! != _debug_flags -> 0 `i 3623  ]
 [e ( _printf , , , (. :s 27C -> _crc `ui -> _resp_crc `ui _retry ]
-[e :U 3632 ]
+[e :U 3623 ]
 }
-[e :U 3630 ]
+[e :U 3621 ]
 "222
 [; ;../src/boards/../../drivers/SDCard.c: 222:         if (--retry < 1) {
-[e $ ! < =- _retry -> 1 `i -> 1 `i 3633  ]
+[e $ ! < =- _retry -> 1 `i -> 1 `i 3624  ]
 {
 "223
 [; ;../src/boards/../../drivers/SDCard.c: 223:             result = 4;
 [e = _result -> 4 `i ]
 "224
 [; ;../src/boards/../../drivers/SDCard.c: 224:             goto done;
-[e $U 3612  ]
+[e $U 3603  ]
 "225
 [; ;../src/boards/../../drivers/SDCard.c: 225:         }
 }
-[e :U 3633 ]
+[e :U 3624 ]
 "226
 [; ;../src/boards/../../drivers/SDCard.c: 226:         SDCard_end_transaction();
 [e ( _SDCard_end_transaction ..  ]
 "227
 [; ;../src/boards/../../drivers/SDCard.c: 227:         goto retry;
-[e $U 3610  ]
+[e $U 3601  ]
 "228
 [; ;../src/boards/../../drivers/SDCard.c: 228:     }
 }
-[e :U 3628 ]
+[e :U 3619 ]
 "230
 [; ;../src/boards/../../drivers/SDCard.c: 230:     result = 0;
 [e = _result -> 0 `i ]
 "232
 [; ;../src/boards/../../drivers/SDCard.c: 232:  done:
-[e :U 3612 ]
+[e :U 3603 ]
 "233
 [; ;../src/boards/../../drivers/SDCard.c: 233:     SDCard_end_transaction();
 [e ( _SDCard_end_transaction ..  ]
 "234
 [; ;../src/boards/../../drivers/SDCard.c: 234:     return result;
 [e ) _result ]
-[e $UE 3605  ]
+[e $UE 3596  ]
 "235
 [; ;../src/boards/../../drivers/SDCard.c: 235: }
-[e :UE 3605 ]
+[e :UE 3596 ]
 }
 "237
 [; ;../src/boards/../../drivers/SDCard.c: 237: int SDCard_write512(uint32_t addr, unsigned int offs, const void *buf, unsigned int count)
@@ -7531,16 +7448,16 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _retry -> 5 `i ]
 "245
 [; ;../src/boards/../../drivers/SDCard.c: 245:     do { if (debug_flags & (1 << 2)) printf ("SD Card: write512: addr=%8ld, offs=%d, count=%d\n\r", addr, offs, count); } while(0);
-[e :U 3637 ]
+[e :U 3628 ]
 {
-[e $ ! != & _debug_flags << -> 1 `i -> 2 `i -> 0 `i 3638  ]
+[e $ ! != & _debug_flags << -> 1 `i -> 2 `i -> 0 `i 3629  ]
 [e ( _printf , , , (. :s 28C _addr _offs _count ]
-[e :U 3638 ]
+[e :U 3629 ]
 }
-[e :U 3636 ]
+[e :U 3627 ]
 "246
 [; ;../src/boards/../../drivers/SDCard.c: 246:     if ((debug_flags & (1 << 2)) && (debug_flags & (1 << 3))) {
-[e $ ! && != & _debug_flags << -> 1 `i -> 2 `i -> 0 `i != & _debug_flags << -> 1 `i -> 3 `i -> 0 `i 3639  ]
+[e $ ! && != & _debug_flags << -> 1 `i -> 2 `i -> 0 `i != & _debug_flags << -> 1 `i -> 3 `i -> 0 `i 3630  ]
 {
 "247
 [; ;../src/boards/../../drivers/SDCard.c: 247:         util_addrdump("SD: ", (addr * 512) + offs, buf, count);
@@ -7548,7 +7465,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 "248
 [; ;../src/boards/../../drivers/SDCard.c: 248:     }
 }
-[e :U 3639 ]
+[e :U 3630 ]
 "250
 [; ;../src/boards/../../drivers/SDCard.c: 250:     crc = 0;
 [e = _crc -> -> 0 `i `us ]
@@ -7560,8 +7477,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
-[e $U 3643  ]
-[e :U 3640 ]
+[e $U 3634  ]
+[e :U 3631 ]
 {
 "253
 [; ;../src/boards/../../drivers/SDCard.c: 253:         crc = __SDCard_crc16(crc, &response, 1);
@@ -7570,9 +7487,9 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../src/boards/../../drivers/SDCard.c: 254:     }
 }
 [e ++ _i -> 1 `i ]
-[e :U 3643 ]
-[e $ < -> _i `ui _offs 3640  ]
-[e :U 3641 ]
+[e :U 3634 ]
+[e $ < -> _i `ui _offs 3631  ]
+[e :U 3632 ]
 }
 "255
 [; ;../src/boards/../../drivers/SDCard.c: 255:     crc = __SDCard_crc16(crc, buf, count);
@@ -7582,8 +7499,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 {
 [v _i `ui ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `ui ]
-[e $U 3647  ]
-[e :U 3644 ]
+[e $U 3638  ]
+[e :U 3635 ]
 {
 "257
 [; ;../src/boards/../../drivers/SDCard.c: 257:         crc = __SDCard_crc16(crc, &response, 1);
@@ -7592,41 +7509,41 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../src/boards/../../drivers/SDCard.c: 258:     }
 }
 [e ++ _i -> -> 1 `i `ui ]
-[e :U 3647 ]
-[e $ < _i - - -> -> 512 `i `ui _offs _count 3644  ]
-[e :U 3645 ]
+[e :U 3638 ]
+[e $ < _i - - -> -> 512 `i `ui _offs _count 3635  ]
+[e :U 3636 ]
 }
 "260
 [; ;../src/boards/../../drivers/SDCard.c: 260:  retry:
-[e :U 3648 ]
+[e :U 3639 ]
 "261
 [; ;../src/boards/../../drivers/SDCard.c: 261:     result = __SDCard_command_r1(24, addr, &response);
 [e = _result ( ___SDCard_command_r1 (3 , , -> -> 24 `i `uc _addr &U _response ]
 "262
 [; ;../src/boards/../../drivers/SDCard.c: 262:     if (result != 0) {
-[e $ ! != _result -> 0 `i 3649  ]
+[e $ ! != _result -> 0 `i 3640  ]
 {
 "263
 [; ;../src/boards/../../drivers/SDCard.c: 263:         goto done;
-[e $U 3650  ]
+[e $U 3641  ]
 "264
 [; ;../src/boards/../../drivers/SDCard.c: 264:     }
 }
-[e :U 3649 ]
+[e :U 3640 ]
 "265
 [; ;../src/boards/../../drivers/SDCard.c: 265:     if (response != 0) {
-[e $ ! != -> _response `i -> 0 `i 3651  ]
+[e $ ! != -> _response `i -> 0 `i 3642  ]
 {
 "266
 [; ;../src/boards/../../drivers/SDCard.c: 266:         result = 3;
 [e = _result -> 3 `i ]
 "267
 [; ;../src/boards/../../drivers/SDCard.c: 267:         goto done;
-[e $U 3650  ]
+[e $U 3641  ]
 "268
 [; ;../src/boards/../../drivers/SDCard.c: 268:     }
 }
-[e :U 3651 ]
+[e :U 3642 ]
 "270
 [; ;../src/boards/../../drivers/SDCard.c: 270:     response = 0xfe;
 [e = _response -> -> 254 `i `uc ]
@@ -7659,67 +7576,67 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _response ( ___SDCard_wait_response (2 , -> -> 255 `i `uc -> -> 3000 `i `ui ]
 "281
 [; ;../src/boards/../../drivers/SDCard.c: 281:     if (response == 0xff) {
-[e $ ! == -> _response `i -> 255 `i 3652  ]
+[e $ ! == -> _response `i -> 255 `i 3643  ]
 {
 "282
 [; ;../src/boards/../../drivers/SDCard.c: 282:         do { if (debug_flags) printf ("SD Card: write512: failed to get token, timeout\n\r"); } while(0);
-[e :U 3655 ]
+[e :U 3646 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3656  ]
+[e $ ! != _debug_flags -> 0 `i 3647  ]
 [e ( _printf :s 30C ]
-[e :U 3656 ]
+[e :U 3647 ]
 }
-[e :U 3654 ]
+[e :U 3645 ]
 "283
 [; ;../src/boards/../../drivers/SDCard.c: 283:         result = 1;
 [e = _result -> 1 `i ]
 "284
 [; ;../src/boards/../../drivers/SDCard.c: 284:         goto done;
-[e $U 3650  ]
+[e $U 3641  ]
 "285
 [; ;../src/boards/../../drivers/SDCard.c: 285:     }
 }
-[e :U 3652 ]
+[e :U 3643 ]
 "286
 [; ;../src/boards/../../drivers/SDCard.c: 286:     if ((response & 0x1f) != 0x05) {
-[e $ ! != & -> _response `i -> 31 `i -> 5 `i 3657  ]
+[e $ ! != & -> _response `i -> 31 `i -> 5 `i 3648  ]
 {
 "287
 [; ;../src/boards/../../drivers/SDCard.c: 287:         do { if (debug_flags) printf ("SD Card: write512: token is %02x\n\r", response); } while(0);
-[e :U 3660 ]
+[e :U 3651 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3661  ]
+[e $ ! != _debug_flags -> 0 `i 3652  ]
 [e ( _printf , (. :s 31C -> _response `i ]
-[e :U 3661 ]
+[e :U 3652 ]
 }
-[e :U 3659 ]
+[e :U 3650 ]
 "288
 [; ;../src/boards/../../drivers/SDCard.c: 288:         if ((response & 0x1f) == 0x0b) {
-[e $ ! == & -> _response `i -> 31 `i -> 11 `i 3662  ]
+[e $ ! == & -> _response `i -> 31 `i -> 11 `i 3653  ]
 {
 "289
 [; ;../src/boards/../../drivers/SDCard.c: 289:             do { if (debug_flags) printf ("SD Card: write512: CRC error (retry=%d)\n\r", retry); } while(0);
-[e :U 3665 ]
+[e :U 3656 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3666  ]
+[e $ ! != _debug_flags -> 0 `i 3657  ]
 [e ( _printf , (. :s 32C _retry ]
-[e :U 3666 ]
+[e :U 3657 ]
 }
-[e :U 3664 ]
+[e :U 3655 ]
 "290
 [; ;../src/boards/../../drivers/SDCard.c: 290:             if (--retry < 1) {
-[e $ ! < =- _retry -> 1 `i -> 1 `i 3667  ]
+[e $ ! < =- _retry -> 1 `i -> 1 `i 3658  ]
 {
 "291
 [; ;../src/boards/../../drivers/SDCard.c: 291:                 result = 4;
 [e = _result -> 4 `i ]
 "292
 [; ;../src/boards/../../drivers/SDCard.c: 292:                 goto done;
-[e $U 3650  ]
+[e $U 3641  ]
 "293
 [; ;../src/boards/../../drivers/SDCard.c: 293:             }
 }
-[e :U 3667 ]
+[e :U 3658 ]
 "294
 [; ;../src/boards/../../drivers/SDCard.c: 294:             __SDCard_wait_response(0xff, 30000);
 [e ( ___SDCard_wait_response (2 , -> -> 255 `i `uc -> -> 30000 `i `ui ]
@@ -7728,63 +7645,63 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _SDCard_end_transaction ..  ]
 "296
 [; ;../src/boards/../../drivers/SDCard.c: 296:             goto retry;
-[e $U 3648  ]
+[e $U 3639  ]
 "297
 [; ;../src/boards/../../drivers/SDCard.c: 297:         }
 }
-[e :U 3662 ]
+[e :U 3653 ]
 "298
 [; ;../src/boards/../../drivers/SDCard.c: 298:         result = 3;
 [e = _result -> 3 `i ]
 "299
 [; ;../src/boards/../../drivers/SDCard.c: 299:         goto done;
-[e $U 3650  ]
+[e $U 3641  ]
 "300
 [; ;../src/boards/../../drivers/SDCard.c: 300:     }
 }
-[e :U 3657 ]
+[e :U 3648 ]
 "302
 [; ;../src/boards/../../drivers/SDCard.c: 302:     response = __SDCard_wait_response(0x00, 30000);
 [e = _response ( ___SDCard_wait_response (2 , -> -> 0 `i `uc -> -> 30000 `i `ui ]
 "303
 [; ;../src/boards/../../drivers/SDCard.c: 303:     if (response == 0x00) {
-[e $ ! == -> _response `i -> 0 `i 3668  ]
+[e $ ! == -> _response `i -> 0 `i 3659  ]
 {
 "304
 [; ;../src/boards/../../drivers/SDCard.c: 304:         do { if (debug_flags) printf ("SD Card: write512: timeout, response is %02x\n\r", response); } while(0);
-[e :U 3671 ]
+[e :U 3662 ]
 {
-[e $ ! != _debug_flags -> 0 `i 3672  ]
+[e $ ! != _debug_flags -> 0 `i 3663  ]
 [e ( _printf , (. :s 33C -> _response `i ]
-[e :U 3672 ]
+[e :U 3663 ]
 }
-[e :U 3670 ]
+[e :U 3661 ]
 "305
 [; ;../src/boards/../../drivers/SDCard.c: 305:         result = 1;
 [e = _result -> 1 `i ]
 "306
 [; ;../src/boards/../../drivers/SDCard.c: 306:         goto done;
-[e $U 3650  ]
+[e $U 3641  ]
 "307
 [; ;../src/boards/../../drivers/SDCard.c: 307:     }
 }
-[e :U 3668 ]
+[e :U 3659 ]
 "309
 [; ;../src/boards/../../drivers/SDCard.c: 309:     result = 0;
 [e = _result -> 0 `i ]
 "311
 [; ;../src/boards/../../drivers/SDCard.c: 311:  done:
-[e :U 3650 ]
+[e :U 3641 ]
 "312
 [; ;../src/boards/../../drivers/SDCard.c: 312:     SDCard_end_transaction();
 [e ( _SDCard_end_transaction ..  ]
 "313
 [; ;../src/boards/../../drivers/SDCard.c: 313:     return result;
 [e ) _result ]
-[e $UE 3634  ]
+[e $UE 3625  ]
 "314
 [; ;../src/boards/../../drivers/SDCard.c: 314: }
-[e :UE 3634 ]
+[e :UE 3625 ]
 }
 "316
 [; ;../src/boards/../../drivers/SDCard.c: 316: int SDCard_command(uint8_t command, uint32_t argument, void *response_buffer, unsigned int length)
@@ -7818,7 +7735,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _result ( ___SDCard_command_r1 (3 , , _command _argument _responsep ]
 "323
 [; ;../src/boards/../../drivers/SDCard.c: 323:     if (result != 0) {
-[e $ ! != _result -> 0 `i 3674  ]
+[e $ ! != _result -> 0 `i 3665  ]
 {
 "324
 [; ;../src/boards/../../drivers/SDCard.c: 324:         SDCard_end_transaction();
@@ -7826,11 +7743,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 "325
 [; ;../src/boards/../../drivers/SDCard.c: 325:         return result;
 [e ) _result ]
-[e $UE 3673  ]
+[e $UE 3664  ]
 "326
 [; ;../src/boards/../../drivers/SDCard.c: 326:     }
 }
-[e :U 3674 ]
+[e :U 3665 ]
 "328
 [; ;../src/boards/../../drivers/SDCard.c: 328:     SPI_SD_receive(spi, &responsep[1], length - 1);
 [e ( _SPI_SD_receive (3 , , _spi -> &U *U + _responsep * -> -> 1 `i `x -> -> # *U _responsep `i `x `*v - _length -> -> 1 `i `ui ]
@@ -7840,10 +7757,10 @@ Version 4.0 HI-TECH Software Intermediate Code
 "331
 [; ;../src/boards/../../drivers/SDCard.c: 331:     return 0;
 [e ) -> 0 `i ]
-[e $UE 3673  ]
+[e $UE 3664  ]
 "332
 [; ;../src/boards/../../drivers/SDCard.c: 332: }
-[e :UE 3673 ]
+[e :UE 3664 ]
 }
 "334
 [; ;../src/boards/../../drivers/SDCard.c: 334: uint8_t SDCard_crc(const void *buf, unsigned int count)
@@ -7873,8 +7790,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _endp + _p * -> _count `ux -> -> # *U _p `ui `ux ]
 "340
 [; ;../src/boards/../../drivers/SDCard.c: 340:     while (p < endp) {
-[e $U 3676  ]
-[e :U 3677 ]
+[e $U 3667  ]
+[e :U 3668 ]
 {
 "341
 [; ;../src/boards/../../drivers/SDCard.c: 341:         crc ^= *p++;
@@ -7884,17 +7801,17 @@ Version 4.0 HI-TECH Software Intermediate Code
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
-[e $ < _i -> 8 `i 3679  ]
-[e $U 3680  ]
-[e :U 3679 ]
+[e $ < _i -> 8 `i 3670  ]
+[e $U 3671  ]
+[e :U 3670 ]
 {
 "343
 [; ;../src/boards/../../drivers/SDCard.c: 343:             if (crc & 0x80)
-[e $ ! != & -> _crc `i -> 128 `i -> 0 `i 3682  ]
+[e $ ! != & -> _crc `i -> 128 `i -> 0 `i 3673  ]
 "344
 [; ;../src/boards/../../drivers/SDCard.c: 344:                 crc ^= 0x89;
 [e =^ _crc -> -> 137 `i `uc ]
-[e :U 3682 ]
+[e :U 3673 ]
 "345
 [; ;../src/boards/../../drivers/SDCard.c: 345:             crc <<= 1;
 [e =<< _crc -> -> 1 `i `uc ]
@@ -7902,24 +7819,24 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../src/boards/../../drivers/SDCard.c: 346:         }
 }
 [e ++ _i -> 1 `i ]
-[e $ < _i -> 8 `i 3679  ]
-[e :U 3680 ]
+[e $ < _i -> 8 `i 3670  ]
+[e :U 3671 ]
 }
 "347
 [; ;../src/boards/../../drivers/SDCard.c: 347:     }
 }
-[e :U 3676 ]
+[e :U 3667 ]
 "340
 [; ;../src/boards/../../drivers/SDCard.c: 340:     while (p < endp) {
-[e $ < _p _endp 3677  ]
-[e :U 3678 ]
+[e $ < _p _endp 3668  ]
+[e :U 3669 ]
 "349
 [; ;../src/boards/../../drivers/SDCard.c: 349:     return crc;
 [e ) _crc ]
-[e $UE 3675  ]
+[e $UE 3666  ]
 "350
 [; ;../src/boards/../../drivers/SDCard.c: 350: }
-[e :UE 3675 ]
+[e :UE 3666 ]
 }
 "352
 [; ;../src/boards/../../drivers/SDCard.c: 352: uint16_t __SDCard_crc16(uint16_t crc, const void *buf, unsigned int count)
@@ -7946,8 +7863,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e = _endp + _p * -> _count `ux -> -> # *U _p `ui `ux ]
 "357
 [; ;../src/boards/../../drivers/SDCard.c: 357:     while (p < endp) {
-[e $U 3684  ]
-[e :U 3685 ]
+[e $U 3675  ]
+[e :U 3676 ]
 {
 "358
 [; ;../src/boards/../../drivers/SDCard.c: 358:         crc = (crc >> 8)|(crc << 8);
@@ -7967,65 +7884,18 @@ Version 4.0 HI-TECH Software Intermediate Code
 "363
 [; ;../src/boards/../../drivers/SDCard.c: 363:     }
 }
-[e :U 3684 ]
+[e :U 3675 ]
 "357
 [; ;../src/boards/../../drivers/SDCard.c: 357:     while (p < endp) {
-[e $ < _p _endp 3685  ]
-[e :U 3686 ]
+[e $ < _p _endp 3676  ]
+[e :U 3677 ]
 "365
 [; ;../src/boards/../../drivers/SDCard.c: 365:     return crc;
 [e ) _crc ]
-[e $UE 3683  ]
+[e $UE 3674  ]
 "366
 [; ;../src/boards/../../drivers/SDCard.c: 366: }
-[e :UE 3683 ]
-}
-"368
-[; ;../src/boards/../../drivers/SDCard.c: 368: uint16_t SDCard_crc16(const void *buf, unsigned int count)
-[v _SDCard_crc16 `(us ~T0 @X0 1 ef2`*Cv`ui ]
-"369
-[; ;../src/boards/../../drivers/SDCard.c: 369: {
-{
-[e :U _SDCard_crc16 ]
-"368
-[; ;../src/boards/../../drivers/SDCard.c: 368: uint16_t SDCard_crc16(const void *buf, unsigned int count)
-[v _buf `*Cv ~T0 @X0 1 r1 ]
-[v _count `ui ~T0 @X0 1 r2 ]
-"369
-[; ;../src/boards/../../drivers/SDCard.c: 369: {
-[f ]
-"370
-[; ;../src/boards/../../drivers/SDCard.c: 370:     return __SDCard_crc16(0, buf, count);
-[e ) ( ___SDCard_crc16 (3 , , -> -> 0 `i `us _buf _count ]
-[e $UE 3687  ]
-"371
-[; ;../src/boards/../../drivers/SDCard.c: 371: }
-[e :UE 3687 ]
-}
-"373
-[; ;../src/boards/../../drivers/SDCard.c: 373: int SDCard_debug(int newval)
-[v _SDCard_debug `(i ~T0 @X0 1 ef1`i ]
-"374
-[; ;../src/boards/../../drivers/SDCard.c: 374: {
-{
-[e :U _SDCard_debug ]
-"373
-[; ;../src/boards/../../drivers/SDCard.c: 373: int SDCard_debug(int newval)
-[v _newval `i ~T0 @X0 1 r1 ]
-"374
-[; ;../src/boards/../../drivers/SDCard.c: 374: {
-[f ]
-"375
-[; ;../src/boards/../../drivers/SDCard.c: 375:     int res = debug_flags;
-[v _res `i ~T0 @X0 1 a ]
-[e = _res _debug_flags ]
-"379
-[; ;../src/boards/../../drivers/SDCard.c: 379:     return res;
-[e ) _res ]
-[e $UE 3688  ]
-"380
-[; ;../src/boards/../../drivers/SDCard.c: 380: }
-[e :UE 3688 ]
+[e :UE 3674 ]
 }
 [p f _printf 12877972 ]
 [a 7C 83 80 73 95 83 68 95 99 111 110 102 105 103 117 114 101 0 ]

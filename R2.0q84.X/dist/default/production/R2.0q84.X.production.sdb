@@ -3,7 +3,7 @@
 [d edition pro ]
 [d chip 18F47Q84 ]
 [d frameptr 1249 ]
-"252 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
+"253 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
 [e E23864 . `uc
 SPI_CLOCK_100KHZ 0
 SPI_CLOCK_2MHZ 1
@@ -122,12 +122,6 @@ CONV_DONE 4
 [v _util_addrdump util_addrdump `(v  1 e 1 0 ]
 "78
 [v _util_hexdump_sum util_hexdump_sum `(v  1 e 1 0 ]
-"101
-[v _chk_leap chk_leap `(us  1 s 2 chk_leap ]
-"111
-[v _leaps leaps `(us  1 s 2 leaps ]
-"123
-[v _jan_to_days jan_to_days `(us  1 s 2 jan_to_days ]
 "202
 [v _get_hex get_hex `(ul  1 e 4 0 ]
 "619 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/fatfs/ff.c
@@ -244,8 +238,6 @@ CONV_DONE 4
 [v _SPI_SD_begin_transaction SPI_SD_begin_transaction `(v  1 e 1 0 ]
 "140
 [v _SPI_SD_end_transaction SPI_SD_end_transaction `(v  1 e 1 0 ]
-"146
-[v _SPI_SD_transfer_byte SPI_SD_transfer_byte `(uc  1 e 1 0 ]
 "164
 [v _SPI_SD_send SPI_SD_send `(v  1 e 1 0 ]
 "185
@@ -278,17 +270,17 @@ CONV_DONE 4
 [v _clc_init clc_init `(v  1 e 1 0 ]
 "241
 [v _setup_sd setup_sd `(v  1 e 1 0 ]
-"259
+"260
 [v _start_W65 start_W65 `(v  1 e 1 0 ]
-"284
+"285
 [v _bus_hold_req bus_hold_req `(v  1 s 1 bus_hold_req ]
-"294
+"295
 [v _bus_release_req bus_release_req `(v  1 s 1 bus_release_req ]
-"306
+"307
 [v _board_event_loop board_event_loop `(v  1 e 1 0 ]
-"347
+"348
 [v _board_event_loop1 board_event_loop1 `(v  1 e 1 0 ]
-"377
+"378
 [v _continue_action continue_action `(v  1 e 1 0 ]
 "40 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
 [v _make_irq make_irq `(v  1 s 1 make_irq ]
@@ -314,21 +306,21 @@ CONV_DONE 4
 [v _reset_cpu reset_cpu `(v  1 e 1 0 ]
 "209
 [v _port_init port_init `(v  1 e 1 0 ]
-"288
+"289
 [v _uart_init uart_init `(v  1 e 1 0 ]
-"315
+"316
 [v _clk_init clk_init `(v  1 e 1 0 ]
-"328
+"329
 [v _reset_clk reset_clk `(v  1 e 1 0 ]
-"337
+"338
 [v _write_sram write_sram `(v  1 e 1 0 ]
-"381
+"382
 [v _read_sram read_sram `(v  1 e 1 0 ]
-"419
+"420
 [v _start_cpu start_cpu `(v  1 e 1 0 ]
-"440
+"441
 [v _timer_off timer_off `(v  1 e 1 0 ]
-"444
+"445
 [v _timer_on timer_on `(v  1 e 1 0 ]
 "60 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/io_dos.c
 [v _seek_disk seek_disk `(i  1 s 2 seek_disk ]
@@ -456,8 +448,6 @@ CONV_DONE 4
 [v ___lodiv __lodiv `(uo  1 e 8 0 ]
 "9 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\lomod.c
 [v ___lomod __lomod `(uo  1 e 8 0 ]
-"7 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\lwmod.c
-[v ___lwmod __lwmod `(ui  1 e 2 0 ]
 "3 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\memcmp.c
 [v _memcmp memcmp `(i  1 e 2 0 ]
 "4 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\memcpy.c
@@ -498,11 +488,9 @@ CONV_DONE 4
 [v ___xxtofl __xxtofl `(d  1 e 4 0 ]
 "45 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/drivers/diskio.c
 [v _start_lba start_lba `ul  1 s 4 start_lba ]
-"121 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/drivers/utils.c
-[v _mtod mtod `C[12]us  1 s 24 mtod ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "465 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/fatfs/ff.c
-[v _FatFs FatFs `[1]*.39S734  1 s 2 FatFs ]
+[v _FatFs FatFs `[1]*.39S718  1 s 2 FatFs ]
 "466
 [v _Fsid Fsid `us  1 s 2 Fsid ]
 "469
@@ -527,20 +515,20 @@ CONV_DONE 4
 [v _rx_cnt rx_cnt `ui  1 e 2 0 ]
 "24
 [v _rom rom `C[16]uc  1 e 16 0 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "34 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/io_dos.c
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[s S772 . 4 `ui 1 sectors 2 0 `*.39S762 1 filep 2 2 ]
-[v _cpm_drives cpm_drives `[16]S772  1 e 64 0 ]
-[s S775 . 13 `uc 1 UREQ_COM 1 0 `uc 1 UNI_CHR 1 1 `uc 1 CREQ_COM 1 2 `uc 1 CBI_CHR 1 3 `uc 1 disk_drive 1 4 `us 1 disk_track 2 5 `us 1 disk_sector 2 7 `ul 1 data_adr 4 9 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[s S756 . 4 `ui 1 sectors 2 0 `*.39S746 1 filep 2 2 ]
+[v _cpm_drives cpm_drives `[16]S756  1 e 64 0 ]
+[s S759 . 13 `uc 1 UREQ_COM 1 0 `uc 1 UNI_CHR 1 1 `uc 1 CREQ_COM 1 2 `uc 1 CBI_CHR 1 3 `uc 1 disk_drive 1 4 `us 1 disk_track 2 5 `us 1 disk_sector 2 7 `ul 1 data_adr 4 9 ]
 "56
-[v _req_tbl req_tbl `S775  1 s 13 req_tbl ]
+[v _req_tbl req_tbl `S759  1 s 13 req_tbl ]
 "58
 [v _disk_buf disk_buf `[128]uc  1 s 128 disk_buf ]
-[s S813 . 6 `uc 1 disk 1 0 `uc 1 disk_read 1 1 `uc 1 disk_write 1 2 `uc 1 disk_verbose 1 3 `us 1 disk_mask 2 4 ]
+[s S797 . 6 `uc 1 disk 1 0 `uc 1 disk_read 1 1 `uc 1 disk_write 1 2 `uc 1 disk_verbose 1 3 `us 1 disk_mask 2 4 ]
 "63 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/w65_main.c
-[v _debug debug `S813  1 e 6 0 ]
+[v _debug debug `S797  1 e 6 0 ]
 [s S36 . 32 `uc 1 op1 1 0 `us 1 cstart_addr 2 1 `uc 1 op2 1 3 `us 1 wstart_addr 2 4 `us 1 direct_page 2 6 `[8]uc 1 mezID 8 8 `ul 1 load_p 4 16 `ul 1 picif_p 4 20 `uc 1 sw_816 1 24 `uc 1 irq_sw 1 25 `us 1 reg_tblp 2 26 `us 1 reg_tsize 2 28 `uc 1 nmi_sw 1 30 `uc 1 bios_sw 1 31 ]
 "90
 [v _fh fh `S36  1 e 32 0 ]
@@ -575,11 +563,11 @@ CONV_DONE 4
 "120
 [v _fin_name fin_name `[13]uc  1 s 13 fin_name ]
 "122
-[v _fs fs `S734  1 s 564 fs ]
+[v _fs fs `S718  1 s 564 fs ]
 "125
-[v _rom_fl rom_fl `S762  1 s 546 rom_fl ]
+[v _rom_fl rom_fl `S746  1 s 546 rom_fl ]
 "126
-[v _in_fl in_fl `S762  1 s 546 in_fl ]
+[v _in_fl in_fl `S746  1 s 546 in_fl ]
 "127
 [v _raw_addr raw_addr `ul  1 s 4 raw_addr ]
 "128
@@ -590,15 +578,15 @@ CONV_DONE 4
 [v _line_buf line_buf `[81]uc  1 s 81 line_buf ]
 "135
 [v _arg arg `[5]*.34uc  1 s 10 arg ]
-[s S1150 . 4 `*.32Cuc 1 conf 2 0 `*.39ul 1 val 2 2 ]
+[s S1134 . 4 `*.32Cuc 1 conf 2 0 `*.39ul 1 val 2 2 ]
 "139
-[v _t_conf t_conf `[2]S1150  1 s 8 t_conf ]
-[s S1175 . 5 `*.32uc 1 cmd_name 2 0 `*.38(E23544 1 func 3 2 ]
+[v _t_conf t_conf `[2]S1134  1 s 8 t_conf ]
+[s S1159 . 5 `*.32uc 1 cmd_name 2 0 `*.38(E23544 1 func 3 2 ]
 "144
-[v _cmd cmd `[15]S1175  1 s 75 cmd ]
-[s S1234 . 42 `uc 1 sw 1 0 `us 1 addr 2 1 `uc 1 pbnk 1 3 `uc 1 dbnk 1 4 `us 1 dp 2 5 `us 1 caddr 2 7 `us 1 waddr 2 9 `uc 1 sw_816 1 11 `[30]uc 1 fname 30 12 ]
+[v _cmd cmd `[15]S1159  1 s 75 cmd ]
+[s S1218 . 42 `uc 1 sw 1 0 `us 1 addr 2 1 `uc 1 pbnk 1 3 `uc 1 dbnk 1 4 `us 1 dp 2 5 `us 1 caddr 2 7 `us 1 waddr 2 9 `uc 1 sw_816 1 11 `[30]uc 1 fname 30 12 ]
 "178
-[v _binv binv `S1234  1 s 42 binv ]
+[v _binv binv `S1218  1 s 42 binv ]
 "179
 [v _mon mon `uc  1 s 1 mon ]
 "3492 C:/Users/akihito/.mchp_packs/Microchip/PIC18F-Q_DFP/1.25.433/xc8\pic\include\proc\pic18f47q84.h
@@ -854,7 +842,7 @@ CONV_DONE 4
 [v _ANSELB ANSELB `VEuc  1 e 1 @1032 ]
 "60317
 [v _WPUB WPUB `VEuc  1 e 1 @1033 ]
-[s S156 . 1 `uc 1 SLRB0 1 0 :1:0 
+[s S153 . 1 `uc 1 SLRB0 1 0 :1:0 
 `uc 1 SLRB1 1 0 :1:1 
 `uc 1 SLRB2 1 0 :1:2 
 `uc 1 SLRB3 1 0 :1:3 
@@ -864,10 +852,10 @@ CONV_DONE 4
 `uc 1 SLRB7 1 0 :1:7 
 ]
 "60458
-[u S165 . 1 `S156 1 . 1 0 ]
+[u S162 . 1 `S153 1 . 1 0 ]
 "60458
 "60458
-[v _SLRCONBbits SLRCONBbits `VES165  1 e 1 @1035 ]
+[v _SLRCONBbits SLRCONBbits `VES162  1 e 1 @1035 ]
 "60751
 [v _ANSELC ANSELC `VEuc  1 e 1 @1040 ]
 "60813
@@ -970,12 +958,12 @@ CONV_DONE 4
 "738
 [v _print_reg print_reg `(E23544  1 s 1 print_reg ]
 {
-[s S1378 . 15 `us 1 REGA 2 0 `us 1 REGX 2 2 `us 1 REGY 2 4 `us 1 REGSP 2 6 `us 1 REGPC 2 8 `uc 1 REGPSR 1 10 `uc 1 REGPB 1 11 `uc 1 REGDB 1 12 `us 1 REGDP 2 13 ]
+[s S1362 . 15 `us 1 REGA 2 0 `us 1 REGX 2 2 `us 1 REGY 2 4 `us 1 REGSP 2 6 `us 1 REGPC 2 8 `uc 1 REGPSR 1 10 `uc 1 REGPB 1 11 `uc 1 REGDB 1 12 `us 1 REGDP 2 13 ]
 "739
-[v print_reg@reg_816 reg_816 `*.39S1378  1 a 2 100 ]
-[s S1388 . 7 `uc 1 REGA 1 0 `uc 1 REGX 1 1 `uc 1 REGY 1 2 `uc 1 REGSP 1 3 `us 1 REGPC 2 4 `uc 1 REGPSR 1 6 ]
+[v print_reg@reg_816 reg_816 `*.39S1362  1 a 2 100 ]
+[s S1372 . 7 `uc 1 REGA 1 0 `uc 1 REGX 1 1 `uc 1 REGY 1 2 `uc 1 REGSP 1 3 `us 1 REGPC 2 4 `uc 1 REGPSR 1 6 ]
 "740
-[v print_reg@reg_02 reg_02 `*.39S1388  1 a 2 98 ]
+[v print_reg@reg_02 reg_02 `*.39S1372  1 a 2 98 ]
 "756
 } 0
 "727
@@ -1006,14 +994,14 @@ CONV_DONE 4
 "542
 [v _scan_files1 scan_files1 `(E23544  1 s 1 scan_files1 ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "545
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v scan_files1@dir dir `S1127  1 a 40 105 ]
-[s S1134 . 22 `ul 1 fsize 4 0 `us 1 fdate 2 4 `us 1 ftime 2 6 `uc 1 fattrib 1 8 `[13]uc 1 fname 13 9 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v scan_files1@dir dir `S1111  1 a 40 105 ]
+[s S1118 . 22 `ul 1 fsize 4 0 `us 1 fdate 2 4 `us 1 ftime 2 6 `uc 1 fattrib 1 8 `[13]uc 1 fname 13 9 ]
 "544
-[v scan_files1@fno fno `S1134  1 a 22 83 ]
+[v scan_files1@fno fno `S1118  1 a 22 83 ]
 "548
 [v scan_files1@path path `*.34uc  1 a 2 81 ]
 [v scan_files1@p p `*.39uc  1 a 2 78 ]
@@ -1027,14 +1015,14 @@ CONV_DONE 4
 "500
 [v _scan_files scan_files `(E23544  1 s 1 scan_files ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "503
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v scan_files@dir dir `S1127  1 a 40 104 ]
-[s S1134 . 22 `ul 1 fsize 4 0 `us 1 fdate 2 4 `us 1 ftime 2 6 `uc 1 fattrib 1 8 `[13]uc 1 fname 13 9 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v scan_files@dir dir `S1111  1 a 40 104 ]
+[s S1118 . 22 `ul 1 fsize 4 0 `us 1 fdate 2 4 `us 1 ftime 2 6 `uc 1 fattrib 1 8 `[13]uc 1 fname 13 9 ]
 "502
-[v scan_files@fno fno `S1134  1 a 22 82 ]
+[v scan_files@fno fno `S1118  1 a 22 82 ]
 "504
 [v scan_files@path path `*.34uc  1 a 2 80 ]
 [v scan_files@p p `*.39uc  1 a 2 77 ]
@@ -1055,17 +1043,17 @@ CONV_DONE 4
 {
 "129
 } 0
-"288
+"289
 [v _uart_init uart_init `(v  1 e 1 0 ]
 {
-"313
+"314
 } 0
 "241 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
 [v _setup_sd setup_sd `(v  1 e 1 0 ]
 {
 "245
 [v setup_sd@retry retry `i  1 s 2 retry ]
-"257
+"258
 } 0
 "53 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/drivers/SDCard.c
 [v _SDCard_init SDCard_init `(i  1 e 2 0 ]
@@ -1131,10 +1119,10 @@ CONV_DONE 4
 [v setup_monitor@rs rs `i  1 a 2 24 ]
 "296
 } 0
-"259 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
+"260 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
 [v _start_W65 start_W65 `(v  1 e 1 0 ]
 {
-"282
+"283
 } 0
 "62 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
 [v _setup_tomer0 setup_tomer0 `(v  1 e 1 0 ]
@@ -1153,32 +1141,32 @@ CONV_DONE 4
 "4695 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/fatfs/ff.c
 [v _f_readdir f_readdir `(E23544  1 e 1 0 ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "4701
-[v f_readdir@fs fs `*.39S734  1 a 2 141 ]
+[v f_readdir@fs fs `*.39S718  1 a 2 141 ]
 "4700
 [v f_readdir@res res `E597  1 a 1 143 ]
 "4696
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v f_readdir@dp dp `*.39S1127  1 p 2 137 ]
-[s S1134 . 22 `ul 1 fsize 4 0 `us 1 fdate 2 4 `us 1 ftime 2 6 `uc 1 fattrib 1 8 `[13]uc 1 fname 13 9 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v f_readdir@dp dp `*.39S1111  1 p 2 137 ]
+[s S1118 . 22 `ul 1 fsize 4 0 `us 1 fdate 2 4 `us 1 ftime 2 6 `uc 1 fattrib 1 8 `[13]uc 1 fname 13 9 ]
 "4697
-[v f_readdir@fno fno `*.39S1134  1 p 2 139 ]
+[v f_readdir@fno fno `*.39S1118  1 p 2 139 ]
 "4722
 } 0
 "4599
 [v _f_opendir f_opendir `(E23544  1 e 1 0 ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "4605
-[v f_opendir@fs fs `*.39S734  1 a 2 179 ]
+[v f_opendir@fs fs `*.39S718  1 a 2 179 ]
 "4604
 [v f_opendir@res res `E597  1 a 1 181 ]
 "4600
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v f_opendir@dp dp `*.39S1127  1 p 2 175 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v f_opendir@dp dp `*.39S1111  1 p 2 175 ]
 "4601
 [v f_opendir@path path `*.34Cuc  1 p 2 177 ]
 "4656
@@ -1186,18 +1174,18 @@ CONV_DONE 4
 "4333
 [v _f_getcwd f_getcwd `(E23544  1 e 1 0 ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "4339
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v f_getcwd@dj dj `S1127  1 a 40 35 ]
-[s S1134 . 22 `ul 1 fsize 4 0 `us 1 fdate 2 4 `us 1 ftime 2 6 `uc 1 fattrib 1 8 `[13]uc 1 fname 13 9 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v f_getcwd@dj dj `S1111  1 a 40 35 ]
+[s S1118 . 22 `ul 1 fsize 4 0 `us 1 fdate 2 4 `us 1 ftime 2 6 `uc 1 fattrib 1 8 `[13]uc 1 fname 13 9 ]
 "4350
-[v f_getcwd@fno fno `S1134  1 a 22 10 ]
+[v f_getcwd@fno fno `S1118  1 a 22 10 ]
 "4342
 [v f_getcwd@ccl ccl `ul  1 a 4 0 ]
 "4340
-[v f_getcwd@fs fs `*.39S734  1 a 2 32 ]
+[v f_getcwd@fs fs `*.39S718  1 a 2 32 ]
 "4341
 [v f_getcwd@i i `ui  1 a 2 8 ]
 [v f_getcwd@n n `ui  1 a 2 6 ]
@@ -1219,31 +1207,31 @@ CONV_DONE 4
 [v get_fileinfo@si si `ui  1 a 2 24 ]
 "2630
 [v get_fileinfo@c c `uc  1 a 1 26 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "2619
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v get_fileinfo@dp dp `*.39S1127  1 p 2 16 ]
-[s S1134 . 22 `ul 1 fsize 4 0 `us 1 fdate 2 4 `us 1 ftime 2 6 `uc 1 fattrib 1 8 `[13]uc 1 fname 13 9 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v get_fileinfo@dp dp `*.39S1111  1 p 2 16 ]
+[s S1118 . 22 `ul 1 fsize 4 0 `us 1 fdate 2 4 `us 1 ftime 2 6 `uc 1 fattrib 1 8 `[13]uc 1 fname 13 9 ]
 "2620
-[v get_fileinfo@fno fno `*.39S1134  1 p 2 18 ]
+[v get_fileinfo@fno fno `*.39S1118  1 p 2 18 ]
 "2749
 } 0
 "2307
 [v _dir_read dir_read `(E597  1 s 1 dir_read ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "2313
-[v dir_read@fs fs `*.39S734  1 a 2 132 ]
+[v dir_read@fs fs `*.39S718  1 a 2 132 ]
 "2312
 [v dir_read@res res `E597  1 a 1 136 ]
 "2314
 [v dir_read@b b `uc  1 a 1 135 ]
 [v dir_read@attr attr `uc  1 a 1 134 ]
 "2308
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v dir_read@dp dp `*.39S1127  1 p 2 124 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v dir_read@dp dp `*.39S1111  1 p 2 124 ]
 "2309
 [v dir_read@vol vol `i  1 p 2 126 ]
 "2375
@@ -1251,36 +1239,36 @@ CONV_DONE 4
 "4665
 [v _f_closedir f_closedir `(E23544  1 e 1 0 ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "4670
-[v f_closedir@fs fs `*.39S734  1 a 2 107 ]
+[v f_closedir@fs fs `*.39S718  1 a 2 107 ]
 "4669
 [v f_closedir@res res `E597  1 a 1 109 ]
 "4666
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v f_closedir@dp dp `*.39S1127  1 p 2 105 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v f_closedir@dp dp `*.39S1111  1 p 2 105 ]
 "4686
 } 0
-"377 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
+"378 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
 [v _continue_action continue_action `(v  1 e 1 0 ]
 {
-"397
+"398
 } 0
 "180 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
 [v _reset_cpu reset_cpu `(v  1 e 1 0 ]
 {
 "207
 } 0
-"328
+"329
 [v _reset_clk reset_clk `(v  1 e 1 0 ]
 {
-"335
+"336
 } 0
 "209
 [v _port_init port_init `(v  1 e 1 0 ]
 {
-"286
+"287
 } 0
 "21 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/memtst.c
 [v _mem_init mem_init `(ul  1 e 4 0 ]
@@ -1339,11 +1327,11 @@ CONV_DONE 4
 [v f_gets@buff buff `*.39uc  1 p 2 105 ]
 "6430
 [v f_gets@len len `i  1 p 2 107 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "6431
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[v f_gets@fp fp `*.39S762  1 p 2 109 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[v f_gets@fp fp `*.39S746  1 p 2 109 ]
 "6549
 } 0
 "401 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/w65_main.c
@@ -1408,25 +1396,25 @@ CONV_DONE 4
 {
 "3666
 [v f_mount@vol vol `i  1 a 2 185 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "3665
-[v f_mount@cfs cfs `*.39S734  1 a 2 183 ]
+[v f_mount@cfs cfs `*.39S718  1 a 2 183 ]
 "3668
 [v f_mount@rp rp `*.34Cuc  1 a 2 181 ]
 "3667
 [v f_mount@res res `E597  1 a 1 180 ]
 "3660
-[v f_mount@fs fs `*.39S734  1 p 2 175 ]
+[v f_mount@fs fs `*.39S718  1 p 2 175 ]
 "3661
 [v f_mount@path path `*.34Cuc  1 p 2 177 ]
 "3662
 [v f_mount@opt opt `uc  1 p 1 179 ]
 "3710
 } 0
-"315 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
+"316 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
 [v _clk_init clk_init `(v  1 e 1 0 ]
 {
-"326
+"327
 } 0
 "63 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
 [v _clc_init clc_init `(v  1 e 1 0 ]
@@ -1436,23 +1424,23 @@ CONV_DONE 4
 "4271 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/fatfs/ff.c
 [v _f_chdir f_chdir `(E23544  1 e 1 0 ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "4279
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v f_chdir@dj dj `S1127  1 a 40 180 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v f_chdir@dj dj `S1111  1 a 40 180 ]
 "4280
-[v f_chdir@fs fs `*.39S734  1 a 2 178 ]
+[v f_chdir@fs fs `*.39S718  1 a 2 178 ]
 "4278
 [v f_chdir@res res `E597  1 a 1 177 ]
 "4272
 [v f_chdir@path path `*.34Cuc  1 p 2 175 ]
 "4329
 } 0
-"419 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
+"420 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
 [v _start_cpu start_cpu `(v  1 e 1 0 ]
 {
-"438
+"439
 } 0
 "635 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/w65_main.c
 [v _prt_reload prt_reload `(v  1 s 1 prt_reload ]
@@ -1512,10 +1500,10 @@ CONV_DONE 4
 "9 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\nf_sprintf.c
 [v _sprintf sprintf `(i  1 e 2 0 ]
 {
-[u S4703 . 2 `*.39uc 1 buffer 2 0 `*.39Cuc 1 source 2 0 ]
+[u S4628 . 2 `*.39uc 1 buffer 2 0 `*.39Cuc 1 source 2 0 ]
 "13
-[s S4706 _IO_FILE 11 `S4703 1 . 2 0 `i 1 count 2 2 `[3]uc 1 ungetbuf 3 4 `i 1 ungetcnt 2 7 `i 1 limit 2 9 ]
-[v sprintf@f f `S4706  1 a 11 85 ]
+[s S4631 _IO_FILE 11 `S4628 1 . 2 0 `i 1 count 2 2 `[3]uc 1 ungetbuf 3 4 `i 1 ungetcnt 2 7 `i 1 limit 2 9 ]
+[v sprintf@f f `S4631  1 a 11 85 ]
 "12
 [v sprintf@ap ap `[1]*.39v  1 a 2 83 ]
 "9
@@ -1530,35 +1518,35 @@ CONV_DONE 4
 [v drive_cpu@rs rs `E23544  1 a 1 255 ]
 "632
 } 0
-"444 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
+"445 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
 [v _timer_on timer_on `(v  1 e 1 0 ]
 {
-"446
+"447
 } 0
-"440
+"441
 [v _timer_off timer_off `(v  1 e 1 0 ]
 {
-"442
+"443
 } 0
-"347 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
+"348 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
 [v _board_event_loop1 board_event_loop1 `(v  1 e 1 0 ]
 {
-"375
+"376
 } 0
-"306
+"307
 [v _board_event_loop board_event_loop `(v  1 e 1 0 ]
 {
-"345
+"346
 } 0
 "40 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
 [v _make_irq make_irq `(v  1 s 1 make_irq ]
 {
 "49
 } 0
-"294 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
+"295 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
 [v _bus_release_req bus_release_req `(v  1 s 1 bus_release_req ]
 {
-"301
+"302
 } 0
 "201 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/io_dos.c
 [v _bus_master_operation bus_master_operation `(v  1 e 1 0 ]
@@ -1574,11 +1562,11 @@ CONV_DONE 4
 {
 "77
 [v write_sector@n n `ui  1 a 2 162 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "79
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[v write_sector@filep filep `*.39S762  1 a 2 159 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[v write_sector@filep filep `*.39S746  1 a 2 159 ]
 "78
 [v write_sector@fres fres `E22986  1 a 1 161 ]
 "100
@@ -1590,9 +1578,9 @@ CONV_DONE 4
 [v f_write@sect sect `ul  1 a 4 135 ]
 "4025
 [v f_write@clst clst `ul  1 a 4 129 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "4024
-[v f_write@fs fs `*.39S734  1 a 2 139 ]
+[v f_write@fs fs `*.39S718  1 a 2 139 ]
 "4027
 [v f_write@wcnt wcnt `ui  1 a 2 133 ]
 [v f_write@cc cc `ui  1 a 2 127 ]
@@ -1602,9 +1590,9 @@ CONV_DONE 4
 "4023
 [v f_write@res res `E597  1 a 1 122 ]
 "4017
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[v f_write@fp fp `*.39S762  1 p 2 98 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[v f_write@fp fp `*.39S746  1 p 2 98 ]
 "4018
 [v f_write@buff buff `*.39Cv  1 p 2 100 ]
 "4019
@@ -1660,29 +1648,29 @@ CONV_DONE 4
 [v str_inf@cnt cnt `uc  1 p 1 2 ]
 "1032
 } 0
-"381 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
+"382 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
 [v _read_sram read_sram `(v  1 e 1 0 ]
 {
 [s S193 . 4 `uc 1 ll 1 0 `uc 1 lh 1 1 `uc 1 hl 1 2 `uc 1 hh 1 3 ]
-"383
+"384
 [u S198 address_bus_u 4 `ul 1 w 4 0 `S193 1 . 4 0 ]
 [v read_sram@ab ab `S198  1 a 4 13 ]
-"384
+"385
 [v read_sram@i i `ui  1 a 2 11 ]
-"381
+"382
 [v read_sram@addr addr `ul  1 p 4 3 ]
 [v read_sram@buf buf `*.39uc  1 p 2 7 ]
 [v read_sram@len len `ui  1 p 2 9 ]
-"417
+"418
 } 0
 "3719 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/fatfs/ff.c
 [v _f_open f_open `(E23544  1 e 1 0 ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "3726
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v f_open@dj dj `S1127  1 a 40 215 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v f_open@dj dj `S1111  1 a 40 215 ]
 "3729
 [v f_open@clst clst `ul  1 a 4 208 ]
 "3731
@@ -1694,12 +1682,12 @@ CONV_DONE 4
 [v f_open@tm tm `ul  1 a 4 192 ]
 [v f_open@bcs bcs `ul  1 a 4 188 ]
 "3727
-[v f_open@fs fs `*.39S734  1 a 2 212 ]
+[v f_open@fs fs `*.39S718  1 a 2 212 ]
 "3725
 [v f_open@res res `E597  1 a 1 214 ]
 "3720
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[v f_open@fp fp `*.39S762  1 p 2 175 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[v f_open@fp fp `*.39S746  1 p 2 175 ]
 "3721
 [v f_open@path path `*.34Cuc  1 p 2 177 ]
 "3722
@@ -1711,14 +1699,14 @@ CONV_DONE 4
 {
 "1437
 [v remove_chain@nxt nxt `ul  1 a 4 87 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1438
-[v remove_chain@fs fs `*.39S734  1 a 2 92 ]
+[v remove_chain@fs fs `*.39S718  1 a 2 92 ]
 "1436
 [v remove_chain@res res `E597  1 a 1 91 ]
 "1431
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[v remove_chain@obj obj `*.39S755  1 p 2 69 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[v remove_chain@obj obj `*.39S739  1 p 2 69 ]
 "1432
 [v remove_chain@clst clst `ul  1 p 4 71 ]
 "1433
@@ -1737,9 +1725,9 @@ CONV_DONE 4
 [v mount_volume@tsect tsect `ul  1 a 4 154 ]
 [v mount_volume@sysect sysect `ul  1 a 4 148 ]
 [v mount_volume@szbfat szbfat `ul  1 a 4 142 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "3393
-[v mount_volume@fs fs `*.39S734  1 a 2 173 ]
+[v mount_volume@fs fs `*.39S718  1 a 2 173 ]
 "3398
 [v mount_volume@fmt fmt `ui  1 a 2 171 ]
 "3397
@@ -1751,7 +1739,7 @@ CONV_DONE 4
 "3387
 [v mount_volume@path path `*.39*.34Cuc  1 p 2 129 ]
 "3388
-[v mount_volume@rfs rfs `*.39*.34S734  1 p 2 131 ]
+[v mount_volume@rfs rfs `*.39*.34S718  1 p 2 131 ]
 "3389
 [v mount_volume@mode mode `uc  1 p 1 133 ]
 "3606
@@ -1781,9 +1769,9 @@ CONV_DONE 4
 "3337
 [v find_volume@i i `ui  1 a 2 78 ]
 [v find_volume@fmt fmt `ui  1 a 2 76 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "3333
-[v find_volume@fs fs `*.39S734  1 p 2 50 ]
+[v find_volume@fs fs `*.39S718  1 p 2 50 ]
 "3334
 [v find_volume@part part `ui  1 p 2 52 ]
 "3377
@@ -1796,9 +1784,9 @@ CONV_DONE 4
 [v check_fs@sign sign `us  1 a 2 45 ]
 "3298
 [v check_fs@b b `uc  1 a 1 49 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "3293
-[v check_fs@fs fs `*.39S734  1 p 2 36 ]
+[v check_fs@fs fs `*.39S718  1 p 2 36 ]
 "3294
 [v check_fs@sect sect `ul  1 p 4 38 ]
 "3326
@@ -1817,17 +1805,17 @@ CONV_DONE 4
 "3052 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/fatfs/ff.c
 [v _follow_path follow_path `(E597  1 s 1 follow_path ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "3059
-[v follow_path@fs fs `*.39S734  1 a 2 142 ]
+[v follow_path@fs fs `*.39S718  1 a 2 142 ]
 "3057
 [v follow_path@res res `E597  1 a 1 145 ]
 "3058
 [v follow_path@ns ns `uc  1 a 1 144 ]
 "3053
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v follow_path@dp dp `*.39S1127  1 p 2 132 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v follow_path@dp dp `*.39S1111  1 p 2 132 ]
 "3054
 [v follow_path@path path `*.34Cuc  1 p 2 134 ]
 "3130
@@ -1837,9 +1825,9 @@ CONV_DONE 4
 {
 "1854
 [v ld_clust@cl cl `ul  1 a 4 18 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1850
-[v ld_clust@fs fs `*.39S734  1 p 2 10 ]
+[v ld_clust@fs fs `*.39S718  1 p 2 10 ]
 "1851
 [v ld_clust@dir dir `*.39Cuc  1 p 2 12 ]
 "1862
@@ -1847,17 +1835,17 @@ CONV_DONE 4
 "2385
 [v _dir_find dir_find `(E597  1 s 1 dir_find ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "2390
-[v dir_find@fs fs `*.39S734  1 a 2 128 ]
+[v dir_find@fs fs `*.39S718  1 a 2 128 ]
 "2389
 [v dir_find@res res `E597  1 a 1 131 ]
 "2391
 [v dir_find@c c `uc  1 a 1 130 ]
 "2386
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v dir_find@dp dp `*.39S1127  1 p 2 124 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v dir_find@dp dp `*.39S1111  1 p 2 124 ]
 "2456
 } 0
 "3 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\memcmp.c
@@ -1887,11 +1875,11 @@ CONV_DONE 4
 "2981
 [v create_name@c c `uc  1 a 1 33 ]
 [v create_name@d d `uc  1 a 1 22 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "2849
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v create_name@dp dp `*.39S1127  1 p 2 11 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v create_name@dp dp `*.39S1111  1 p 2 11 ]
 "2850
 [v create_name@path path `*.39*.34Cuc  1 p 2 13 ]
 "3043
@@ -1924,15 +1912,15 @@ CONV_DONE 4
 "2466
 [v _dir_register dir_register `(E597  1 s 1 dir_register ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "2471
-[v dir_register@fs fs `*.39S734  1 a 2 138 ]
+[v dir_register@fs fs `*.39S718  1 a 2 138 ]
 "2470
 [v dir_register@res res `E597  1 a 1 140 ]
 "2467
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v dir_register@dp dp `*.39S1127  1 p 2 136 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v dir_register@dp dp `*.39S1111  1 p 2 136 ]
 "2561
 } 0
 "1807
@@ -1940,15 +1928,15 @@ CONV_DONE 4
 {
 "1813
 [v dir_alloc@n n `ui  1 a 2 133 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1814
-[v dir_alloc@fs fs `*.39S734  1 a 2 131 ]
+[v dir_alloc@fs fs `*.39S718  1 a 2 131 ]
 "1812
 [v dir_alloc@res res `E597  1 a 1 135 ]
 "1808
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v dir_alloc@dp dp `*.39S1127  1 p 2 124 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v dir_alloc@dp dp `*.39S1111  1 p 2 124 ]
 "1809
 [v dir_alloc@n_ent n_ent `ui  1 p 2 126 ]
 "1838
@@ -1959,13 +1947,13 @@ CONV_DONE 4
 "1703
 [v dir_sdi@clst clst `ul  1 a 4 82 ]
 [v dir_sdi@csz csz `ul  1 a 4 78 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1704
-[v dir_sdi@fs fs `*.39S734  1 a 2 86 ]
+[v dir_sdi@fs fs `*.39S718  1 a 2 86 ]
 "1699
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v dir_sdi@dp dp `*.39S1127  1 p 2 62 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v dir_sdi@dp dp `*.39S1111  1 p 2 62 ]
 "1700
 [v dir_sdi@ofs ofs `ul  1 p 4 64 ]
 "1737
@@ -1976,13 +1964,13 @@ CONV_DONE 4
 "1751
 [v dir_next@clst clst `ul  1 a 4 120 ]
 [v dir_next@ofs ofs `ul  1 a 4 114 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1752
-[v dir_next@fs fs `*.39S734  1 a 2 118 ]
+[v dir_next@fs fs `*.39S718  1 a 2 118 ]
 "1747
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S1127 . 40 `S755 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
-[v dir_next@dp dp `*.39S1127  1 p 2 98 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S1111 . 40 `S739 1 obj 14 0 `ul 1 dptr 4 14 `ul 1 clust 4 18 `ul 1 sect 4 22 `*.39uc 1 dir 2 26 `[12]uc 1 fn 12 28 ]
+[v dir_next@dp dp `*.39S1111  1 p 2 98 ]
 "1748
 [v dir_next@stretch stretch `i  1 p 2 100 ]
 "1797
@@ -1997,9 +1985,9 @@ CONV_DONE 4
 [v dir_clear@szb szb `ui  1 a 2 38 ]
 "1666
 [v dir_clear@ibuf ibuf `*.39uc  1 a 2 32 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1660
-[v dir_clear@fs fs `*.39S734  1 p 2 26 ]
+[v dir_clear@fs fs `*.39S718  1 p 2 26 ]
 "1661
 [v dir_clear@clst clst `ul  1 p 4 28 ]
 "1688
@@ -2007,15 +1995,15 @@ CONV_DONE 4
 "4218
 [v _f_close f_close `(E23544  1 e 1 0 ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "4223
-[v f_close@fs fs `*.39S734  1 a 2 49 ]
+[v f_close@fs fs `*.39S718  1 a 2 49 ]
 "4222
 [v f_close@res res `E597  1 a 1 51 ]
 "4219
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[v f_close@fp fp `*.39S762  1 p 2 47 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[v f_close@fp fp `*.39S746  1 p 2 47 ]
 "4244
 } 0
 "4137
@@ -2023,17 +2011,17 @@ CONV_DONE 4
 {
 "4143
 [v f_sync@tm tm `ul  1 a 4 38 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "4142
-[v f_sync@fs fs `*.39S734  1 a 2 45 ]
+[v f_sync@fs fs `*.39S718  1 a 2 45 ]
 "4144
 [v f_sync@dir dir `*.39uc  1 a 2 43 ]
 "4141
 [v f_sync@res res `E597  1 a 1 42 ]
 "4138
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[v f_sync@fp fp `*.39S762  1 p 2 36 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[v f_sync@fp fp `*.39S746  1 p 2 36 ]
 "4207
 } 0
 "1109
@@ -2041,9 +2029,9 @@ CONV_DONE 4
 {
 "1113
 [v sync_fs@res res `E597  1 a 1 157 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1110
-[v sync_fs@fs fs `*.39S734  1 p 2 26 ]
+[v sync_fs@fs fs `*.39S718  1 p 2 26 ]
 "1135
 } 0
 "3 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\memset.c
@@ -2074,9 +2062,9 @@ CONV_DONE 4
 "1866 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/fatfs/ff.c
 [v _st_clust st_clust `(v  1 s 1 st_clust ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1867
-[v st_clust@fs fs `*.39S734  1 p 2 7 ]
+[v st_clust@fs fs `*.39S718  1 p 2 7 ]
 "1868
 [v st_clust@dir dir `*.39uc  1 p 2 9 ]
 "1869
@@ -2098,29 +2086,29 @@ CONV_DONE 4
 {
 "103
 [v read_sector@n n `ui  1 a 2 162 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "105
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[v read_sector@filep filep `*.39S762  1 a 2 159 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[v read_sector@filep filep `*.39S746  1 a 2 159 ]
 "104
 [v read_sector@fres fres `E22986  1 a 1 161 ]
 "128
 } 0
-"337 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
+"338 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
 [v _write_sram write_sram `(v  1 e 1 0 ]
 {
 [s S193 . 4 `uc 1 ll 1 0 `uc 1 lh 1 1 `uc 1 hl 1 2 `uc 1 hh 1 3 ]
-"339
+"340
 [u S198 address_bus_u 4 `ul 1 w 4 0 `S193 1 . 4 0 ]
 [v write_sram@ab ab `S198  1 a 4 15 ]
-"340
+"341
 [v write_sram@i i `ui  1 a 2 13 ]
-"337
+"338
 [v write_sram@addr addr `ul  1 p 4 3 ]
 [v write_sram@buf buf `*.34uc  1 p 2 7 ]
 [v write_sram@len len `ui  1 p 2 9 ]
-"379
+"380
 } 0
 "78 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/drivers/utils.c
 [v _util_hexdump_sum util_hexdump_sum `(v  1 e 1 0 ]
@@ -2157,11 +2145,11 @@ CONV_DONE 4
 {
 "64
 [v seek_disk@sector sector `ul  1 a 4 147 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "63
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[v seek_disk@filep filep `*.39S762  1 a 2 151 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[v seek_disk@filep filep `*.39S746  1 a 2 151 ]
 "62
 [v seek_disk@fres fres `E22986  1 a 1 153 ]
 "74
@@ -2176,15 +2164,15 @@ CONV_DONE 4
 [v f_lseek@nsect nsect `ul  1 a 4 124 ]
 "4444
 [v f_lseek@ifptr ifptr `ul  1 a 4 120 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "4441
-[v f_lseek@fs fs `*.39S734  1 a 2 133 ]
+[v f_lseek@fs fs `*.39S718  1 a 2 133 ]
 "4440
 [v f_lseek@res res `E597  1 a 1 128 ]
 "4436
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[v f_lseek@fp fp `*.39S762  1 p 2 98 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[v f_lseek@fp fp `*.39S746  1 p 2 98 ]
 "4437
 [v f_lseek@ofs ofs `ul  1 p 4 100 ]
 "4590
@@ -2196,14 +2184,14 @@ CONV_DONE 4
 [v create_chain@cs cs `ul  1 a 4 94 ]
 [v create_chain@ncl ncl `ul  1 a 4 88 ]
 [v create_chain@scl scl `ul  1 a 4 84 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1532
-[v create_chain@fs fs `*.39S734  1 a 2 92 ]
+[v create_chain@fs fs `*.39S718  1 a 2 92 ]
 "1531
 [v create_chain@res res `E597  1 a 1 83 ]
 "1526
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[v create_chain@obj obj `*.39S755  1 p 2 69 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[v create_chain@obj obj `*.39S739  1 p 2 69 ]
 "1527
 [v create_chain@clst clst `ul  1 p 4 71 ]
 "1616
@@ -2217,9 +2205,9 @@ CONV_DONE 4
 [v put_fat@p p `*.39uc  1 a 2 64 ]
 "1248
 [v put_fat@res res `E597  1 a 1 68 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1241
-[v put_fat@fs fs `*.39S734  1 p 2 36 ]
+[v put_fat@fs fs `*.39S718  1 p 2 36 ]
 "1242
 [v put_fat@clst clst `ul  1 p 4 38 ]
 "1243
@@ -2261,9 +2249,9 @@ CONV_DONE 4
 [v f_read@clst clst `ul  1 a 4 87 ]
 "3927
 [v f_read@remain remain `ul  1 a 4 82 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "3924
-[v f_read@fs fs `*.39S734  1 a 2 103 ]
+[v f_read@fs fs `*.39S718  1 a 2 103 ]
 "3928
 [v f_read@rcnt rcnt `ui  1 a 2 97 ]
 [v f_read@cc cc `ui  1 a 2 95 ]
@@ -2273,9 +2261,9 @@ CONV_DONE 4
 "3923
 [v f_read@res res `E597  1 a 1 86 ]
 "3917
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[s S762 . 546 `S755 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
-[v f_read@fp fp `*.39S762  1 p 2 62 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[s S746 . 546 `S739 1 obj 14 0 `uc 1 flag 1 14 `uc 1 err 1 15 `ul 1 fptr 4 16 `ul 1 clust 4 20 `ul 1 sect 4 24 `ul 1 dir_sect 4 28 `*.39uc 1 dir_ptr 2 32 `[512]uc 1 buf 512 34 ]
+[v f_read@fp fp `*.39S746  1 p 2 62 ]
 "3918
 [v f_read@buff buff `*.39v  1 p 2 64 ]
 "3919
@@ -2289,12 +2277,12 @@ CONV_DONE 4
 {
 "3620
 [v validate@res res `E597  1 a 1 104 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "3616
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[v validate@obj obj `*.39S755  1 p 2 94 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[v validate@obj obj `*.39S739  1 p 2 94 ]
 "3617
-[v validate@rfs rfs `*.39*.39S734  1 p 2 96 ]
+[v validate@rfs rfs `*.39*.39S718  1 p 2 96 ]
 "3642
 } 0
 "98 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/drivers/diskio.c
@@ -2311,15 +2299,15 @@ CONV_DONE 4
 {
 "1168
 [v get_fat@val val `ul  1 a 4 54 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1169
-[v get_fat@fs fs `*.39S734  1 a 2 60 ]
+[v get_fat@fs fs `*.39S718  1 a 2 60 ]
 "1167
 [v get_fat@bc bc `ui  1 a 2 58 ]
 [v get_fat@wc wc `ui  1 a 2 52 ]
 "1163
-[s S755 . 14 `*.39S734 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
-[v get_fat@obj obj `*.39S755  1 p 2 36 ]
+[s S739 . 14 `*.39S718 1 fs 2 0 `us 1 id 2 2 `uc 1 attr 1 4 `uc 1 stat 1 5 `ul 1 sclust 4 6 `ul 1 objsize 4 10 ]
+[v get_fat@obj obj `*.39S739  1 p 2 36 ]
 "1164
 [v get_fat@clst clst `ul  1 p 4 38 ]
 "1230
@@ -2329,9 +2317,9 @@ CONV_DONE 4
 {
 "1083
 [v move_window@res res `E597  1 a 1 158 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1079
-[v move_window@fs fs `*.39S734  1 p 2 26 ]
+[v move_window@fs fs `*.39S718  1 p 2 26 ]
 "1080
 [v move_window@sect sect `ul  1 p 4 28 ]
 "1099
@@ -2341,9 +2329,9 @@ CONV_DONE 4
 {
 "1060
 [v sync_window@res res `E597  1 a 1 156 ]
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1057
-[v sync_window@fs fs `*.39S734  1 p 2 8 ]
+[v sync_window@fs fs `*.39S718  1 p 2 8 ]
 "1074
 } 0
 "130 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/drivers/diskio.c
@@ -2363,7 +2351,7 @@ CONV_DONE 4
 [v _SDCard_write512 SDCard_write512 `(i  1 e 2 0 ]
 {
 "256
-[v SDCard_write512@i_701 i `ui  1 a 2 142 ]
+[v SDCard_write512@i_691 i `ui  1 a 2 142 ]
 "252
 [v SDCard_write512@i i `i  1 a 2 140 ]
 [s S245 SPI 2 `i 1 dummy 2 0 ]
@@ -2401,7 +2389,7 @@ CONV_DONE 4
 [v _SDCard_read512 SDCard_read512 `(i  1 e 2 0 ]
 {
 "208
-[v SDCard_read512@i_684 i `ui  1 a 2 142 ]
+[v SDCard_read512@i_674 i `ui  1 a 2 142 ]
 "200
 [v SDCard_read512@i i `i  1 a 2 140 ]
 "174
@@ -2454,9 +2442,9 @@ CONV_DONE 4
 {
 "1820
 [v vfprintf@cfmt cfmt `*.32uc  1 a 2 75 ]
-[s S4735 _IO_FILE 0 ]
+[s S4660 _IO_FILE 0 ]
 "1817
-[v vfprintf@fp fp `*.39S4735  1 p 2 69 ]
+[v vfprintf@fp fp `*.39S4660  1 p 2 69 ]
 [v vfprintf@fmt fmt `*.32Cuc  1 p 2 71 ]
 [v vfprintf@ap ap `*.39*.39v  1 p 2 73 ]
 "1840
@@ -2464,17 +2452,17 @@ CONV_DONE 4
 "1177
 [v _vfpfcnvrt vfpfcnvrt `(v  1 s 1 vfpfcnvrt ]
 {
-[u S4776 . 4 `l 1 sint 4 0 `ul 1 uint 4 0 `d 1 f 4 0 ]
+[u S4701 . 4 `l 1 sint 4 0 `ul 1 uint 4 0 `d 1 f 4 0 ]
 "1188
-[v vfpfcnvrt@convarg convarg `S4776  1 a 4 62 ]
+[v vfpfcnvrt@convarg convarg `S4701  1 a 4 62 ]
 "1179
 [v vfpfcnvrt@cp cp `*.32uc  1 a 2 67 ]
 [v vfpfcnvrt@c c `uc  1 a 1 66 ]
 "1180
 [v vfpfcnvrt@done done `a  1 a 1 61 ]
-[s S4735 _IO_FILE 0 ]
+[s S4660 _IO_FILE 0 ]
 "1177
-[v vfpfcnvrt@fp fp `*.39S4735  1 p 2 51 ]
+[v vfpfcnvrt@fp fp `*.39S4660  1 p 2 51 ]
 [v vfpfcnvrt@fmt fmt `*.39*.32uc  1 p 2 53 ]
 [v vfpfcnvrt@ap ap `*.39*.39v  1 p 2 55 ]
 "1814
@@ -2491,9 +2479,9 @@ CONV_DONE 4
 [v xtoa@c c `uc  1 a 1 47 ]
 "1061
 [v xtoa@a a `uc  1 a 1 40 ]
-[s S4735 _IO_FILE 0 ]
+[s S4660 _IO_FILE 0 ]
 "1052
-[v xtoa@fp fp `*.39S4735  1 p 2 29 ]
+[v xtoa@fp fp `*.39S4660  1 p 2 29 ]
 [v xtoa@d d `ul  1 p 4 31 ]
 [v xtoa@x x `uc  1 p 1 35 ]
 "1153
@@ -2509,9 +2497,9 @@ CONV_DONE 4
 [v stoa@w w `i  1 a 2 21 ]
 "945
 [v stoa@p p `i  1 a 2 19 ]
-[s S4735 _IO_FILE 0 ]
+[s S4660 _IO_FILE 0 ]
 "942
-[v stoa@fp fp `*.39S4735  1 p 2 13 ]
+[v stoa@fp fp `*.39S4660  1 p 2 13 ]
 [v stoa@s s `*.34uc  1 p 2 15 ]
 "997
 } 0
@@ -2530,15 +2518,15 @@ CONV_DONE 4
 "587
 [v _efgtoa efgtoa `(v  1 s 1 efgtoa ]
 {
-[u S4753 flui 4 `d 1 f 4 0 `l 1 u 4 0 ]
+[u S4678 flui 4 `d 1 f 4 0 `l 1 u 4 0 ]
 "592
-[v efgtoa@u u `S4753  1 a 4 47 ]
-[v efgtoa@g g `S4753  1 a 4 41 ]
+[v efgtoa@u u `S4678  1 a 4 47 ]
+[v efgtoa@g g `S4678  1 a 4 41 ]
 "591
 [v efgtoa@l l `d  1 a 4 34 ]
 [v efgtoa@h h `d  1 a 4 30 ]
 "592
-[v efgtoa@ou ou `S4753  1 a 4 24 ]
+[v efgtoa@ou ou `S4678  1 a 4 24 ]
 "590
 [v efgtoa@n n `i  1 a 2 45 ]
 [v efgtoa@i i `i  1 a 2 38 ]
@@ -2554,9 +2542,9 @@ CONV_DONE 4
 [v efgtoa@nmode nmode `uc  1 a 1 17 ]
 [v efgtoa@mode mode `uc  1 a 1 16 ]
 [v efgtoa@pp pp `uc  1 a 1 15 ]
-[s S4735 _IO_FILE 0 ]
+[s S4660 _IO_FILE 0 ]
 "587
-[v efgtoa@fp fp `*.39S4735  1 p 2 0 ]
+[v efgtoa@fp fp `*.39S4660  1 p 2 0 ]
 [v efgtoa@f f `d  1 p 4 2 ]
 [v efgtoa@c c `uc  1 p 1 6 ]
 "868
@@ -2595,9 +2583,9 @@ CONV_DONE 4
 "3 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\floorf.c
 [v _floorf floorf `(f  1 e 4 0 ]
 {
-[u S4654 . 4 `f 1 f 4 0 `ul 1 i 4 0 ]
+[u S4579 . 4 `f 1 f 4 0 `ul 1 i 4 0 ]
 "5
-[v floorf@u u `S4654  1 a 4 83 ]
+[v floorf@u u `S4579  1 a 4 83 ]
 "7
 [v floorf@m m `ul  1 a 4 77 ]
 "6
@@ -2605,21 +2593,21 @@ CONV_DONE 4
 "3
 [v floorf@x x `f  1 p 4 67 ]
 "4
-[v floorf@F521 F521 `S4654  1 s 4 F521 ]
+[v floorf@F521 F521 `S4579  1 s 4 F521 ]
 "27
 } 0
 "4 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\__fpclassifyf.c
 [v ___fpclassifyf __fpclassifyf `(i  1 e 2 0 ]
 {
-[u S4654 . 4 `f 1 f 4 0 `ul 1 i 4 0 ]
+[u S4579 . 4 `f 1 f 4 0 `ul 1 i 4 0 ]
 "6
-[v ___fpclassifyf@u u `S4654  1 a 4 13 ]
+[v ___fpclassifyf@u u `S4579  1 a 4 13 ]
 "7
 [v ___fpclassifyf@e e `i  1 a 2 11 ]
 "4
 [v ___fpclassifyf@x x `f  1 p 4 3 ]
 "5
-[v ___fpclassifyf@F465 F465 `S4654  1 s 4 F465 ]
+[v ___fpclassifyf@F465 F465 `S4579  1 s 4 F465 ]
 "11
 } 0
 "43 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\fltol.c
@@ -2664,17 +2652,17 @@ CONV_DONE 4
 "8 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\sprcmul.c
 [v ___flmul __flmul `(d  1 e 4 0 ]
 {
-[s S4519 . 4 `uc 1 a 1 0 `uc 1 b 1 1 `uc 1 c 1 2 `uc 1 d 1 3 ]
+[s S4444 . 4 `uc 1 a 1 0 `uc 1 b 1 1 `uc 1 c 1 2 `uc 1 d 1 3 ]
 "13
-[s S4524 . 4 `s 1 wordA 2 0 `s 1 wordB 2 2 ]
-[u S4527 . 4 `l 1 i 4 0 `d 1 f 4 0 `S4519 1 fAsBytes 4 0 `S4524 1 fAsWords 4 0 ]
-[v ___flmul@prod prod `S4527  1 a 4 36 ]
+[s S4449 . 4 `s 1 wordA 2 0 `s 1 wordB 2 2 ]
+[u S4452 . 4 `l 1 i 4 0 `d 1 f 4 0 `S4444 1 fAsBytes 4 0 `S4449 1 fAsWords 4 0 ]
+[v ___flmul@prod prod `S4452  1 a 4 36 ]
 "12
 [v ___flmul@grs grs `ul  1 a 4 31 ]
-[s S4595 . 2 `uc 1 a 1 0 `uc 1 b 1 1 ]
+[s S4520 . 2 `uc 1 a 1 0 `uc 1 b 1 1 ]
 "14
-[u S4598 . 2 `s 1 i 2 0 `us 1 n 2 0 `S4595 1 nAsBytes 2 0 ]
-[v ___flmul@temp temp `S4598  1 a 2 40 ]
+[u S4523 . 2 `s 1 i 2 0 `us 1 n 2 0 `S4520 1 nAsBytes 2 0 ]
+[v ___flmul@temp temp `S4523  1 a 2 40 ]
 "10
 [v ___flmul@bexp bexp `uc  1 a 1 35 ]
 "11
@@ -2730,9 +2718,9 @@ CONV_DONE 4
 [v dtoa@p p `i  1 a 2 37 ]
 "515
 [v dtoa@s s `uc  1 a 1 41 ]
-[s S4735 _IO_FILE 0 ]
+[s S4660 _IO_FILE 0 ]
 "513
-[v dtoa@fp fp `*.39S4735  1 p 2 29 ]
+[v dtoa@fp fp `*.39S4660  1 p 2 29 ]
 [v dtoa@d d `l  1 p 4 31 ]
 "583
 } 0
@@ -2741,9 +2729,9 @@ CONV_DONE 4
 {
 "195
 [v pad@i i `i  1 a 2 27 ]
-[s S4735 _IO_FILE 0 ]
+[s S4660 _IO_FILE 0 ]
 "193
-[v pad@fp fp `*.39S4735  1 p 2 20 ]
+[v pad@fp fp `*.39S4660  1 p 2 20 ]
 [v pad@buf buf `*.39uc  1 p 2 22 ]
 [v pad@p p `i  1 p 2 24 ]
 "226
@@ -2757,18 +2745,18 @@ CONV_DONE 4
 [v fputs@c c `uc  1 a 1 17 ]
 "8
 [v fputs@s s `*.39Cuc  1 p 2 13 ]
-[u S4703 . 2 `*.39uc 1 buffer 2 0 `*.39Cuc 1 source 2 0 ]
-[s S4706 _IO_FILE 11 `S4703 1 . 2 0 `i 1 count 2 2 `[3]uc 1 ungetbuf 3 4 `i 1 ungetcnt 2 7 `i 1 limit 2 9 ]
-[v fputs@fp fp `*.39S4706  1 p 2 15 ]
+[u S4628 . 2 `*.39uc 1 buffer 2 0 `*.39Cuc 1 source 2 0 ]
+[s S4631 _IO_FILE 11 `S4628 1 . 2 0 `i 1 count 2 2 `[3]uc 1 ungetbuf 3 4 `i 1 ungetcnt 2 7 `i 1 limit 2 9 ]
+[v fputs@fp fp `*.39S4631  1 p 2 15 ]
 "19
 } 0
 "8 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\nf_fputc.c
 [v _fputc fputc `(i  1 e 2 0 ]
 {
 [v fputc@c c `i  1 p 2 4 ]
-[u S4703 . 2 `*.39uc 1 buffer 2 0 `*.39Cuc 1 source 2 0 ]
-[s S4706 _IO_FILE 11 `S4703 1 . 2 0 `i 1 count 2 2 `[3]uc 1 ungetbuf 3 4 `i 1 ungetcnt 2 7 `i 1 limit 2 9 ]
-[v fputc@fp fp `*.39S4706  1 p 2 6 ]
+[u S4628 . 2 `*.39uc 1 buffer 2 0 `*.39Cuc 1 source 2 0 ]
+[s S4631 _IO_FILE 11 `S4628 1 . 2 0 `i 1 count 2 2 `[3]uc 1 ungetbuf 3 4 `i 1 ungetcnt 2 7 `i 1 limit 2 9 ]
+[v fputc@fp fp `*.39S4631  1 p 2 6 ]
 "24
 } 0
 "132 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_cmn.c
@@ -2871,7 +2859,7 @@ CONV_DONE 4
 [v _SPI_SD_receive SPI_SD_receive `(v  1 e 1 0 ]
 {
 "228
-[v SPI_SD_receive@i_600 i `uc  1 a 1 14 ]
+[v SPI_SD_receive@i_590 i `uc  1 a 1 14 ]
 "197
 [v SPI_SD_receive@i i `i  1 a 2 12 ]
 "227
@@ -3001,9 +2989,9 @@ CONV_DONE 4
 "1145
 [v _clst2sect clst2sect `(ul  1 s 4 clst2sect ]
 {
-[s S734 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
+[s S718 . 564 `uc 1 fs_type 1 0 `uc 1 pdrv 1 1 `uc 1 ldrv 1 2 `uc 1 n_fats 1 3 `uc 1 wflag 1 4 `uc 1 fsi_flag 1 5 `us 1 id 2 6 `us 1 n_rootdir 2 8 `us 1 csize 2 10 `ul 1 last_clst 4 12 `ul 1 free_clst 4 16 `ul 1 cdir 4 20 `ul 1 n_fatent 4 24 `ul 1 fsize 4 28 `ul 1 volbase 4 32 `ul 1 fatbase 4 36 `ul 1 dirbase 4 40 `ul 1 database 4 44 `ul 1 winsect 4 48 `[512]uc 1 win 512 52 ]
 "1146
-[v clst2sect@fs fs `*.39S734  1 p 2 15 ]
+[v clst2sect@fs fs `*.39S718  1 p 2 15 ]
 "1147
 [v clst2sect@clst clst `ul  1 p 4 17 ]
 "1153
@@ -3023,10 +3011,10 @@ CONV_DONE 4
 {
 "140
 } 0
-"284 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
+"285 Z:\6502\MEZW65C_RAM\w65c_Rev2.0/src/boards/w65_bd.c
 [v _bus_hold_req bus_hold_req `(v  1 s 1 bus_hold_req ]
 {
-"292
+"293
 } 0
 "10 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\xxtofl.c
 [v ___xxtofl __xxtofl `(d  1 e 4 0 ]

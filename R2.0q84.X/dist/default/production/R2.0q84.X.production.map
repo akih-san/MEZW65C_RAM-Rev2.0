@@ -5,10 +5,10 @@ Linker command line:
 --edf=C:\Program Files\Microchip\xc8\v2.50\pic\dat\20240725155939_en.msgs \
   -pivt0x8=08h -cn -h+dist/default/production\R2.0q84.X.production.sym \
   --cmf=dist/default/production\R2.0q84.X.production.cmf -z -Q18F47Q84 \
-  -oC:\Users\akihito\AppData\Local\Temp\xcAs3lc.\driver_tmp_3.o \
+  -oC:\Users\akihito\AppData\Local\Temp\xcAsjqs.\driver_tmp_3.o \
   --defsym=__MPLAB_BUILD=1 --fixupoverflow=error \
   -Mdist/default/production/R2.0q84.X.production.map \
-  --md=C:\Users\akihito\AppData\Local\Temp\xcAs3lc.\driver_tmp_0.dat -E1 \
+  --md=C:\Users\akihito\AppData\Local\Temp\xcAsjqs.\driver_tmp_0.dat -E1 \
   -ver=XC8 Compiler --acfsm=1493 -ACODE=00h-01FFFFh -ACONST=00h-01FFFFh \
   -ASMALLCONST=04000h-040FFhx448 \
   -AMEDIUMCONST=04000h-0FFFFh,014000h-01FFFFh -ACOMRAM=0501h-055Fh \
@@ -40,7 +40,7 @@ Linker command line:
   -pfarbss=FARRAM,fardata=FARRAM,nvFARRAM=FARRAM \
   -pintsave_regs=BIGRAM,bigbss=BIGRAM,bigdata=BIGRAM -pbss=RAM \
   -pidata=CODE,irdata=CODE,ibigdata=CODE,ifardata=CODE -prparam=COMRAM \
-  C:\Users\akihito\AppData\Local\Temp\xcAs3lc.\driver_tmp_14.o \
+  C:\Users\akihito\AppData\Local\Temp\xcAsjqs.\driver_tmp_14.o \
   dist/default/production\R2.0q84.X.production.o 
 
 Object code version is 3.11
@@ -50,13 +50,13 @@ Machine type is 18F47Q84
 
 
                 Name                               Link     Load   Length Selector   Space Scale
-C:\Users\akihito\AppData\Local\Temp\xcAs3lc.\driver_tmp_14.o
+C:\Users\akihito\AppData\Local\Temp\xcAsjqs.\driver_tmp_14.o
                 config                           300000   300000       23        0       4
                 init                                10A      10A        4        4       0
                 reset_vec                             0        0        4        0       0
 dist/default/production\R2.0q84.X.production.o
                 config                           300000   300000       23        0       4
-                mediumconst                        F1E8     F1E8      E18     78F4       0
+                mediumconst                        F200     F200      E00     7900       0
                 ivt0x8                                8        8      102        4       0
                 text173                           1F4D8    1F4D8       74     7D36       0
                 text172                             280      280        8       A0       0
@@ -440,7 +440,7 @@ TOTAL           Name                               Link     Load   Length     Sp
         CLASS   SMALLCONST     
 
         CLASS   MEDIUMCONST    
-                mediumconst                        F1E8     F1E8      E18         0
+                mediumconst                        F200     F200      E00         0
 
         CLASS   COMRAM         
                 cstackCOMRAM                        501      501       59         1
@@ -597,7 +597,7 @@ SEGMENTS        Name                           Load    Length   Top    Selector 
                 bssBANK10                      000A00  0000D1  000AD1       A00       1  BANK10  
                 bssBANK11                      000B00  000080  000B80       B00       1  BANK11  
                 bssBIGRAM                      000B80  000A78  0015F8       B80       1  BIGRAM  
-                mediumconst                    00F1E8  000E18  010000      78F4       0  MEDIUMCO
+                mediumconst                    00F200  000E00  010000      7900       0  MEDIUMCO
                 text74                         010000  00F0E9  01F0E9      8000       0  CODE    
                 text84                         01F0EA  0003EC  01F4D6      F875       0  CODE    
                 text173                        01F4D8  000B26  01FFFE      7D36       0  CODE    
@@ -652,7 +652,7 @@ UNUSED ADDRESS RANGES
                          003700-003FFF              900
         CODE             000004-000007                4
                          00027E-00027F                2
-                         000292-00F1E7             EF56
+                         000292-00F1FF             EF6E
                          01F0E9-01F0E9                1
                          01F4D6-01F4D7                2
                          01FFFE-01FFFF                2
@@ -660,13 +660,13 @@ UNUSED ADDRESS RANGES
         CONFIG           300023-300023                1
         CONST            000004-000007                4
                          00027E-00027F                2
-                         000292-00F1E7             EF56
+                         000292-00F1FF             EF6E
                          01F0E9-01F0E9                1
                          01F4D6-01F4D7                2
                          01FFFE-01FFFF                2
         EEDATA           380000-3803FF              400
         IDLOC            200000-20003F               40
-        MEDIUMCONST      004000-00F1E7             B1E8
+        MEDIUMCONST      004000-00F1FF             B200
                          01F0E9-01F0E9                1
                          01F4D6-01F4D7                2
                          01FFFE-01FFFF                2
@@ -676,7 +676,7 @@ UNUSED ADDRESS RANGES
                          0015F8-0036FF              100
         SFR              000000-0004FF              100
                          003700-003FFF              100
-        SMALLCONST       004000-00F1E7              100
+        SMALLCONST       004000-00F1FF              100
                          01F0E9-01F0E9                1
                          01F4D6-01F4D7                2
                          01FFFE-01FFFF                2
@@ -770,7 +770,7 @@ SDCard_read512@buf                  cstackBANK5  0005E4
 SDCard_read512@count                cstackBANK5  0005E6
 SDCard_read512@crc                  cstackBANK5  0005F8
 SDCard_read512@i                    cstackBANK5  0005EC
-SDCard_read512@i_684                cstackBANK5  0005EE
+SDCard_read512@i_674                cstackBANK5  0005EE
 SDCard_read512@offs                 cstackBANK5  0005E2
 SDCard_read512@resp_crc             cstackBANK5  0005F2
 SDCard_read512@response             cstackBANK5  0005FA
@@ -782,7 +782,7 @@ SDCard_write512@buf                 cstackBANK5  0005E4
 SDCard_write512@count               cstackBANK5  0005E6
 SDCard_write512@crc                 cstackBANK5  0005F4
 SDCard_write512@i                   cstackBANK5  0005EC
-SDCard_write512@i_701               cstackBANK5  0005EE
+SDCard_write512@i_691               cstackBANK5  0005EE
 SDCard_write512@offs                cstackBANK5  0005E2
 SDCard_write512@response            cstackBANK5  0005F8
 SDCard_write512@result              cstackBANK5  0005F2
@@ -804,7 +804,7 @@ SPI_SD_receive@buf                  cstackCOMRAM 000506
 SPI_SD_receive@count                cstackCOMRAM 000508
 SPI_SD_receive@ctx_                 cstackCOMRAM 000504
 SPI_SD_receive@i                    cstackCOMRAM 00050D
-SPI_SD_receive@i_600                cstackCOMRAM 00050F
+SPI_SD_receive@i_590                cstackCOMRAM 00050F
 SPI_SD_receive@p                    cstackCOMRAM 000510
 SPI_SD_receive@repeat               cstackCOMRAM 00050C
 SPI_SD_receive_byte@ctx_            cstackCOMRAM 000512
@@ -1336,7 +1336,7 @@ __Linit                             init         00010A
 __Lintsave_regs                     intsave_regs 000000
 __Lirdata                           irdata       000000
 __Livt0x8                           ivt0x8       000008
-__Lmediumconst                      mediumconst  00F1E8
+__Lmediumconst                      mediumconst  00F200
 __LnvFARRAM                         nvFARRAM     000000
 __Lnvbit                            nvbit        000000
 __Lnvrram                           nvrram       000000
@@ -1634,8 +1634,8 @@ ___sp                               stack        000000
 ___stack_hi                         stack        000000
 ___stack_lo                         stack        000000
 ___strtoxl                          text41       015870
-___strtoxl$4682                     cstackCOMRAM 00051E
-___strtoxl$4683                     cstackCOMRAM 000520
+___strtoxl$4607                     cstackCOMRAM 00051E
+___strtoxl$4608                     cstackCOMRAM 000520
 ___strtoxl@a                        cstackCOMRAM 000527
 ___strtoxl@base                     cstackCOMRAM 000514
 ___strtoxl@c                        cstackCOMRAM 00052D
@@ -1710,7 +1710,7 @@ __end_of_create_name                text83       014A70
 __end_of_dbc_1st                    text86       01ED78
 __end_of_dbc_2nd                    text85       01DD9E
 __end_of_debug_flags                mediumconst  00F20F
-__end_of_debug_flags@diskio$F4076   mediumconst  00F20D
+__end_of_debug_flags@diskio$F4060   mediumconst  00F20D
 __end_of_del_space                  text40       01F05E
 __end_of_dir_alloc                  text88       01CAB6
 __end_of_dir_clear                  text91       01C968
@@ -1774,7 +1774,6 @@ __end_of_memset                     text95       01FE60
 __end_of_mon_prog                   text6        01D82E
 __end_of_mount_volume               text74       010AD8
 __end_of_move_window                text115      01E028
-__end_of_mtod                       mediumconst  00F201
 __end_of_pad                        text143      01ECDC
 __end_of_port_init                  text35       01F6F4
 __end_of_print_com                  text2        01E58E
@@ -1834,7 +1833,7 @@ __end_of_write_sram                 text101      01D242
 __end_of_wstart_prog                text14       01EAFC
 __end_of_xtoa                       text125      01BCA4
 __initialization                    cinit        01E1C0
-__mediumconst                       mediumconst  00F1E8
+__mediumconst                       mediumconst  00F200
 __pbssBANK10                        bssBANK10    000A00
 __pbssBANK11                        bssBANK11    000B00
 __pbssBANK7                         bssBANK7     00079E
@@ -1854,7 +1853,7 @@ __pidataBANK7                       idataBANK7   000192
 __pidataBANK8                       idataBANK8   000254
 __pidataBANK9                       idataBANK9   01F05E
 __pivt0x8                           ivt0x8       000008
-__pmediumconst                      mediumconst  00F1E8
+__pmediumconst                      mediumconst  00F200
 __ptext0                            text0        0171A0
 __ptext1                            text1        017C6E
 __ptext10                           text10       01ED78
@@ -2042,7 +2041,7 @@ _board_event_loop1                  text59       01F3EA
 _boot_file                          text1        017C6E
 _bus_hold_req                       text169      000260
 _bus_master_operation               text63       018BA2
-_bus_master_operation$1043          cstackBANK7  000710
+_bus_master_operation$1027          cstackBANK7  000710
 _bus_release_req                    text62       00026C
 _change_directory                   text11       000246
 _check_fs                           text77       0185D6
@@ -2058,8 +2057,8 @@ _cpm_drives                         dataBANK9    00094B
 _cpu_flg                            bssBANK7     0007E5
 _create_chain                       text106      013AF8
 _create_name                        text83       014594
-_create_name$2703                   cstackCOMRAM 000513
-_create_name$2707                   cstackCOMRAM 000515
+_create_name$2687                   cstackCOMRAM 000513
+_create_name$2691                   cstackCOMRAM 000515
 _ctx_                               bssBANK7     0007A8
 _dbc_1st                            text86       01ECDC
 _dbc_2nd                            text85       01DCBE
@@ -2083,9 +2082,9 @@ _disk_write                         text117      01E6FC
 _drive_cpu                          text56       01FD40
 _dsk_err                            text168      000276
 _dtoa                               text142      01A702
-_dtoa$4796                          cstackCOMRAM 000524
+_dtoa$4721                          cstackCOMRAM 000524
 _efgtoa                             text128      010AD8
-_efgtoa$4827                        cstackBANK5  00056D
+_efgtoa$4752                        cstackBANK5  00056D
 _errno                              bssBANK7     0007B3
 _f_chdir                            text48       01D82E
 _f_close                            text92       01F7B6
@@ -2100,7 +2099,7 @@ _f_read                             text111      012D36
 _f_readdir                          text26       01DAF6
 _f_sync                             text93       019CDA
 _f_write                            text65       011538
-_f_write$3223                       cstackBANK6  000676
+_f_write$3207                       cstackBANK6  000676
 _fh                                 bssBANK8     0008A2
 _file_size                          bssBANK7     0007B9
 _fin_cnt                            bssBANK7     0007E3
@@ -2117,7 +2116,7 @@ _frd_ptr                            bssBANK7     0007BD
 _fs                                 bssBIGRAM    000B80
 _get_char                           dataBANK8    0008D9
 _get_fat                            text114      0169EE
-_get_fat$2170                       cstackBANK6  000632
+_get_fat$2154                       cstackBANK6  000632
 _get_fattime                        text98       000224
 _get_fileinfo                       text29       01A316
 _get_hex                            text37       01C6C6
@@ -2138,7 +2137,7 @@ _load_file                          text10       01ED78
 _load_flg                           bssBANK7     0007C9
 _load_program                       text51       015D0C
 _main                               text0        0171A0
-_main$5421                          cstackBANK7  000793
+_main$5311                          cstackBANK7  000793
 _make_irq                           text61       01FFDC
 _mem_dump                           text5        01F370
 _mem_init                           text36       0190F8
@@ -2149,7 +2148,6 @@ _mon                                bssBANK7     0007C8
 _mon_prog                           text6        01D73C
 _mount_volume                       text74       010000
 _move_window                        text115      01DF56
-_mtod                               mediumconst  00F1E9
 _nmi_sig                            bssBANK7     0007CD
 _pad                                text143      01EC3E
 _pic18f47q43_spi_ctx                bssBANK8     0008CF
@@ -2160,8 +2158,8 @@ _print_reg                          text7        01AFB8
 _printf                             text122      01FFB4
 _prt_reload                         text50       0001DE
 _put_fat                            text107      0140A8
-_put_fat$2200                       cstackBANK6  00063C
-_put_fat$2201                       cstackBANK6  00063E
+_put_fat$2184                       cstackBANK6  00063C
+_put_fat$2185                       cstackBANK6  00063E
 _putch                              text146      00020E
 _raw_addr                           bssBANK7     0007AD
 _read_prec_or_width                 text127      01E028
@@ -2213,12 +2211,12 @@ _tmp_buf                            bssBIGRAM    0013F8
 _u_getch                            text68       01F54C
 _uart_init                          text16       01FD04
 _unimon_console                     text66       01AC5A
-_unimon_console$1038                cstackBANK7  00070A
+_unimon_console$1022                cstackBANK7  00070A
 _util_addrdump                      text121      01C294
 _util_hexdump                       text103      01C406
 _util_hexdump_sum                   text102      01F170
 _validate                           text112      01D346
-_validate$2906                      cstackBANK5  0005C6
+_validate$2890                      cstackBANK5  0005C6
 _vfpfcnvrt                          text124      01344A
 _vfprintf                           text123      01F80E
 _wait_for_programmer                text15       01FAE6
@@ -2228,7 +2226,7 @@ _write_sram                         text101      01D13E
 _wstart_prog                        text14       01EA54
 _wup_flg                            bssBANK7     0007CC
 _xtoa                               text125      01BB1E
-_xtoa$4849                          cstackCOMRAM 00052A
+_xtoa$4774                          cstackCOMRAM 00052A
 abs@a                               cstackCOMRAM 00050E
 acquire_bus@ctx                     cstackCOMRAM 000506
 acquire_bus@ctx_                    cstackCOMRAM 000504
@@ -2997,14 +2995,13 @@ C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\nf_fputc.c
 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\nf_fputc.c estimated size: 202
 
 shared
-		_mtod          		MEDIUMCONST    	F1E9	0000	24
 		_debug_flags   		MEDIUMCONST    	0000	0000	0
 		_rom           		MEDIUMCONST    	F20F	0000	16
 		_DbcTbl        		MEDIUMCONST    	F201	0000	10
 		__initialization		CODE           	1E1C0	0000	196
-		_debug_flags@diskio$F4076		MEDIUMCONST    	0000	0000	0
+		_debug_flags@diskio$F4060		MEDIUMCONST    	0000	0000	0
 
-shared estimated size: 246
+shared estimated size: 222
 
 C:\Program Files\Microchip\xc8\v2.50\pic\sources\c99\common\fltol.c
 		___fltol       		CODE           	1D038	0000	262

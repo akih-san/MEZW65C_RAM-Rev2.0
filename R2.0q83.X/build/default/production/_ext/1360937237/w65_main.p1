@@ -110,19 +110,19 @@ Version 4.0 HI-TECH Software Intermediate Code
 "339
 [; ;../src/../src/w65.h: 339: extern void wait_for_programmer(void);
 [v _wait_for_programmer `(v ~T0 @X0 0 ef ]
-"335
-[; ;../src/../src/w65.h: 335: extern void clk_init(void);
-[v _clk_init `(v ~T0 @X0 0 ef ]
-"331
-[; ;../src/../src/w65.h: 331: extern void reset_cpu(void);
-[v _reset_cpu `(v ~T0 @X0 0 ef ]
 "338
 [; ;../src/../src/w65.h: 338: extern void setup_sd(void);
 [v _setup_sd `(v ~T0 @X0 0 ef ]
 "29 ../src/w65_main.c
 [; ;../src/w65_main.c: 29: static int disk_init(void);
 [v _disk_init `(i ~T0 @X0 0 sf ]
-"292 ../src/../src/w65.h
+"335 ../src/../src/w65.h
+[; ;../src/../src/w65.h: 335: extern void clk_init(void);
+[v _clk_init `(v ~T0 @X0 0 ef ]
+"331
+[; ;../src/../src/w65.h: 331: extern void reset_cpu(void);
+[v _reset_cpu `(v ~T0 @X0 0 ef ]
+"292
 [; ;../src/../src/w65.h: 292: extern uint32_t mem_init(void);
 [v _mem_init `(ul ~T0 @X0 0 ef ]
 "117 C:\Program Files\Microchip\xc8\v2.50\pic\include\c99\stdio.h
@@ -4253,22 +4253,22 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;../src/w65_main.c: 199:  wait_for_programmer();
 [e ( _wait_for_programmer ..  ]
 "201
-[; ;../src/w65_main.c: 201:  clk_init();
-[e ( _clk_init ..  ]
-"202
-[; ;../src/w65_main.c: 202:  reset_cpu();
-[e ( _reset_cpu ..  ]
-"204
-[; ;../src/w65_main.c: 204:  setup_sd();
+[; ;../src/w65_main.c: 201:  setup_sd();
 [e ( _setup_sd ..  ]
-"205
-[; ;../src/w65_main.c: 205:  if (disk_init() < 0) while (1);
+"202
+[; ;../src/w65_main.c: 202:  if (disk_init() < 0) while (1);
 [e $ ! < ( _disk_init ..  -> 0 `i 3297  ]
 [e :U 3299 ]
 [e :U 3298 ]
 [e $U 3299  ]
 [e :U 3300 ]
 [e :U 3297 ]
+"204
+[; ;../src/w65_main.c: 204:  clk_init();
+[e ( _clk_init ..  ]
+"205
+[; ;../src/w65_main.c: 205:  reset_cpu();
+[e ( _reset_cpu ..  ]
 "208
 [; ;../src/w65_main.c: 208:  cpu_flg = 1;
 [e = _cpu_flg -> -> 1 `i `uc ]

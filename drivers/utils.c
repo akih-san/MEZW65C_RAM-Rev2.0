@@ -85,7 +85,7 @@ void util_hexdump_sum(const char *header, const void *addr, unsigned int size)
         sum += *p++;
     printf("%s%53s CHECKSUM: %02x\n\r", header, "", sum);
 }
-
+/*
 int util_stricmp(const char *a, const char *b)
 {
   int ua, ub;
@@ -198,7 +198,7 @@ void cnv_ymd(uint16_t n_date, uint16_t *year, uint16_t *month, uint16_t *date ) 
 	*month = ++m;
 	*date = remain_date;
 }
-
+*/
 uint32_t get_hex(char *buf) {
 
 	uint32_t hexval;

@@ -142,7 +142,7 @@ void SPI(end_transaction)(struct SPI *ctx_)
     SPI(select)(ctx_, 0);  // de-select the chip and end transaction
     release_bus(ctx_);
 }
-
+/*
 uint8_t SPI(transfer_byte)(struct SPI *ctx_, uint8_t output)
 {
     SPIx(TCNTH) = 0;
@@ -160,7 +160,7 @@ void SPI(transfer)(struct SPI *ctx_, void *buf, unsigned int count)
         p++;
     }
 }
-
+*/
 void SPI(send)(struct SPI *ctx_, const void *buf, unsigned int count)
 {
     uint8_t *p = (uint8_t*)buf;

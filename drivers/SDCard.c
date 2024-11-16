@@ -364,7 +364,7 @@ uint16_t __SDCard_crc16(uint16_t crc, const void *buf, unsigned int count)
 
     return crc;
 }
-
+/*
 uint16_t SDCard_crc16(const void *buf, unsigned int count)
 {
     return __SDCard_crc16(0, buf, count);
@@ -378,3 +378,4 @@ int SDCard_debug(int newval)
 #endif
     return res;
 }
+*/

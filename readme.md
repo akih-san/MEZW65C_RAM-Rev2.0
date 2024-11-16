@@ -1,6 +1,3 @@
-# 工事中（Under construction）
-<br>
-
 # <メザニンボードMEZW65C_RAM Photo>
 ![](photo/p2.JPG)
 <br>

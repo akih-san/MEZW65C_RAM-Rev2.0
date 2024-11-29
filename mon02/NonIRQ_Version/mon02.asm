@@ -28,7 +28,8 @@
 ;;; Memory
 ;;;
 
-PRG_B	EQU	$EE00
+;PRG_B	EQU	$EE00
+PRG_B	EQU	$E000
 WORK_B	equ	PRG_B-$100	; $ED00
 USER_M	equ	$200
 
@@ -57,6 +58,7 @@ TAB	EQU	$09
 DEL	EQU	$7F
 NULL	EQU	$00
 
+	.if 0
 ;--------------------------------------
 ;ZERO page
 ;--------------------------------------
@@ -66,6 +68,32 @@ NULL	EQU	$00
 
 	.page0
 	ORG	ZERO_B
+
+; PIC18F47QXX I/F
+UREQ_COM	rmb	1	; unimon CONIN/CONOUT request command
+UNI_CHR		rmb	1	; charcter (CONIN/CONOUT) or number of strings
+CREQ_COM	rmb	1	; unimon CONIN/CONOUT request command
+CBI_CHR		rmb	1	; charcter (CONIN/CONOUT) or number of strings
+disk_drive	rmb	1	;
+disk_track	rmb	2	;
+disk_sector	rmb	2	;
+data_adr	rmb	2	;
+bank		rmb	1	;
+reserve		rmb	1	;
+
+PT0	RMB	2		; Generic Pointer 0
+PT1	RMB	2		; Generic Pointer 1
+CNT	RMB	1		; Generic Counter
+bk_no	rmb	2
+;Go command variable
+sav_adr	rmb	2
+
+oper		RMB	2
+scan		RMB	2
+	.endif
+
+	.data
+	org	WORK_B
 
 ; PIC18F47QXX I/F
 UREQ_COM	rmb	1	; unimon CONIN/CONOUT request command
@@ -102,9 +130,6 @@ reg_tble
 reg_size	equ reg_tble-reg_tbls
 
 
-	.data
-	org	WORK_B
-
 INBUF	RMB	BUFLEN		; Line input buffer
 DSADDR	RMB	2		; Dump start address
 DEADDR	RMB	2		; Dump end address
@@ -133,6 +158,7 @@ vnim_buf	RMB	16	;virtual console buffer for mnemonic
 ;Go command variable
 stp_flg		rmb	1
 sav_dat		rmb	2
+hit_reg		rmb	2
 
 ;;;
 ;;; Program area
@@ -480,7 +506,10 @@ DPB2
 	CMP	#1
 	BNE	DPB0
 	;; Dump state 1
-	LDA	(PT1),Y
+
+;	LDA	(PT1),Y
+	jsr	lda_pt1
+
 	STA	INBUF,X
 	JSR	HEXOUT2
 	INX
@@ -639,7 +668,9 @@ vHEXOUTE
 ; disassemble one opcode and print it
 ;------------------------------------------------------
 disOpcode:
-	LDA	(oper)		; check pointed opcode
+;	LDA	(oper)		; check pointed opcode
+	jsr	lda_d_oper
+
 	STA	count		; keep for comparisons
 	LDY	#<da_oclist	; get address of opcode list
 	LDA	#>da_oclist
@@ -654,7 +685,9 @@ do_chkopc:
 	BEQ	do_found		; no more to skip
 
 do_skip:
-	LDA	(scan),Y		; get char in list
+;	LDA	(scan),Y		; get char in list
+	jsr	lda_scan
+
 	BMI	do_other		; found end-of-opcode mark (bit 7)
 	INY
 	BNE	do_skip		; next char in list if not crossed
@@ -692,7 +725,9 @@ prnOpcode: ; first goes the current address in label style
 	STY	count		; printed chars for virtual console buffe
 
 po_loop:
-	LDA	(scan),Y	; get char in opcode list
+;	LDA	(scan),Y	; get char in opcode list
+	jsr	lda_scan
+
 	STY	temp		; keep index as will be destroyed
 	AND	#$7F		; filter out possible end mark
 	CMP	#'%'		; relative addressing
@@ -702,7 +737,10 @@ po_loop:
 
 	LDA	#'$'		; hex radix
 	JSR	vPUT_CH
-	lda	(oper)		; check opocde for a moment
+
+;	lda	(oper)		; check opocde for a moment
+	jsr	lda_d_oper
+
 	LDY	#1		; standard branch offset
 	LDX	#0		; reset offset sign extention
 	AND	#$0F		; watch low-nibble on opcode
@@ -714,7 +752,10 @@ po_nobbx:
 	STY	s_value		; store now as will be added later
 	LDY	bytes		; retrieve instruction index
 	INY			; point to operand!
-	LDA	(oper),Y	; get offset!
+
+;	LDA	(oper),Y	; get offset!
+	jsr	lda_oper
+	
 	STY	bytes		; correct index
 	BPL	po_fwd		; forward jump does not extend sign
 	DEX			; puts $FF otherwise
@@ -755,7 +796,10 @@ po_disp:
 
 po_dloop:
 	LDY	bytes		; retrieve operand index
-	LDA	(oper),Y		; get whatever byte
+
+;	LDA	(oper),Y		; get whatever byte
+	jsr	lda_oper
+
 	JSR	vHEXOUT2	; show in hex
 	DEC	bytes		; go back one byte
 	BNE	po_dloop
@@ -771,7 +815,10 @@ po_done:
 po_adv:
 po_char:
 	LDY	temp		; get scan index
-	LDA	(scan),Y		; get current char again
+
+;	LDA	(scan),Y		; get current char again
+	jsr	lda_scan
+
 	BMI	po_end		; opcode ended, no more to show
 	INY			; go for next char otherwise
 	JMP	po_loop		; BNE would work as no opcode string near 256 bytes long, but too far...
@@ -793,7 +840,10 @@ po_dbyt:
 	LDA	#' '		; leading space
 	JSR	CONOUT
 	LDY	temp		; retrieve index
-	LDA	(oper),Y	; get current byte in instruction
+
+;	LDA	(oper),Y	; get current byte in instruction
+	jsr	lda_oper
+
 	JSR	HEXOUT2		; show as hex
 	lda	count		; **
 	sec			; **
@@ -1121,7 +1171,7 @@ GO
 
 G00
 	stz	stp_flg		; clear stop flag
-	bra	G0
+	jmp	G0
 
 GP0	;; 1st arg. found
 	LDA	PT1
@@ -1155,18 +1205,27 @@ GP1	;; check 2nd arg.
 
 	; save original binary at break point
 	ldy	#0
-	lda	(PT1),y		; get first binary at stop address
+
+;	lda	(PT1),y		; get first binary at stop address
+	jsr	lda_pt1
+
 	sta	sav_dat		; save original binary
 	iny
-	lda	(PT1),y		; get second binary at stop address
+
+;	lda	(PT1),y		; get second binary at stop address
+	jsr	lda_pt1
+
 	sta	sav_dat+1	; save original binary
 
 	; set break point
 	lda	#0		; BRK 
 	tay
-	sta	(PT1),y		; set BRK opecode
+;	sta	(PT1),y		; set BRK opecode
+	jsr	sta_pt1
+	
 	iny
-	sta	(PT1),y		; set BRK operand(#0)
+;	sta	(PT1),y		; set BRK operand(#0)
+	jsr	sta_pt1
 	
 	lda	PT1
 	sta	sav_adr		; save break point addr(L)
@@ -1216,7 +1275,15 @@ SM1:
 	STA	PT0+1
 	JSR	STROUT
 	LDY	#0
-	LDA	(SADDR),Y
+
+;	LDA	(SADDR),Y
+	lda	SADDR
+	sta	opr12
+	lda	SADDR+1
+	sta	opr12+1
+	db	$B9		; LDA $xxxx,y
+opr12	dw	0		; operand Absolute Indexed Y
+
 	JSR	HEXOUT2
 	LDA	#' '
 	JSR	CONOUT
@@ -1264,9 +1331,18 @@ SM40
 	bne	SMER
 	; repar original bug -------
 
+;	LDA	PT1
+;	LDY	#0
+;	STA	(SADDR),Y
+	lda	SADDR
+	sta	opr13
+	lda	SADDR+1
+	sta	opr13+1
 	LDA	PT1
 	LDY	#0
-	STA	(SADDR),Y
+	db	$99		; STA $xxxx,y
+opr13	dw	0		; operand Absolute Indexed Y
+
 	JMP	SM10
 
 ;;;
@@ -1344,7 +1420,9 @@ LHI1
 	BNE	LHI2
 
 	PLA
-	STA	(DMPPT),Y
+;	STA	(DMPPT),Y
+	jsr	sta_dmppt
+	
 	INY
 	PHA			; Dummy, better than JMP to skip next PLA
 LHI2
@@ -1357,14 +1435,17 @@ LHI3
 	ADC	CKSUM
 	BNE	LHIE		; Checksum error
 	LDA	RECTYP
-	BEQ	LH3
-	JMP	WSTART
+;	BEQ	LH3
+	bne	LH3_1
+	jmp	LH3
+
 LHIE
 	LDA	#$FF&IHEMSG
 	STA	PT0
 	LDA	#IHEMSG>>8
 	STA	PT0+1
 	JSR	STROUT
+LH3_1
 	JMP	WSTART
 
 LHS0
@@ -1416,7 +1497,9 @@ LHS1
 	BNE	LHS2
 
 	PLA
-	STA	(DMPPT),Y
+;	STA	(DMPPT),Y
+	jsr	sta_dmppt
+
 	INY
 	PHA			; Dummy, better than JMP to skip next PLA
 LHS2
@@ -1461,11 +1544,23 @@ RG0
 	STY	PT1+1
 	LDY	#0
 RG1
-	CMP	(PT1),Y
+;	CMP	(PT1),Y
+	pha
+	lda	PT1
+	sta	opr16
+	lda	PT1+1
+	sta	opr16+1
+	pla
+	db	$D9		; CMP $xxxx,y
+opr16	dw	0		; operand Absolute Indexed Y
+
 	BEQ	RG2
 	INY
 	PHA
-	LDA	(PT1),Y
+
+;	LDA	(PT1),Y
+	jsr	lda_pt1
+
 	BEQ	RGE
 	PLA
 	INY
@@ -1476,18 +1571,28 @@ RG1
 	JMP	RG1
 RGE
 	PLA
+RGE0_0
 	JMP	ERR
 RG2
 	INY
-	LDA	(PT1),Y
+
+;	LDA	(PT1),Y
+	jsr	lda_pt1
+
 	CMP	#$80
 	BNE	RG3
 	;; Next table
 	INY
-	LDA	(PT1),Y
+
+;	LDA	(PT1),Y
+	jsr	lda_pt1
+
 	STA	CNT		; Temporary
 	INY
-	LDA	(PT1),Y
+
+;	LDA	(PT1),Y
+	jsr	lda_pt1
+
 	STA	PT1+1
 	LDA	CNT
 	STA	PT1
@@ -1498,18 +1603,30 @@ RG2
 	JMP	RG1
 RG3
 	CMP	#0
-	BEQ	RGE0
+	BEQ	RGE0_0
 
 	INY			; +2
-	LDA	(PT1),Y
-	TAX
+
+;	LDA	(PT1),Y
+	jsr	lda_pt1
+
+;	TAX
+	; save hit register address
+	sta	hit_reg
 	INY
+	jsr	lda_pt1
+	sta	hit_reg+1
 
 	INY			; +4
-	LDA	(PT1),Y
+;	LDA	(PT1),Y
+	jsr	lda_pt1
+
 	STA	PT0
 	INY
-	LDA	(PT1),Y
+
+;	LDA	(PT1),Y
+	jsr	lda_pt1
+
 	STA	PT0+1
 	STY	CNT		; Save Y (STROUT destroys Y)
 	JSR	STROUT
@@ -1520,19 +1637,42 @@ RG3
 	DEY
 	DEY
 	DEY
-	LDA	(PT1),Y
+
+;	LDA	(PT1),Y
+	jsr	lda_pt1
+
 	STA	REGSIZ
 	CMP	#1
 	BNE	RG4
+
 	;; 8 bit register
-	LDA	0,X
+;	LDA	0,X
+	ldx	#0
+	jsr	get_hit_r
+
 	JSR	HEXOUT2
-	JMP	RG5
+	bra	RG5
+
+get_hit_r
+	lda	hit_reg
+	sta	opr232
+	lda	hit_reg+1
+	sta	opr232+1
+	db	$BD		; lda $xxxx,x
+opr232
+	dw	0
+	rts
+
 RG4
 	;; 16 bit register
-	LDA	1,X
+;	LDA	1,X
+	ldx	#1
+	jsr	get_hit_r
 	JSR	HEXOUT2
-	LDA	0,X
+
+;	LDA	0,X
+	dex
+	jsr	get_hit_r
 	JSR	HEXOUT2
 RG5
 	LDA	#' '
@@ -1549,16 +1689,34 @@ RG5
 	BNE	RG6
 	;; 8 bit register
 	LDA	PT1
-;	STA	,X
-	STA	0,X
-	JMP	RG7
+;	STA	0,X
+	ldx	#0
+	jsr	set_hit_r
+	bra	RG7
+
+set_hit_r:
+	pha
+	lda	hit_reg
+	sta	opr235
+	lda	hit_reg+1
+	sta	opr235+1
+	pla
+	db	$9D		; sta $xxxx,x
+opr235:
+	dw	0
+	rts
+
 RG6
 	;; 16 bit address
 	LDA	PT1
-;	STA	,X		; (L)
-	STA	0,X		; (L)
+;	STA	0,X		; (L)
+	ldx	#0
+	jsr	set_hit_r
+
 	LDA	PT1+1
-	STA	1,X		; (H)
+	inx
+;	STA	1,X		; (H)
+	jsr	set_hit_r
 RG7	
 RGR	
 	JMP	WSTART
@@ -1692,10 +1850,99 @@ hlp_meg2
 ;;; Other support routines
 ;;;
 
+;-----------------------------------------------------------
+; alternative Direct Page Indirect Indexed, Y
+;
+lda_pt1:
+	lda	PT1
+	sta	lda_pt2
+	lda	PT1+1
+	sta	lda_pt2+1
+	db	$B9		; LDA $xxxx,y
+lda_pt2:
+	dw	0		; operand Absolute Indexed Y
+	rts
+
+lda_scan:
+	lda	scan
+	sta	lda_scan1
+	lda	scan+1
+	sta	lda_scan1+1
+	db	$B9		; LDA $xxxx,y
+lda_scan1:
+	dw	0		; operand Absolute Indexed Y
+	rts
+
+lda_oper:
+	lda	oper
+	sta	lda_oper1
+	lda	oper+1
+	sta	lda_oper1+1
+	db	$B9		; LDA $xxxx,y
+lda_oper1:
+	dw	0		; operand Absolute Indexed Y
+	rts
+
+sta_pt1:
+	pha
+	lda	PT1
+	sta	sta_pt2
+	lda	PT1+1
+	sta	sta_pt2+1
+	pla
+	db	$99		; STA $xxxx,y
+sta_pt2:
+	dw	0		; operand Absolute Indexed Y
+	rts
+
+sta_dmppt:
+	pha
+	lda	DMPPT
+	sta	sta_dmppt1
+	lda	DMPPT+1
+	sta	sta_dmppt1+1
+	PLA
+	db	$99		; STA $xxxx,y
+sta_dmppt1:
+	dw	0		; operand Absolute Indexed Y
+	rts
+
+sta_sav_adr:
+	pha
+	lda	sav_adr
+	sta	opr25
+	lda	sav_adr+1
+	sta	opr25+1
+	pla
+	db	$99		; STA $xxxx,y
+opr25	dw	0		; operand Absolute Indexed Y
+	rts
+;------------------------------------------------------------
+; LDA (oper)
+; alternative Direct Page Indirect
+;------------------------------------------------------------
+lda_d_oper:
+	lda	oper
+	sta	opr2_2
+	lda	oper+1
+	sta	opr2_2+1
+	db	$AD		; LDA $xxxx
+opr2_2
+	dw	0
+	rts
+;------------------------------------------------------------
+
 STROUT
 	LDY	#0
 STRO0
-	LDA	(PT0),Y
+;	LDA	(PT0),Y
+	lda	PT0
+	sta	opr24
+	lda	PT0+1
+	sta	opr24+1
+	db	$B9		; LDA $xxxx,y
+opr24	dw	0		; operand Absolute Indexed Y
+
 	BEQ	STROE
 	JSR	CONOUT
 	INY
@@ -1915,7 +2162,15 @@ code_brk
 	lda	$100,x		; PC(H)
 	SBC	#0
 	sta	bk_no+1
-	lda	(bk_no)		; get command request #$xx (BRK #$xx)
+
+;	lda	(bk_no)		; get command request #$xx (BRK #$xx)
+	lda	bk_no
+	sta	bk_00
+	lda	bk_no+1
+	sta	bk_00+1
+	db	$AD		; lda $xxxx
+bk_00
+	dw	0
 
 	cmp	#$ff		; program end?
 	bne	bk_n
@@ -2009,11 +2264,16 @@ go_brk
 	; restore original code
 	stz	stp_flg
 	ldy	#0
+
 	lda	sav_dat
-	sta	(sav_adr),y
+;	sta	(sav_adr),y
+	jsr	sta_sav_adr
+
 	iny
 	lda	sav_dat+1
-	sta	(sav_adr),y
+
+;	sta	(sav_adr),y
+	jsr	sta_sav_adr
 	
 	lda	sav_adr
 	cmp	REGPC

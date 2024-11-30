@@ -37,8 +37,8 @@ CIN_SIZE	equ COUT_SIZE
 
 ZERO_B	EQU	$0018		; Must fit in ZERO page
 
-STACK	EQU	$01FF
-USER_SP	equ	$01BF
+STACK	EQU	$013F
+USER_SP	equ	$01FF
 
 BUFLEN	EQU	16		; Buffer length ( 16 or above )
 cpu_id	equ	$00		; memory address $0000 is written CPU ID by PIC

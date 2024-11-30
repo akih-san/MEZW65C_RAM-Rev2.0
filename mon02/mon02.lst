@@ -37,8 +37,8 @@
     37                        
     38             00000018   ZERO_B	EQU	$0018		; Must fit in ZERO page
     39                        
-    40             000001FF   STACK	EQU	$01FF
-    41             000001BF   USER_SP	equ	$01BF
+    40             0000013F   STACK	EQU	$013F
+    41             000001FF   USER_SP	equ	$01FF
     42                        
     43             00000010   BUFLEN	EQU	16		; Buffer length ( 16 or above )
     44             00000000   cpu_id	equ	$00		; memory address $0000 is written CPU ID by PIC
@@ -233,7 +233,7 @@
    232             0000EB09   u_addr	equ	mezID+1
    233                        
    234 00:EB20: 78           	sei			; disable interrupt
-   235 00:EB21: A2 FF        	LDX	#STACK & $ff
+   235 00:EB21: A2 3F        	LDX	#STACK & $ff
    236 00:EB23: 9A           	TXS
    237                        
    238 00:EB24: 20 31 FF     	JSR	INIT
@@ -253,7 +253,7 @@
    252 00:EB48: 8D 25 E9     	STA	REGY
    253 00:EB4B: A9 20        	lda	#$20
    254 00:EB4D: 8D 29 E9     	STA	REGPSR
-   255 00:EB50: A2 BF        	ldx	#USER_SP
+   255 00:EB50: A2 FF        	ldx	#USER_SP
    256 00:EB52: 8E 26 E9     	STX	REGSP
    257 00:EB55: A9 00        	lda	#USER_M
    258 00:EB57: 8D 27 E9     	STA	REGPC
@@ -284,7 +284,7 @@
    283 00:EB84: 80 F0        	bra	wup
    284                        
    285                        apli_start
-   286 00:EB86: A2 BF        	LDX	#USER_SP & $ff
+   286 00:EB86: A2 FF        	LDX	#USER_SP & $ff
    287 00:EB88: 9A           	TXS
    288 00:EB89: 6C 09 EB     	jmp	(u_addr)	; application cold start
    289                        
@@ -299,7 +299,7 @@
    298                        
    299                        WSTART
    300 00:EB9B: 58           	CLI
-   301 00:EB9C: A2 FF        	LDX	#STACK & $ff
+   301 00:EB9C: A2 3F        	LDX	#STACK & $ff
    302 00:EB9E: 9A           	TXS
    303                        
    304                        prt_prompt

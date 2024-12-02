@@ -285,7 +285,7 @@
    271 00:EC4E: 64 76        	stz	stp_flg
    272 00:EC50: 64 44        	stz	dumpdb
    273 00:EC52: 64 45        	stz	dipb
-   274 00:EC54: A9 34        	lda	#%00110100
+   274 00:EC54: A9 30        	lda	#%00110000
    275 00:EC56: 85 57        	STA	REGPSR
    276 00:EC58: 85 6F        	STA	FLAGS		; save disassemble EmPCR
    277                        

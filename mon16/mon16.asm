@@ -271,7 +271,7 @@ u_dpp	equ	mezID+5
 	stz	stp_flg
 	stz	dumpdb
 	stz	dipb
-	lda	#%00110100
+	lda	#%00110000
 	STA	REGPSR
 	STA	FLAGS		; save disassemble EmPCR
 

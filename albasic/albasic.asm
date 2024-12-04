@@ -7,7 +7,13 @@
 ;
 ; Adapted for the Replica-1 by Tom Greene
 ; 7-May-2008
+;
+; Modified by Akihito Honda for MEZW65C_RAM Firmware Rev2.0
+; https://github.com/akih-san/MEZW65C_RAM-Rev2.0
+; 2024.12.5
 
+; Thanks all
+;
 
 	pl	0
 	pw      132

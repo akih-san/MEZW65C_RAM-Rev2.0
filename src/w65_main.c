@@ -198,11 +198,15 @@ void main(void)
 	uart_init();
 	wait_for_programmer();
 
-	setup_sd();
-	if (disk_init() < 0) while (1);
+//	setup_sd();
+//	if (disk_init() < 0) while (1);
 
 	clk_init();		// initial CLK = 2MHz
+	clc_init();
 	reset_cpu();
+
+	setup_sd();
+	if (disk_init() < 0) while (1);
 
 //debug
 //	mem_test();

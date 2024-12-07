@@ -195,17 +195,22 @@ void reset_cpu(void)
 			while(1) {}
 		}
 
-		bus_release_req();
+		start_cpu();
 
-		LAT(W65_BE) = 1;        // reserse BUS
-		LAT(W65_RESET) = 1;		// activate cpu
+//		bus_release_req();
+//		LAT(W65_BE) = 1;        // reserse BUS
+//		LAT(W65_RESET) = 1;		// activate cpu
 
-	    __delay_ms(10);
+	    __delay_ms(100);
 
-		LAT(W65_BE) = 0;        // BUS Hi-z
+		CLCSELECT = 0;			// CLC1 select
+		G2POL = 0;				// /BE = 0 rising CLK edge
 		LAT(W65_RESET) = 0;		// cpu reset
 
-	    __delay_ms(10);
+//		LAT(W65_BE) = 0;        // BUS Hi-z
+//		LAT(W65_RESET) = 0;		// cpu reset
+
+	    __delay_ms(100);
 
 		bus_hold_req();
 
@@ -229,6 +234,11 @@ void port_init(void)
     ANSELE1 = 0;
     ANSELE2 = 0;
 
+	// /BE output pin
+	WPU(W65_BE) = 0;		// disable pull up
+	LAT(W65_BE) = 0;		// BUS Hi-z
+	TRIS(W65_BE) = 0;		// Set as output
+	
     // /RESET output pin
 	WPU(W65_RESET) = 0;	// disable pull up
 	LAT(W65_RESET) = 0;	// Reset
@@ -239,11 +249,6 @@ void port_init(void)
 	LAT(W65_NMI) = 1;		// disable NMI
 	TRIS(W65_NMI) = 0;		// Set as output
 
-	// /BE output pin
-	WPU(W65_BE) = 0;		// disable pull up
-	LAT(W65_BE) = 0;		// BUS Hi-z
-	TRIS(W65_BE) = 0;		// Set as output
-	
 	WPU(W65_CLK) = 0;	// disable week pull up
 	LAT(W65_CLK) = 1;	// init CLK = 1
 	TRIS(W65_CLK) = 0;	// set as output pin

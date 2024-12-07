@@ -41,10 +41,13 @@
 RESET:
 	sec
 	xce	; if cpu=W65C02 then xce = nop operation
+	stz	test
+
 NMIBRK:
 IRQBRK:
 	stp	; stop CPU
 
+test:	db	$FF
 
 	ORG	$FFFA
 

@@ -18,7 +18,7 @@
 
 #include "../drivers/utils.h"
 
-uint32_t mem_init()
+uint32_t mem_init(void)
 {
     unsigned int i;
     uint32_t addr;
@@ -57,3 +57,37 @@ uint32_t mem_init()
 	printf("Memory $000000 - $%06lX %d KB OK\r\n", addr-1, (int)(addr / 1024));
 	return( addr );
 }
+
+#if 0
+uint32_t mem_test(void)
+{
+    unsigned int i, pattern;
+    uint32_t addr;
+	
+	for (addr = 0; addr < 0x20000; addr += TMP_BUF_SIZE) {
+		for ( pattern=0; pattern < 0x100; pattern++ ) {
+
+			printf("Memory $000000 - $%06lX : Pattern(%02X:%02X)\r", addr, pattern, (uint8_t)(~pattern));
+			// make pattern a55a
+	    	for (i = 0; i < TMP_BUF_SIZE; i += 2) {
+	    		tmp_buf[0][i + 0] = (uint8_t)pattern;
+	    		tmp_buf[0][i + 1] = (uint8_t)(~pattern);
+	    	}
+    		write_sram(addr, tmp_buf[0], TMP_BUF_SIZE);
+        	read_sram(addr, tmp_buf[1], TMP_BUF_SIZE);
+
+    		if (memcmp(tmp_buf[0], tmp_buf[1], TMP_BUF_SIZE) != 0) {
+        	    printf("\nMemory error at $%06lX\n\r", addr);
+        	    util_addrdump("WR: ", addr, tmp_buf[0], TMP_BUF_SIZE);
+        	    util_addrdump("RD: ", addr, tmp_buf[1], TMP_BUF_SIZE);
+				while(1){};		// stop
+            	break;
+        	}
+		}
+    }
+
+	printf("\nMemory Test End.\n\r");
+	while(1);
+	return( addr );
+}
+#endif

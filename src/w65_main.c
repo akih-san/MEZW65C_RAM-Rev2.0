@@ -204,6 +204,9 @@ void main(void)
 	clk_init();		// initial CLK = 2MHz
 	reset_cpu();
 
+//debug
+//	mem_test();
+	
 	// memory test
 	cpu_flg = 1;	// need cpu_flg = 1 to test memory
 	if ( mem_init() <= 0x10000 ) {

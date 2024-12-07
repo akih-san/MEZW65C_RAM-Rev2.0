@@ -341,4 +341,6 @@ extern void setup_tomer0(void);
 extern void timer_off(void);
 extern void timer_on(void);
 
+extern uint32_t mem_test(void);
+
 #endif  // __SUPERMEZ80_H__

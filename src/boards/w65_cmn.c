@@ -23,16 +23,16 @@ unsigned int rx_wp, rx_rp, rx_cnt;
 
 const unsigned char rom[] = {
 	/* org $fff0 */
-	0x38,			/* sec */
-	0xFB,			/* xce */
-	0xDB,			/* stp */
+	0x38,						/* sec */
+	0xFB,						/* xce */
+	0x9C, 0xF6, 0xFF, 			/* stz $FFF6 */
 
-	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 
 	/* org $fffa */
-	0xF2, 0xFF,	/* NMI Vector */
-	0xF0, 0xFF,	/* Reset Vector */
-	0xF2, 0xFF		/* IRQ/BRK Vector */
+	0xF5, 0xFF,		/* NMI Vector */
+	0xF0, 0xFF,		/* Reset Vector */
+	0xF5, 0xFF		/* IRQ/BRK Vector */
 };
 
 
@@ -183,27 +183,36 @@ void reset_cpu(void)
 
 	// write cpu emulation mode operation program
 	bus_hold_req();
-	cpu_flg = 0;
-	write_sram(0xfff0, (uint8_t *)rom, 16);
-	read_sram(0xfff0, tmp_buf[0], 16);
-	if (memcmp(rom, tmp_buf[0], 16) != 0) {
+	cpu_flg = 1;
+
+	for (;;) {
+		write_sram(0xfff0, (uint8_t *)rom, 16);
+		read_sram(0xfff0, &tmp_buf[0][0], 16);
+
+		if (memcmp(rom, &tmp_buf[0][0], 16) != 0) {
+			bus_release_req();
+			printf("Memory Write Error\r\n");
+			while(1) {}
+		}
+
 		bus_release_req();
-		printf("Memory Write Error\r\n");
-		while(1) {}
+
+		LAT(W65_BE) = 1;        // reserse BUS
+		LAT(W65_RESET) = 1;		// activate cpu
+
+	    __delay_ms(10);
+
+		LAT(W65_BE) = 0;        // BUS Hi-z
+		LAT(W65_RESET) = 0;		// cpu reset
+
+	    __delay_ms(10);
+
+		bus_hold_req();
+
+		read_sram(0xfff6, &tmp_buf[0][0], 1);
+		if ( !tmp_buf[0][0] ) return;
+		printf("RESET CPU...\r\n");
 	}
-	bus_release_req();
-
-	LAT(W65_BE) = 1;        // reserse BUS
-	LAT(W65_RESET) = 1;		// activate cpu
-
-    __delay_ms(100);
-
-	LAT(W65_BE) = 0;        // BUS Hi-z
-	LAT(W65_RESET) = 0;		// cpu reset
-
-    __delay_ms(100);
-
-	bus_hold_req();
 }
 
 void port_init(void)

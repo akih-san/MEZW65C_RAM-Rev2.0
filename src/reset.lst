@@ -1,8 +1,8 @@
-  Fri Aug  2 2024  9:48                                                                                                    Page 1
+  Sat Dec  7 2024 20:45                                                                                                    Page 1
 
 
                                                ***************************************
-                                               **      WDC 65C02 Macro Assembler    **
+                                               **      WDC 65C816 Macro Assembler   **
                                                **                                   **
                                                **     Version 3.49.1- Feb  6 2006    **
                                                ***************************************
@@ -50,24 +50,27 @@
     41                        RESET:
     42 00:FFF0: 38           	sec
     43 00:FFF1: FB           	xce	; if cpu=W65C02 then xce = nop operation
-    44                        NMIBRK:
-    45                        IRQBRK:
-    46 00:FFF2: DB           	stp	; stop CPU
-    47                        
-    48                        
-    49                        	ORG	$FFFA
-    50                        
-    51 00:FFFA: F2 FF        	FDB	NMIBRK		; NMI
-    52                        
-  Fri Aug  2 2024  9:48                                                                                                    Page 2
+    44 00:FFF2: 9C F6 FF     	stz	test
+    45                        
+    46                        NMIBRK:
+    47                        IRQBRK:
+    48 00:FFF5: DB           	stp	; stop CPU
+    49                        
+    50 00:FFF6: FF           test:	db	$FF
+    51                        
+    52                        	ORG	$FFFA
+  Sat Dec  7 2024 20:45                                                                                                    Page 2
 
 
-    53 00:FFFC: F0 FF        	FDB	RESET		; RESET
-    54                        
-    55 00:FFFE: F2 FF        	FDB	IRQBRK		; IRQ/BRK
-    56                        
-    57                        	END
+    53                        
+    54 00:FFFA: F5 FF        	FDB	NMIBRK		; NMI
+    55                        
+    56 00:FFFC: F0 FF        	FDB	RESET		; RESET
+    57                        
+    58 00:FFFE: F5 FF        	FDB	IRQBRK		; IRQ/BRK
+    59                        
+    60                        	END
 
 
-      Lines assembled: 57
+      Lines assembled: 60
       Errors: 0

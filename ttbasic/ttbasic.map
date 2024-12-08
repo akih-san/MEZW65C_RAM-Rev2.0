@@ -10,115 +10,115 @@ ttbasic.o:
     BSS               Offs=000002  Size=007BE3  Align=00001  Fill=0000
 crt0.o:
     STARTUP           Offs=000000  Size=000017  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(addeqsp.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(addeqsp.o):
     CODE              Offs=001EA2  Size=000011  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(addysp.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(addysp.o):
     CODE              Offs=001EB3  Size=00000E  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(aslax1.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(aslax1.o):
     CODE              Offs=001EC1  Size=000008  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(condes.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(condes.o):
     CODE              Offs=001EC9  Size=00000C  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000025  Align=00001  Fill=0000
     ONCE              Offs=000000  Size=00000C  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax1.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decax1.o):
     CODE              Offs=001ED5  Size=000007  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax2.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decax2.o):
     CODE              Offs=001EDC  Size=000007  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax3.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decax3.o):
     CODE              Offs=001EE3  Size=000007  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax4.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decax4.o):
     CODE              Offs=001EEA  Size=000007  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decax5.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decax5.o):
     CODE              Offs=001EF1  Size=000007  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decaxy.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decaxy.o):
     CODE              Offs=001EF8  Size=000009  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp1.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decsp1.o):
     CODE              Offs=001F01  Size=000009  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp2.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decsp2.o):
     CODE              Offs=001F0A  Size=00000D  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp4.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decsp4.o):
     CODE              Offs=001F17  Size=00000D  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp5.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decsp5.o):
     CODE              Offs=001F24  Size=00000D  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp6.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decsp6.o):
     CODE              Offs=001F31  Size=00000D  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp7.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decsp7.o):
     CODE              Offs=001F3E  Size=00000D  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(decsp8.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(decsp8.o):
     CODE              Offs=001F4B  Size=00000D  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(div.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(div.o):
     CODE              Offs=001F58  Size=000015  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(gt.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(gt.o):
     CODE              Offs=001F6D  Size=00000A  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(icmp.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(icmp.o):
     CODE              Offs=001F77  Size=00002E  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incax2.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incax2.o):
     CODE              Offs=001FA5  Size=000007  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incax3.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incax3.o):
     CODE              Offs=001FAC  Size=000005  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incaxy.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incaxy.o):
     CODE              Offs=001FB1  Size=00000B  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp1.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incsp1.o):
     CODE              Offs=001FBC  Size=000007  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp2.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incsp2.o):
     CODE              Offs=001FC3  Size=000016  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp3.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incsp3.o):
     CODE              Offs=001FD9  Size=000005  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp4.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incsp4.o):
     CODE              Offs=001FDE  Size=000005  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp5.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incsp5.o):
     CODE              Offs=001FE3  Size=000005  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp6.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incsp6.o):
     CODE              Offs=001FE8  Size=000005  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp7.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incsp7.o):
     CODE              Offs=001FED  Size=000005  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(incsp8.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(incsp8.o):
     CODE              Offs=001FF2  Size=000005  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(ldaxi.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(ldaxi.o):
     CODE              Offs=001FF7  Size=00000D  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(ldaxsp.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(ldaxsp.o):
     CODE              Offs=002004  Size=000009  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(le.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(le.o):
     CODE              Offs=00200D  Size=00000A  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(makebool.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(makebool.o):
     CODE              Offs=002017  Size=00002C  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(mod.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(mod.o):
     CODE              Offs=002043  Size=000011  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(mul.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(mul.o):
     CODE              Offs=002054  Size=000045  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(mul8.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(mul8.o):
     CODE              Offs=002099  Size=00003A  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(mulax10.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(mulax10.o):
     CODE              Offs=0020D3  Size=000019  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(negabs.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(negabs.o):
     CODE              Offs=0020EC  Size=000012  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(popptr1.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(popptr1.o):
     CODE              Offs=0020FE  Size=00000E  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(pusha.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(pusha.o):
     CODE              Offs=00210C  Size=000016  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(pushax.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(pushax.o):
     CODE              Offs=002122  Size=00001A  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(pushw.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(pushw.o):
     CODE              Offs=00213C  Size=00000F  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(pushwsp.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(pushwsp.o):
     CODE              Offs=00214B  Size=00001C  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(shelp.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(shelp.o):
     CODE              Offs=002167  Size=000020  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(staspidx.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(staspidx.o):
     CODE              Offs=002187  Size=000016  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(staxsp.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(staxsp.o):
     CODE              Offs=00219D  Size=00000B  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(sub.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(sub.o):
     CODE              Offs=0021A8  Size=000015  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(subeqsp.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(subeqsp.o):
     CODE              Offs=0021BD  Size=000015  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(subysp.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(subysp.o):
     CODE              Offs=0021D2  Size=00000D  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(udiv.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(udiv.o):
     CODE              Offs=0021DF  Size=00004F  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(zerobss.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(zerobss.o):
     CODE              Offs=00222E  Size=000023  Align=00001  Fill=0000
-C:\Users\akihito\bin\cc65-win64\lib/none.lib(zeropage.o):
+C:\Users\akihi\bin\cc65\lib/none.lib(zeropage.o):
     ZEROPAGE          Offs=000000  Size=00001A  Align=00001  Fill=0000
 
 
@@ -128,64 +128,64 @@ Name                   Start     End    Size  Align
 ----------------------------------------------------
 ZEROPAGE              000050  000069  00001A  00001
 BSS                   000200  007DE4  007BE5  00001
-RODATA                00C400  00C6F4  0002F5  00001
-CODE                  00C6F5  00E945  002251  00001
-STARTUP               00E946  00E95C  000017  00001
-ONCE                  00E95D  00E968  00000C  00001
-DATA                  00E969  00E98D  000025  00001
+RODATA                00C200  00C4F4  0002F5  00001
+CODE                  00C4F5  00E745  002251  00001
+STARTUP               00E746  00E75C  000017  00001
+ONCE                  00E75D  00E768  00000C  00001
+DATA                  00E769  00E78D  000025  00001
 
 
 Exports list by name:
 ---------------------
-COLD_START                00C73F RLA    __BSS_RUN__               000200 RLA    
+COLD_START                00C53F RLA    __BSS_RUN__               000200 RLA    
 __BSS_SIZE__              007BE5 REA    __CONSTRUCTOR_COUNT__     000000 REA    
-__CONSTRUCTOR_TABLE__     00E969 RLA    __DESTRUCTOR_COUNT__      000000 REA    
-__DESTRUCTOR_TABLE__      00C6F5 RLA    __FILETOP__               00C400 REA    
-__STACKSIZE__             000100 REA    __STACKSTART__            00EAF0 REA    
+__CONSTRUCTOR_TABLE__     00E769 RLA    __DESTRUCTOR_COUNT__      000000 REA    
+__DESTRUCTOR_TABLE__      00C4F5 RLA    __FILETOP__               00C200 REA    
+__STACKSIZE__             000100 REA    __STACKSTART__            00E8F0 REA    
 __STARTUP__               000001 REA    __ZPSTART__               000050 REA    
-_c_getch                  00C6F5 RLA    _c_kbhit                  00C6F8 RLA    
-_c_putch                  00C6FB RLA    _err                      000202 RLA    
-_error                    00E50A RLA    _main                     00C770 RLA    
-_newline                  00C77E RLA    _rand                     00C6FE RLA    
-_srand                    00C723 RLA    _startup                  00E946 RLA    
-_warm_start               00C9C8 RLA    addeq0sp                  00E597 RLA    
-addeqysp                  00E599 RLA    addysp                    00E5A9 RLA    
-addysp1                   00E5A8 RLA    aslax1                    00E5B6 RLA    
-booleq                    00E712 RLA    boolgt                    00E721 RLA    
-boolle                    00E719 RLA    boolne                    00E70C RLA    
-decax1                    00E5CA RLA    decax2                    00E5D1 RLA    
-decax3                    00E5D8 RLA    decax4                    00E5DF RLA    
-decax5                    00E5E6 RLA    decaxy                    00E5ED RLA    
-decsp1                    00E5F6 RLA    decsp2                    00E5FF RLA    
-decsp4                    00E60C RLA    decsp5                    00E619 RLA    
-decsp6                    00E626 RLA    decsp7                    00E633 RLA    
-decsp8                    00E640 RLA    donelib                   00E5BE RLA    
-incax2                    00E69A RLA    incax3                    00E6A1 RLA    
-incaxy                    00E6A8 RLA    incsp1                    00E6B1 RLA    
-incsp2                    00E6C0 RLA    incsp3                    00E6CE RLA    
-incsp4                    00E6D3 RLA    incsp5                    00E6D8 RLA    
-incsp6                    00E6DD RLA    incsp7                    00E6E2 RLA    
-incsp8                    00E6E7 RLA    initlib                   00E95D RLA    
-ldax0sp                   00E6F9 RLA    ldaxi                     00E6EC RLA    
-ldaxysp                   00E6FB RLA    mul8x16                   00E790 RLA    
-mul8x16a                  00E79A RLA    mulax10                   00E7C8 RLA    
-negax                     00E7E5 RLA    popax                     00E6B8 RLA    
-popptr1                   00E7F3 RLA    popsargsudiv16            00E85C RLA    
+_c_getch                  00C4F5 RLA    _c_kbhit                  00C4F8 RLA    
+_c_putch                  00C4FB RLA    _err                      000202 RLA    
+_error                    00E30A RLA    _main                     00C570 RLA    
+_newline                  00C57E RLA    _rand                     00C4FE RLA    
+_srand                    00C523 RLA    _startup                  00E746 RLA    
+_warm_start               00C7C8 RLA    addeq0sp                  00E397 RLA    
+addeqysp                  00E399 RLA    addysp                    00E3A9 RLA    
+addysp1                   00E3A8 RLA    aslax1                    00E3B6 RLA    
+booleq                    00E512 RLA    boolgt                    00E521 RLA    
+boolle                    00E519 RLA    boolne                    00E50C RLA    
+decax1                    00E3CA RLA    decax2                    00E3D1 RLA    
+decax3                    00E3D8 RLA    decax4                    00E3DF RLA    
+decax5                    00E3E6 RLA    decaxy                    00E3ED RLA    
+decsp1                    00E3F6 RLA    decsp2                    00E3FF RLA    
+decsp4                    00E40C RLA    decsp5                    00E419 RLA    
+decsp6                    00E426 RLA    decsp7                    00E433 RLA    
+decsp8                    00E440 RLA    donelib                   00E3BE RLA    
+incax2                    00E49A RLA    incax3                    00E4A1 RLA    
+incaxy                    00E4A8 RLA    incsp1                    00E4B1 RLA    
+incsp2                    00E4C0 RLA    incsp3                    00E4CE RLA    
+incsp4                    00E4D3 RLA    incsp5                    00E4D8 RLA    
+incsp6                    00E4DD RLA    incsp7                    00E4E2 RLA    
+incsp8                    00E4E7 RLA    initlib                   00E75D RLA    
+ldax0sp                   00E4F9 RLA    ldaxi                     00E4EC RLA    
+ldaxysp                   00E4FB RLA    mul8x16                   00E590 RLA    
+mul8x16a                  00E59A RLA    mulax10                   00E5C8 RLA    
+negax                     00E5E5 RLA    popax                     00E4B8 RLA    
+popptr1                   00E5F3 RLA    popsargsudiv16            00E65C RLA    
 ptr1                      000058 RLZ    ptr4                      00005E RLZ    
-push0                     00E817 RLA    pusha                     00E805 RLA    
-pusha0                    00E819 RLA    pushax                    00E81B RLA    
-pushw                     00E831 RLA    pushwysp                  00E842 RLA    
+push0                     00E617 RLA    pusha                     00E605 RLA    
+pusha0                    00E619 RLA    pushax                    00E61B RLA    
+pushw                     00E631 RLA    pushwysp                  00E642 RLA    
 sp                        000050 RLZ    sreg                      000052 RLZ    
-staspidx                  00E87C RLA    stax0sp                   00E892 RLA    
-staxysp                   00E894 RLA    subeq0sp                  00E8B2 RLA    
-subeqysp                  00E8B4 RLA    subysp                    00E8C7 RLA    
+staspidx                  00E67C RLA    stax0sp                   00E692 RLA    
+staxysp                   00E694 RLA    subeq0sp                  00E6B2 RLA    
+subeqysp                  00E6B4 RLA    subysp                    00E6C7 RLA    
 tmp1                      000060 RLZ    tmp2                      000061 RLZ    
-tosdiva0                  00E64D RLA    tosdivax                  00E64F RLA    
-tosgtax                   00E666 RLA    tosicmp                   00E66E RLA    
-tosleax                   00E706 RLA    tosmoda0                  00E738 RLA    
-tosmodax                  00E73A RLA    tosmulax                  00E749 RLA    
-tossubax                  00E89F RLA    udiv16                    00E8E5 RLA    
-zerobss                   00E923 RLA    
+tosdiva0                  00E44D RLA    tosdivax                  00E44F RLA    
+tosgtax                   00E466 RLA    tosicmp                   00E46E RLA    
+tosleax                   00E506 RLA    tosmoda0                  00E538 RLA    
+tosmodax                  00E53A RLA    tosmulax                  00E549 RLA    
+tossubax                  00E69F RLA    udiv16                    00E6E5 RLA    
+zerobss                   00E723 RLA    
 
 
 Exports list by value:
@@ -197,48 +197,48 @@ ptr1                      000058 RLZ    ptr4                      00005E RLZ
 tmp1                      000060 RLZ    tmp2                      000061 RLZ    
 __STACKSIZE__             000100 REA    __BSS_RUN__               000200 RLA    
 _err                      000202 RLA    __BSS_SIZE__              007BE5 REA    
-__FILETOP__               00C400 REA    _c_getch                  00C6F5 RLA    
-__DESTRUCTOR_TABLE__      00C6F5 RLA    _c_kbhit                  00C6F8 RLA    
-_c_putch                  00C6FB RLA    _rand                     00C6FE RLA    
-_srand                    00C723 RLA    COLD_START                00C73F RLA    
-_main                     00C770 RLA    _newline                  00C77E RLA    
-_warm_start               00C9C8 RLA    _error                    00E50A RLA    
-addeq0sp                  00E597 RLA    addeqysp                  00E599 RLA    
-addysp1                   00E5A8 RLA    addysp                    00E5A9 RLA    
-aslax1                    00E5B6 RLA    donelib                   00E5BE RLA    
-decax1                    00E5CA RLA    decax2                    00E5D1 RLA    
-decax3                    00E5D8 RLA    decax4                    00E5DF RLA    
-decax5                    00E5E6 RLA    decaxy                    00E5ED RLA    
-decsp1                    00E5F6 RLA    decsp2                    00E5FF RLA    
-decsp4                    00E60C RLA    decsp5                    00E619 RLA    
-decsp6                    00E626 RLA    decsp7                    00E633 RLA    
-decsp8                    00E640 RLA    tosdiva0                  00E64D RLA    
-tosdivax                  00E64F RLA    tosgtax                   00E666 RLA    
-tosicmp                   00E66E RLA    incax2                    00E69A RLA    
-incax3                    00E6A1 RLA    incaxy                    00E6A8 RLA    
-incsp1                    00E6B1 RLA    popax                     00E6B8 RLA    
-incsp2                    00E6C0 RLA    incsp3                    00E6CE RLA    
-incsp4                    00E6D3 RLA    incsp5                    00E6D8 RLA    
-incsp6                    00E6DD RLA    incsp7                    00E6E2 RLA    
-incsp8                    00E6E7 RLA    ldaxi                     00E6EC RLA    
-ldax0sp                   00E6F9 RLA    ldaxysp                   00E6FB RLA    
-tosleax                   00E706 RLA    boolne                    00E70C RLA    
-booleq                    00E712 RLA    boolle                    00E719 RLA    
-boolgt                    00E721 RLA    tosmoda0                  00E738 RLA    
-tosmodax                  00E73A RLA    tosmulax                  00E749 RLA    
-mul8x16                   00E790 RLA    mul8x16a                  00E79A RLA    
-mulax10                   00E7C8 RLA    negax                     00E7E5 RLA    
-popptr1                   00E7F3 RLA    pusha                     00E805 RLA    
-push0                     00E817 RLA    pusha0                    00E819 RLA    
-pushax                    00E81B RLA    pushw                     00E831 RLA    
-pushwysp                  00E842 RLA    popsargsudiv16            00E85C RLA    
-staspidx                  00E87C RLA    stax0sp                   00E892 RLA    
-staxysp                   00E894 RLA    tossubax                  00E89F RLA    
-subeq0sp                  00E8B2 RLA    subeqysp                  00E8B4 RLA    
-subysp                    00E8C7 RLA    udiv16                    00E8E5 RLA    
-zerobss                   00E923 RLA    _startup                  00E946 RLA    
-initlib                   00E95D RLA    __CONSTRUCTOR_TABLE__     00E969 RLA    
-__STACKSTART__            00EAF0 REA    
+__FILETOP__               00C200 REA    _c_getch                  00C4F5 RLA    
+__DESTRUCTOR_TABLE__      00C4F5 RLA    _c_kbhit                  00C4F8 RLA    
+_c_putch                  00C4FB RLA    _rand                     00C4FE RLA    
+_srand                    00C523 RLA    COLD_START                00C53F RLA    
+_main                     00C570 RLA    _newline                  00C57E RLA    
+_warm_start               00C7C8 RLA    _error                    00E30A RLA    
+addeq0sp                  00E397 RLA    addeqysp                  00E399 RLA    
+addysp1                   00E3A8 RLA    addysp                    00E3A9 RLA    
+aslax1                    00E3B6 RLA    donelib                   00E3BE RLA    
+decax1                    00E3CA RLA    decax2                    00E3D1 RLA    
+decax3                    00E3D8 RLA    decax4                    00E3DF RLA    
+decax5                    00E3E6 RLA    decaxy                    00E3ED RLA    
+decsp1                    00E3F6 RLA    decsp2                    00E3FF RLA    
+decsp4                    00E40C RLA    decsp5                    00E419 RLA    
+decsp6                    00E426 RLA    decsp7                    00E433 RLA    
+decsp8                    00E440 RLA    tosdiva0                  00E44D RLA    
+tosdivax                  00E44F RLA    tosgtax                   00E466 RLA    
+tosicmp                   00E46E RLA    incax2                    00E49A RLA    
+incax3                    00E4A1 RLA    incaxy                    00E4A8 RLA    
+incsp1                    00E4B1 RLA    popax                     00E4B8 RLA    
+incsp2                    00E4C0 RLA    incsp3                    00E4CE RLA    
+incsp4                    00E4D3 RLA    incsp5                    00E4D8 RLA    
+incsp6                    00E4DD RLA    incsp7                    00E4E2 RLA    
+incsp8                    00E4E7 RLA    ldaxi                     00E4EC RLA    
+ldax0sp                   00E4F9 RLA    ldaxysp                   00E4FB RLA    
+tosleax                   00E506 RLA    boolne                    00E50C RLA    
+booleq                    00E512 RLA    boolle                    00E519 RLA    
+boolgt                    00E521 RLA    tosmoda0                  00E538 RLA    
+tosmodax                  00E53A RLA    tosmulax                  00E549 RLA    
+mul8x16                   00E590 RLA    mul8x16a                  00E59A RLA    
+mulax10                   00E5C8 RLA    negax                     00E5E5 RLA    
+popptr1                   00E5F3 RLA    pusha                     00E605 RLA    
+push0                     00E617 RLA    pusha0                    00E619 RLA    
+pushax                    00E61B RLA    pushw                     00E631 RLA    
+pushwysp                  00E642 RLA    popsargsudiv16            00E65C RLA    
+staspidx                  00E67C RLA    stax0sp                   00E692 RLA    
+staxysp                   00E694 RLA    tossubax                  00E69F RLA    
+subeq0sp                  00E6B2 RLA    subeqysp                  00E6B4 RLA    
+subysp                    00E6C7 RLA    udiv16                    00E6E5 RLA    
+zerobss                   00E723 RLA    _startup                  00E746 RLA    
+initlib                   00E75D RLA    __CONSTRUCTOR_TABLE__     00E769 RLA    
+__STACKSTART__            00E8F0 REA    
 
 
 Imports list:
@@ -564,7 +564,7 @@ sp (zeropage.o):
     decsp1.o                  runtime/decsp1.s:8
     addysp.o                  runtime/addysp.s:8
     addeqsp.o                 runtime/addeqsp.s:8
-    crt0.o                    C:\Users\akihito\bin\cc65-win64\asminc/zeropage.inc:11
+    crt0.o                    C:\Users\akihi\bin\cc65\asminc/zeropage.inc:11
     ttbasic.o                 .\ttbasic_refine.s:10
 sreg (zeropage.o):
     udiv.o                    runtime/udiv.s:10

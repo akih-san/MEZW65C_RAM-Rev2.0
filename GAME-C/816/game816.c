@@ -68,7 +68,7 @@ main(u_char st_flg)
  int n,x, cnt;
 
 	if ( !st_flg ) {
-		srand(5678); /* for RND function */
+		srand(6502); /* for RND function */
 		TOPP =(int)text_buf;
 		REND = RAMEND;
 		newText1();

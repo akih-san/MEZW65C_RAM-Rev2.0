@@ -57,7 +57,11 @@ pc		ds	2
 lky_buf	ds	160
 lin		ds	160
 
-seed	ds	2
+seed1	ds	2
+seed2	ds	2
+rand_v1	ds	2
+rand_v2	ds	2
+
 val_a	ds	2
 val_x	ds	2
 val_y	ds	2
@@ -130,11 +134,18 @@ c_putch
 
 rand
 	long_a
-	lda	seed
-	eor	#$9630
-	sbc	#$6553
+	lda	seed1
+	sta	rand_v2
+	asl	a
+	lda	seed2
 	rol	a
-	sta	seed
+	sta	rand_v1
+	lda	seed1+1
+	eor	rand_v1
+	sta	seed1
+	lda	rand_v2
+	sta	seed2
+	lda	seed1
 	rts
 
 ; SP              -> 0          |
@@ -145,7 +156,9 @@ rand
 srand
 	long_a
 	lda	3,s	; get init value
-	sta	seed
+	sta	seed1
+	sta	seed2
+
 	pla		; get return address
 	sta	1,s	; set return address
 	rts
@@ -455,7 +468,7 @@ cnt_1	set	4
 	beq	L11
 	brl	L10003
 L11:
-	pea	#<$162e
+	pea	#<$1966
 	jsr	srand
 	lda	#<text_buf
 	sta	var+122

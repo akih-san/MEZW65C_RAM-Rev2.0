@@ -70,6 +70,7 @@ val_y	ds	2
 remn	ds	2
 div_y	ds	2	; quotient
 div_x	ds	2
+negf	ds	2
 
 max_off	ds	2
 deff_p	ds	2
@@ -221,9 +222,9 @@ end_add
 	rts
 
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
-; 16-bit unsigned division routine
+; 16-bit signed division routine
 ;	div_y /= div_x, {%} = remainder, {>} modified
-;	div_y /= 0 produces {%} = div_y, div_y = 65535
+;	div_y /= 0 produces {%} = div_y, div_y = -32768 - 32767
 ;
 ;	input  A : div_y, X : div_x
 ;	output A : div_y
@@ -231,8 +232,52 @@ div:
 	longa on
 	longi on
 
+	stz	negf
 	sta	div_y
 	stx	div_x
+
+	bit	#$8000
+	beq	neg_div1
+	inc	negf
+	eor	#$FFFF
+	inc	a
+	sta	div_y
+	
+neg_div1
+	txa
+	bit	#$8000
+	beq	neg_div2
+	inc	negf
+	eor	#$FFFF
+	inc	a
+	sta	div_x
+
+neg_div2
+	lda	div_y
+	ldx	div_x
+	jsr	u_div
+
+	lda	negf
+	bit	#$0001
+	bne	neg_div3
+	lda	div_y
+	rts
+	
+neg_div3
+	lda	div_y
+	eor	#$FFFF
+	inc	a
+	sta	div_y
+	rts
+
+; - - - - - - - - - - - - - - - - - - - - - - - - - - ;
+; 16-bit unsigned division routine
+;	div_y /= div_x, {%} = remainder, {>} modified
+;	div_y /= 0 produces {%} = div_y, div_y = 65535
+;
+;	input  A : div_y, X : div_x
+;	output A : div_y
+u_div:
 
 	phy
 	lda	#0
